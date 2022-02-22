@@ -15,31 +15,33 @@ import mindustry.type.*;
 
 import static MinerTools.MineUtils.*;
 import static arc.Core.*;
-import static arc.graphics.Color.*;
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.*;
 import static mindustry.content.UnitTypes.*;
+import static mindustry.gen.Icon.*;
 import static mindustry.ui.Styles.*;
+import static mindustry.ui.Styles.none;
 
 public class MinerToolsTable extends Table{
-    private boolean shown;
-
     private Table teamsTable;
-    private Seq<TeamData> teams;
-    private Interval timer = new Interval();
+    private Seq<TeamData> teams = new Seq<>();
+    private final Interval timer = new Interval();
 
+    private Table memberTable;
+    private int memberIndex = -1;
+    private final Table[] membersTables = new Table[]{new TeamChanger()};
+    private final Drawable[] membersButtonsIcon = new Drawable[]{new TextureRegionDrawable(spawn.uiIcon), playersSmall, pasteSmall};
     public MinerToolsTable(){
-        background(black3);
-
-        teams = new Seq<>();
         rebuild();
     }
+
 
     public void rebuild(){
         clear();
 
-        table(table -> {
+        table(black3, table -> {
             addInfo(table, coreNucleus.uiIcon, () -> player.team().cores().size + "");
             addInfo(table, mono.uiIcon, () -> countMiner(player.team()) + "");
             addInfo(table, gamma.uiIcon, () -> "[#" + player.team().color + "]" + countPlayer(player.team()) + "[white]" + "/" + "[accent]" + Groups.player.size());
@@ -49,6 +51,7 @@ public class MinerToolsTable extends Table{
 
         pane(nonePane, p -> teamsTable = p).fillX().left().maxHeight(135).scrollX(false);
 
+        teamsTable.background(black3);
         teamsTableRebuild();
         teamsTable.update(() -> {
             if(timer.get(120)){
@@ -60,8 +63,8 @@ public class MinerToolsTable extends Table{
         addDivive();
 
         /* useful buttons */
-        table(buttons -> {
-            buttons.button(Icon.playersSmall, clearTransi, () -> {
+        table(black3, buttons -> {
+            buttons.button(playersSmall, clearTransi, () -> {
                 Call.sendChatMessage("/list");
             }).height(35).growX();
 
@@ -92,6 +95,29 @@ public class MinerToolsTable extends Table{
 
             buttons.getCells().each(cell -> ((ImageButton)cell.get()).getStyle().up = none);
         }).minWidth(45f * 4f).fillX();
+
+        addDivive();
+
+        table(members -> {
+            members.table(member -> {
+                memberTable = member;
+            }).fillX().growY();
+
+            members.add().width(-1f).growX();
+
+            members.table(black3, buttons -> {
+                for(int i = 0; i < membersButtonsIcon.length - 2; i++){
+                    int finalI = i;
+                    buttons.button(membersButtonsIcon[i], clearTogglePartiali, 35, () -> setMemberIndex(finalI))
+                    .update(b -> b.setChecked(memberIndex == finalI)).growY();
+
+                    buttons.row();
+                }
+
+                buttons.button(Icon.none, clearTogglePartiali, 35, () -> setMemberIndex(-1))
+                .update(b -> b.setChecked(memberIndex == -1)).growY();
+            }).fillX().growY();
+        }).fill();
     }
 
     private void teamsTableRebuild(){
@@ -121,11 +147,26 @@ public class MinerToolsTable extends Table{
                     }).padLeft(3).fill();
 
                     teamTable.add().width(-1).growX();
-                }).pad(4).left().fillX();
+                }).pad(4).fillX();
 
                 teamsTable.row();
             }
         }
+    }
+
+    private void membersRebuild(){
+        memberTable.clear();
+
+        if(memberIndex == -1) return;
+
+        memberTable.table(t -> {
+            t.add(membersTables[memberIndex]).fill().padRight(2f);
+        }).fillY();
+    }
+
+    private void setMemberIndex(int index){
+        memberIndex = index;
+        membersRebuild();
     }
 
     private void addDivive(){
