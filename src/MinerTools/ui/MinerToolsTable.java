@@ -1,8 +1,10 @@
 package MinerTools.ui;
 
 import MinerTools.*;
+import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -13,7 +15,7 @@ import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 
-import static MinerTools.MineUtils.*;
+import static MinerTools.MinerUtils.*;
 import static arc.Core.*;
 import static arc.Core.settings;
 import static mindustry.Vars.*;
@@ -31,12 +33,13 @@ public class MinerToolsTable extends Table{
 
     private Table memberTable;
     private int memberIndex = -1;
-    private final Table[] membersTables = new Table[]{new TeamChanger()};
-    private final Drawable[] membersButtonsIcon = new Drawable[]{new TextureRegionDrawable(spawn.uiIcon), playersSmall, pasteSmall};
+    private final Table[] membersTables = new Table[]{new TeamChanger(), new PlayersList()};
+    private final Drawable[] membersButtonsIcon = new Drawable[]{new TextureRegionDrawable(spawn.uiIcon), players};
     public MinerToolsTable(){
-        rebuild();
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            rebuild();
+        });
     }
-
 
     public void rebuild(){
         clear();
@@ -49,7 +52,14 @@ public class MinerToolsTable extends Table{
 
         addDivive();
 
-        pane(nonePane, p -> teamsTable = p).fillX().left().maxHeight(135).scrollX(false);
+        pane(nonePane, p -> teamsTable = p).fillX().left().maxHeight(135).scrollX(false).update(pane -> {
+            if(pane.hasScroll()){
+                Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+                if(result == null || !result.isDescendantOf(pane)){
+                    Core.scene.setScrollFocus(null);
+                }
+            }
+        });
 
         teamsTable.background(black3);
         teamsTableRebuild();
@@ -78,7 +88,7 @@ public class MinerToolsTable extends Table{
                 return view;
             }).height(35).growX();
 
-            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MineUtils::rebuildBlocks).height(35).growX();
+            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerUtils::rebuildBlocks).height(35).growX();
 
             ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> {
                 dropItems();
@@ -106,7 +116,7 @@ public class MinerToolsTable extends Table{
             members.add().width(-1f).growX();
 
             members.table(black3, buttons -> {
-                for(int i = 0; i < membersButtonsIcon.length - 2; i++){
+                for(int i = 0; i < membersButtonsIcon.length; i++){
                     int finalI = i;
                     buttons.button(membersButtonsIcon[i], clearTogglePartiali, 35, () -> setMemberIndex(finalI))
                     .update(b -> b.setChecked(memberIndex == finalI)).growY();

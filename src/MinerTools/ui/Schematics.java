@@ -1,0 +1,109 @@
+package MinerTools.ui;
+
+import arc.*;
+import arc.scene.*;
+import arc.scene.ui.*;
+import arc.scene.ui.layout.*;
+import arc.struct.*;
+import mindustry.*;
+import mindustry.game.*;
+import mindustry.ui.dialogs.*;
+import mindustry.ui.dialogs.SchematicsDialog.*;
+
+import java.lang.reflect.*;
+
+import static arc.graphics.Color.white;
+import static arc.util.Align.center;
+import static arc.util.Scaling.fit;
+import static mindustry.Vars.*;
+import static mindustry.ui.Styles.*;
+
+public class Schematics extends Table{
+    public static float imageSize = 85f;
+
+    private Table schematicsTable = new Table(black3);
+
+    private int selectedSchemCount;
+    private boolean showSchematics;
+
+    private Seq<String> tags = new Seq<>(), selectedTags = new Seq<>();
+
+    private Field tagsField;
+
+
+    public Schematics(){
+        try{
+            tagsField = SchematicsDialog.class.getDeclaredField("tags");
+            tagsField.setAccessible(true);
+        }catch(Exception e){
+            ui.showException(e);
+        }
+
+        rebuild();
+    }
+
+    private void rebuild(){
+        try{
+            tags = (Seq<String>)tagsField.get(ui.schematics);
+        }catch(Exception e){
+            ui.showException(e);
+        }
+        ScrollPane pane = pane(schematicsTable).maxSize(imageSize * 2.5f).top().get();
+
+        pane.update(() -> {
+            if(pane.hasScroll()){
+                Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+                if(result == null || !result.isDescendantOf(pane)){
+                    Core.scene.setScrollFocus(null);
+                }
+            }
+        });
+
+        pane(nonePane, tagsTable -> {
+            for(String tag : tags){
+                tagsTable.button(tag, togglet, () -> {
+                    if(selectedTags.contains(tag)) selectedTags.remove(tag);
+                    else selectedTags.add(tag);
+                    schematicsRebuild();
+                }).checked(b -> selectedTags.contains(tag)).growY().maxWidth(35).maxHeight(35).get().getLabelCell().fontScale(0.95f);
+
+                tagsTable.row();
+            }
+        }).maxHeight(imageSize * 2.5f).right();
+
+        schematicsRebuild();
+    }
+
+    private void schematicsRebuild(){
+        schematicsTable.clear();
+
+        schematicsTable.label(() -> selectedSchemCount + "/" + Vars.schematics.all().size).row();
+
+        selectedSchemCount = 0;
+        schematicsTable.pane(nonePane, schematicTable -> {
+            int i = 0;
+            for(Schematic schematic : Vars.schematics.all()){
+                if(selectedTags.any() && schematic.labels.containsAll(selectedTags)){
+                    selectedSchemCount++;
+
+                    schematicTable.button(b -> {
+                        b.stack(
+                        new SchematicImage(schematic).setScaling(fit),
+                        new Table(n -> {
+                            n.top();
+                            n.table(black3, c -> {
+                                Label l = c.add(schematic.name()).style(outlineLabel).color(white).top().growX().maxWidth(70 - 8).get();
+                                l.setEllipsis(true);
+                                l.setAlignment(center);
+                            }).growX().margin(1).pad(4).maxWidth(Scl.scl(imageSize - 8)).padBottom(0);
+                        })).size(imageSize);
+                    }, () -> {
+                        Vars.control.input.useSchematic(schematic);
+                    });
+
+                    if(++i % 3 == 0) schematicTable.row();
+                }
+            }
+        }).maxHeight(imageSize * 2.5f);
+    }
+}

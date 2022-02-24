@@ -20,7 +20,7 @@ import mindustry.world.modules.*;
 
 import static mindustry.Vars.*;
 
-public class MineUtils{
+public class MinerUtils{
     public static float fontScale = 0.75f;
     public static float imgSize = iconSmall * fontScale;
 
