@@ -3,6 +3,7 @@ package MinerTools;
 import MinerTools.ui.*;
 import arc.*;
 import arc.scene.ui.layout.*;
+import io.mnemotechnician.autoupdater.*;
 import mindustry.game.*;
 import mindustry.mod.*;
 
@@ -14,6 +15,8 @@ public class MinerTools extends Mod{
         enableConsole = true;
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
+            Updater.checkUpdates(this);
+
             ui.hudGroup.fill(t -> {
                 t.top().right().name = "miner-tools";
                 t.visible(() -> ui.hudfrag.shown && !ui.minimapfrag.shown());

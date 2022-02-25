@@ -12,6 +12,7 @@ import mindustry.ui.dialogs.SchematicsDialog.*;
 
 import java.lang.reflect.*;
 
+import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.graphics.Color.white;
 import static arc.util.Align.center;
 import static arc.util.Scaling.fit;
@@ -39,6 +40,8 @@ public class Schematics extends Table{
             ui.showException(e);
         }
 
+        background(black3);
+
         rebuild();
     }
 
@@ -48,18 +51,10 @@ public class Schematics extends Table{
         }catch(Exception e){
             ui.showException(e);
         }
-        ScrollPane pane = pane(schematicsTable).maxSize(imageSize * 2.5f).top().get();
+        ScrollPane pane = pane(nonePane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
+        panes.add(pane);
 
-        pane.update(() -> {
-            if(pane.hasScroll()){
-                Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
-                if(result == null || !result.isDescendantOf(pane)){
-                    Core.scene.setScrollFocus(null);
-                }
-            }
-        });
-
-        pane(nonePane, tagsTable -> {
+        ScrollPane pane2 = pane(nonePane, tagsTable -> {
             for(String tag : tags){
                 tagsTable.button(tag, togglet, () -> {
                     if(selectedTags.contains(tag)) selectedTags.remove(tag);
@@ -69,9 +64,11 @@ public class Schematics extends Table{
 
                 tagsTable.row();
             }
-        }).maxHeight(imageSize * 2.5f).right();
 
-        schematicsRebuild();
+            schematicsRebuild();
+        }).maxHeight(imageSize * 2.5f).right().get();
+
+        panes.add(pane2);
     }
 
     private void schematicsRebuild(){
@@ -80,30 +77,28 @@ public class Schematics extends Table{
         schematicsTable.label(() -> selectedSchemCount + "/" + Vars.schematics.all().size).row();
 
         selectedSchemCount = 0;
-        schematicsTable.pane(nonePane, schematicTable -> {
-            int i = 0;
-            for(Schematic schematic : Vars.schematics.all()){
-                if(selectedTags.any() && schematic.labels.containsAll(selectedTags)){
-                    selectedSchemCount++;
+        int i = 0;
+        for(Schematic schematic : Vars.schematics.all()){
+            if(selectedTags.isEmpty() || schematic.labels.containsAll(selectedTags)){
+                selectedSchemCount++;
 
-                    schematicTable.button(b -> {
-                        b.stack(
-                        new SchematicImage(schematic).setScaling(fit),
-                        new Table(n -> {
-                            n.top();
-                            n.table(black3, c -> {
-                                Label l = c.add(schematic.name()).style(outlineLabel).color(white).top().growX().maxWidth(70 - 8).get();
-                                l.setEllipsis(true);
-                                l.setAlignment(center);
-                            }).growX().margin(1).pad(4).maxWidth(Scl.scl(imageSize - 8)).padBottom(0);
-                        })).size(imageSize);
-                    }, () -> {
-                        Vars.control.input.useSchematic(schematic);
-                    });
+                schematicsTable.button(b -> {
+                    b.stack(
+                    new SchematicImage(schematic).setScaling(fit),
+                    new Table(n -> {
+                        n.top();
+                        n.table(black3, c -> {
+                            Label l = c.add(schematic.name()).style(outlineLabel).color(white).top().growX().maxWidth(70 - 8).get();
+                            l.setEllipsis(true);
+                            l.setAlignment(center);
+                        }).growX().margin(1).pad(4).maxWidth(Scl.scl(imageSize - 8)).padBottom(0);
+                    })).size(imageSize);
+                }, () -> {
+                    Vars.control.input.useSchematic(schematic);
+                });
 
-                    if(++i % 3 == 0) schematicTable.row();
-                }
+                if(++i % 3 == 0) schematicsTable.row();
             }
-        }).maxHeight(imageSize * 2.5f);
+        }
     }
 }

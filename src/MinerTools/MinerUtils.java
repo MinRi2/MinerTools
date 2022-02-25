@@ -1,22 +1,14 @@
 package MinerTools;
 
 import arc.math.*;
-import arc.struct.*;
 import mindustry.ai.types.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
-import mindustry.type.*;
-import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
-import mindustry.world.blocks.units.UnitFactory.*;
-import mindustry.world.modules.*;
 
 import static mindustry.Vars.*;
 

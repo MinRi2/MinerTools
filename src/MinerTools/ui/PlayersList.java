@@ -8,7 +8,9 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
+import mindustry.input.*;
 
+import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
@@ -23,15 +25,7 @@ public class PlayersList extends Table{
 
     public PlayersList(){
         ScrollPane pane = pane(players).maxHeight(235).get();
-
-        pane.update(() -> {
-            if(pane.hasScroll()){
-                Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
-                if(result == null || !result.isDescendantOf(pane)){
-                    Core.scene.setScrollFocus(null);
-                }
-            }
-        });
+        panes.add(pane);
 
         update(() -> {
             if(timer.get(60) && !lastPlayers.equals(Groups.player.copy(tmpSeq))){
@@ -63,10 +57,11 @@ public class PlayersList extends Table{
                     }).size(35);
 
                     info.button(Icon.lock, clearToggleTransi, () -> {
-                    }).size(35).update(b -> {
-                    });
+                    }).size(35);
 
                     info.button(Icon.units, clearPartiali, () -> {
+                        if(control.input instanceof DesktopInput input) input.panning = true;
+                        camera.position.set(player);
                     }).size(35);
 
                     info.button(Icon.hammer, clearPartiali, () -> {
