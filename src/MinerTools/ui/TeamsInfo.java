@@ -13,10 +13,13 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.core.*;
+import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 
 import static MinerTools.MinerUtils.*;
 import static MinerTools.ui.MinerToolsTable.panes;
@@ -30,7 +33,7 @@ import static mindustry.ui.Styles.*;
 
 public class TeamsInfo extends Table{
     public static int dropHeat = 35;
-    private DropSettingDialog dropSetting = new DropSettingDialog();
+    private final DropSettingDialog dropSetting = new DropSettingDialog();
 
     private Table table;
 
@@ -39,6 +42,8 @@ public class TeamsInfo extends Table{
 
     public TeamsInfo(){
         rebuild();
+
+        Events.on(TileChangeEvent.class, event -> PowerInfo.clearInfo());
     }
 
     public void rebuild(){
@@ -62,6 +67,8 @@ public class TeamsInfo extends Table{
                 teams = state.teams.getActive();
                 tableRebuild();
             }
+
+            PowerInfo.updateInfo();
         });
 
         addDivive();
@@ -70,9 +77,7 @@ public class TeamsInfo extends Table{
         table(black3, buttons -> {
             buttons.defaults().height(35).growX();
 
-            buttons.button(playersSmall, clearTransi, () -> {
-                Call.sendChatMessage("/list");
-            });
+            buttons.button(playersSmall, clearTransi, () -> Call.sendChatMessage("/list"));
 
             if(mobile){
                 buttons.button(Icon.play, emptytogglei, () -> {
@@ -91,9 +96,7 @@ public class TeamsInfo extends Table{
 
             buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerUtils::rebuildBlocks).height(35).growX();
 
-            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> {
-                dropItems();
-            }).get();
+            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> dropItems()).get();
 
             dropButton.changed(() -> {
                 if(lastDropItem != null) dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
@@ -113,14 +116,12 @@ public class TeamsInfo extends Table{
                 }
             });
 
-            buttons.button(Icon.trashSmall, clearTransi, () -> {
-                ui.showConfirm(
-                "?",
-                () -> {
-                    Call.sendChatMessage("/vote gameover");
-                    Call.sendChatMessage("1");
-                });
-            });
+            buttons.button(Icon.trashSmall, clearTransi, () -> ui.showConfirm(
+            "?",
+            () -> {
+                Call.sendChatMessage("/vote gameover");
+                Call.sendChatMessage("1");
+            }));
 
             buttons.getCells().each(cell -> ((ImageButton)cell.get()).getStyle().up = none);
         }).minWidth(45f * 4f).fillX();
@@ -139,21 +140,32 @@ public class TeamsInfo extends Table{
                     teamTable.label(() -> "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
                     .padRight(3).minWidth(16).left().get().setFontScale(fontScale + 0.15f);
 
-                    teamTable.table(units -> {
-                        units.update(() -> {
-                            units.clear();
+                    teamTable.table(units -> units.update(() -> {
+                        units.clear();
 
-                            int i = 0;
-                            for(UnitType unit : content.units()){
-                                if(data.countType(unit) > 0){
-                                    if(i++ % 5 == 0) units.row();
-                                    units.image(unit.uiIcon).size(imgSize);
-                                    units.label(() -> data.countType(unit) + "").left().padRight(3).minWidth(16).get().setFontScale(fontScale);
-                                }
+                        int i = 0;
+                        for(UnitType unit : content.units()){
+                            if(data.countType(unit) > 0){
+                                if(i++ % 5 == 0) units.row();
+                                units.image(unit.uiIcon).size(imgSize);
+                                units.label(() -> data.countType(unit) + "").left().padRight(3).minWidth(16).get().setFontScale(fontScale);
                             }
-                        });
-                    }).padLeft(3).fill();
-                }).pad(4).fillX().left();
+                        }
+                    })).padLeft(3).fill();
+
+                    teamTable.add().growX();
+
+                    teamTable.table(powerBarTable -> {
+                        powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
+
+                        Bar powerBar = new Bar(
+                        () -> (PowerInfo.getPowerInfo(team).getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(PowerInfo.getPowerInfo(team).getPowerBalance()),
+                        () -> team.color,
+                        () -> PowerInfo.getPowerInfo(team).getSatisfaction());
+
+                        powerBarTable.add(powerBar).width(100).fillY();
+                    }).pad(-1).right();
+                }).pad(4).growX().left();
 
                 table.row();
             }
