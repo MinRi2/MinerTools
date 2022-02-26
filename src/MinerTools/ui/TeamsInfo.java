@@ -1,8 +1,13 @@
 package MinerTools.ui;
 
 import MinerTools.*;
+import MinerTools.ui.Dialogs.*;
+import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
+import arc.input.*;
+import arc.scene.*;
+import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -24,10 +29,12 @@ import static mindustry.gen.Icon.playersSmall;
 import static mindustry.ui.Styles.*;
 
 public class TeamsInfo extends Table{
+    private DropSettingDialog dropSetting = new DropSettingDialog();
+
     private Table table;
 
     private Seq<TeamData> teams = new Seq<>();
-    private final Interval timer = new Interval();
+    private final Interval timer = new Interval(2);
 
     public TeamsInfo(){
         rebuild();
@@ -50,7 +57,7 @@ public class TeamsInfo extends Table{
         table.background(black3);
         tableRebuild();
         table.update(() -> {
-            if(timer.get(120)){
+            if(timer.get(0, 120)){
                 teams = state.teams.getActive();
                 tableRebuild();
             }
@@ -86,6 +93,24 @@ public class TeamsInfo extends Table{
             ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> {
                 dropItems();
             }).get();
+
+            dropButton.changed(() -> {
+                if(lastDropItem != null) dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
+            });
+
+            dropButton.update(() -> {
+                if(timer.get(1, 20) && input.keyDown(KeyCode.h)){
+                    dropButton.fireClick();
+                }
+            });
+
+            dropButton.addListener(new ElementGestureListener(){
+                @Override
+                public boolean longPress(Element actor, float x, float y){
+                    dropSetting.show();
+                    return true;
+                }
+            });
 
             buttons.button(Icon.trashSmall, clearTransi, () -> {
                 ui.showConfirm(
