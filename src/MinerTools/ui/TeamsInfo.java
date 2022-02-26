@@ -29,6 +29,7 @@ import static mindustry.gen.Icon.playersSmall;
 import static mindustry.ui.Styles.*;
 
 public class TeamsInfo extends Table{
+    public static int dropHeat = 35;
     private DropSettingDialog dropSetting = new DropSettingDialog();
 
     private Table table;
@@ -99,7 +100,7 @@ public class TeamsInfo extends Table{
             });
 
             dropButton.update(() -> {
-                if(timer.get(1, 20) && input.keyDown(KeyCode.h)){
+                if(timer.get(1, dropHeat) && input.keyDown(KeyCode.h)){
                     dropButton.fireClick();
                 }
             });
