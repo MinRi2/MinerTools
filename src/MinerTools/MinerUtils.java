@@ -95,7 +95,6 @@ public class MinerUtils{
         }
 
         lastDropItem = item;
-        Log.log(LogLevel.info, "DropItem: " + item.emoji());
     }
 
     private static void requestItem(Item item){

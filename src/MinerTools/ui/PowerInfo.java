@@ -84,7 +84,7 @@ public class PowerInfo{
             for(Building building : buildings){
                 if(building.block.hasPower && graphs.add(building.power.graph)){
                     // Log.info("Team: " + team + "add PowerGraph: " + graphs);
-                    Log.log(LogLevel.info, "Balance" + getPowerBalance());
+                    // Log.log(LogLevel.info, "Balance" + getPowerBalance());
                 }
             }
         }
