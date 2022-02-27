@@ -6,6 +6,7 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import static mindustry.content.Blocks.*;
@@ -15,7 +16,8 @@ import static mindustry.ui.Styles.*;
 public class MinerToolsTable extends Table{
     public static Seq<ScrollPane> panes = new Seq<>();
 
-    private TeamsInfo teamInfos = new TeamsInfo();
+    private final TeamsInfo teamInfos = new TeamsInfo();
+    private boolean infoShown = true;
 
     private Table memberTable;
     private int memberIndex = -1;
@@ -28,7 +30,12 @@ public class MinerToolsTable extends Table{
     public void rebuild(){
         clear();
 
-        table(t -> t.add(teamInfos)).right();
+        table(t -> {
+            t.collapser(tt -> tt.add(teamInfos), () -> infoShown).right();
+
+            t.button(new TextureRegionDrawable(Items.copper.uiIcon), clearTogglePartiali, 35, () -> infoShown = !infoShown)
+            .update(b -> b.setChecked(infoShown)).growY();
+        }).right();
 
         row();
 

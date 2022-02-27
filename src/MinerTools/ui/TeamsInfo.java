@@ -96,6 +96,7 @@ public class TeamsInfo extends Table{
 
             buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerUtils::rebuildBlocks).height(35).growX();
 
+            /* 结构尚未优化 慎用 */
             ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> dropItems()).get();
 
             dropButton.changed(() -> {

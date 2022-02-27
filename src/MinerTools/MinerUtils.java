@@ -8,6 +8,7 @@ import arc.util.Log.*;
 import mindustry.ai.types.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -75,22 +76,10 @@ public class MinerUtils{
 
         if(buildings.isEmpty()) return;
 
-        for(DropBuilding db : buildings){
-            if(db.canDropPlayerItem){
-                tryDropItem(player.unit().item(), player.unit().stack.amount, true);
-                break;
-            }else if(lastDropItem != null && db.canDropLastItem){
-                requestItem(lastDropItem);
-                tryDropItem(lastDropItem, player.unit().stack.amount, true);
-                break;
-            }else if(db.shouldAutoDrop){
-                Item dropItem = db.getConsItem();
-                if(dropItem == null) continue;
+        buildings.sort(db -> db.status.ordinal());
 
-                requestItem(dropItem);
-                tryDropItem(dropItem, player.unit().stack.amount, true);
-                break;
-            }
+        for(DropBuilding db : buildings){
+            if(db.drop()) break;
         }
     }
 
@@ -106,6 +95,7 @@ public class MinerUtils{
         }
 
         lastDropItem = item;
+        Log.log(LogLevel.info, "DropItem: " + item.emoji());
     }
 
     private static void requestItem(Item item){
@@ -151,9 +141,7 @@ public class MinerUtils{
     }
 
     public static class DropBuilding{
-        public boolean canDropLastItem;
-        public boolean shouldAutoDrop;
-        public boolean canDropPlayerItem;
+        public DropStatus status;
 
         public Building building;
         public ItemStack[] consumeItems;
@@ -162,13 +150,17 @@ public class MinerUtils{
             this.building = building;
             consumeItems = MinerUtils.getConsItemStack(building);
 
-            canDropLastItem = lastDropItem != null && !player.unit().hasItem();
-            shouldAutoDrop = autoDrop && consumeItems != null;
-            canDropPlayerItem = player.unit().hasItem() && building.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0;
+            if(lastDropItem != null && !player.unit().hasItem()){
+                status = DropStatus.LAST;
+            }else if(autoDrop && consumeItems != null){
+                status = DropStatus.AUTO;
+            }else if(player.unit().hasItem() && building.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0){
+                status = DropStatus.PLAYER;
+            }
         }
 
         public boolean any(){
-            return canDropLastItem || canDropPlayerItem || shouldAutoDrop;
+            return status != null;
         }
 
         public Item getConsItem(){
@@ -203,6 +195,33 @@ public class MinerUtils{
 
             return null;
         }
+
+        public boolean drop(){
+            switch(status){
+                case PLAYER -> {
+                    tryDropItem(player.unit().item(), player.unit().stack.amount, true);
+                    return true;
+                }
+                case LAST -> {
+                    requestItem(lastDropItem);
+                    tryDropItem(lastDropItem, player.unit().stack.amount, true);
+                    return true;
+                }
+                case AUTO -> {
+                    Item dropItem = getConsItem();
+                    if(dropItem == null) return false;
+
+                    requestItem(dropItem);
+                    tryDropItem(dropItem, player.unit().stack.amount, true);
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public enum DropStatus{
+        PLAYER, LAST, AUTO
     }
 
 }
