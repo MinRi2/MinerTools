@@ -3,7 +3,6 @@ package MinerTools.ui;
 import MinerTools.*;
 import arc.*;
 import arc.math.geom.*;
-import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -12,7 +11,6 @@ import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
-import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 
 import static MinerTools.ui.MinerToolsTable.panes;

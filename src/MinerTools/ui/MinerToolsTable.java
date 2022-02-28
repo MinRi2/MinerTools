@@ -4,6 +4,7 @@ import arc.*;
 import arc.scene.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
+import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import mindustry.content.*;
@@ -33,7 +34,11 @@ public class MinerToolsTable extends Table{
         table(t -> {
             t.collapser(tt -> tt.add(teamInfos), () -> infoShown).right();
 
-            t.button(new TextureRegionDrawable(Items.copper.uiIcon), clearTogglePartiali, 35, () -> infoShown = !infoShown)
+            ImageButtonStyle style = new ImageButtonStyle(clearTogglePartiali){{
+                up = black3;
+            }};
+
+            t.button(new TextureRegionDrawable(Items.copper.uiIcon), style, 35, () -> infoShown = !infoShown)
             .update(b -> b.setChecked(infoShown)).growY();
         }).right();
 

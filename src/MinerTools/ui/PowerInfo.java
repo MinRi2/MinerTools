@@ -4,9 +4,9 @@ import arc.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import arc.util.Log.*;
 import mindustry.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.world.blocks.power.*;
@@ -14,6 +14,7 @@ import mindustry.world.blocks.power.*;
 public class PowerInfo{
     private static final Seq<Building> buildings = new Seq<>();
     private static final ObjectMap<Team, PowerInfo> teamPowerInfo = new ObjectMap<>();
+    private static final Interval timer = new Interval();
 
     public ObjectSet<PowerGraph> graphs = new ObjectSet<>();
 
@@ -21,6 +22,12 @@ public class PowerInfo{
 
     public PowerInfo(Team team){
         this.team = team;
+
+        Events.run(Trigger.update, () -> {
+            if(timer.get(5 * 60)){
+                clearInfo();
+            }
+        });
     }
 
     public int getPowerBalance(){

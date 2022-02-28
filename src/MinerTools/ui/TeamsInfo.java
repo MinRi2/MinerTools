@@ -2,6 +2,7 @@ package MinerTools.ui;
 
 import MinerTools.*;
 import MinerTools.ui.Dialogs.*;
+import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
 import arc.graphics.g2d.*;
@@ -14,7 +15,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.core.*;
-import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
@@ -42,8 +42,6 @@ public class TeamsInfo extends Table{
 
     public TeamsInfo(){
         rebuild();
-
-        Events.on(TileChangeEvent.class, event -> PowerInfo.clearInfo());
     }
 
     public void rebuild(){
@@ -77,27 +75,22 @@ public class TeamsInfo extends Table{
         table(black3, buttons -> {
             buttons.defaults().height(35).growX();
 
+            /* A button for wayzer plugin
+            * see https://github.com/way-zer/ScriptAgent4MindustryExt
+            * */
             buttons.button(playersSmall, clearTransi, () -> Call.sendChatMessage("/list"));
 
             if(mobile){
-                buttons.button(Icon.play, emptytogglei, () -> {
-                    boolean view = settings.getBool("viewmode");
-                    if(view) camera.position.set(player);
-                    settings.put("viewmode", !view);
-                }).checked(b -> {
-                    boolean view = settings.getBool("viewmode");
-                    b.getStyle().imageUp = !view ? Icon.play : Icon.pause;
-                    return view;
-                });
-
                 buttons.button(Icon.hammer, emptytogglei, () -> control.input.isBuilding = !control.input.isBuilding)
-                .checked(b -> control.input.isBuilding);
+                .name("stopBuilding").checked(b -> control.input.isBuilding);
             }
 
-            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerUtils::rebuildBlocks).height(35).growX();
+            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerUtils::rebuildBlocks)
+            .name("buildBlocks").height(35).growX();
 
             /* 结构尚未优化 慎用 */
-            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> dropItems()).get();
+            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> dropItems())
+            .name("dropItems").get();
 
             dropButton.changed(() -> {
                 if(lastDropItem != null) dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
@@ -118,13 +111,21 @@ public class TeamsInfo extends Table{
             });
 
             buttons.button(Icon.trashSmall, clearTransi, () -> ui.showConfirm(
-            "?",
+            bundle.get("miner-tools.buttons.tooltips.quickVoteGameOver"),
             () -> {
                 Call.sendChatMessage("/vote gameover");
                 Call.sendChatMessage("1");
-            }));
+            })).name("quickVoteGameOver");
 
-            buttons.getCells().each(cell -> ((ImageButton)cell.get()).getStyle().up = none);
+            buttons.getChildren().each(child -> {
+                ImageButton imageButton = (ImageButton)child;
+                imageButton.getStyle().up = none;
+
+                /* add some tooltips */
+                if(child.name != null){
+                    ElementUtils.addTooltip(child, bundle.get("miner-tools.buttons.tooltips." + child.name), mobile);
+                }
+            });
         }).minWidth(45f * 4f).fillX();
 
         addDivive();
