@@ -165,6 +165,7 @@ public class TeamsInfo extends Table{
                         () -> team.color,
                         () -> PowerInfo.getPowerInfo(team).getSatisfaction());
 
+                        addPowerBarTooltip(powerBar, team);
                         powerBarTable.add(powerBar).width(100).fillY();
                     }).pad(-1).right();
                 }).pad(4).growX().left();
@@ -180,8 +181,13 @@ public class TeamsInfo extends Table{
         row();
     }
 
-    private void addInfo(Table table, TextureRegion image, Prov<CharSequence> label){
+    private static void addInfo(Table table, TextureRegion image, Prov<CharSequence> label){
         table.image(image).size(iconSmall).growX();
         table.label(label).padLeft(3).left().get().setFontScale(0.75f);
+    }
+    private static void addPowerBarTooltip(Bar powerBar, Team team){
+        ElementUtils.addTooltip(powerBar, table -> {
+
+        }, mobile);
     }
 }

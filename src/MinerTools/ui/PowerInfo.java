@@ -9,6 +9,7 @@ import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
+import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 
 public class PowerInfo{
@@ -17,6 +18,8 @@ public class PowerInfo{
     private static final Interval timer = new Interval();
 
     public ObjectSet<PowerGraph> graphs = new ObjectSet<>();
+    public ObjectMap<Block, ObjectSet<Building>> consumers;
+    public ObjectMap<Block, ObjectSet<Building>> producers;
 
     public Team team;
 
@@ -28,6 +31,9 @@ public class PowerInfo{
                 clearInfo();
             }
         });
+
+       consumers =  Vars.content.blocks().asMap(block -> block, block -> new ObjectSet<>());
+       producers = Vars.content.blocks().asMap(block -> block, block -> new ObjectSet<>());
     }
 
     public int getPowerBalance(){
@@ -90,19 +96,35 @@ public class PowerInfo{
 
             for(Building building : buildings){
                 if(building.block.hasPower && graphs.add(building.power.graph)){
-                    // Log.info("Team: " + team + "add PowerGraph: " + graphs);
-                    // Log.log(LogLevel.info, "Balance" + getPowerBalance());
+                    // updateCP();
                 }
             }
         }
         buildings.clear();
     }
 
+    private void clearCP(){
+        consumers.each(((block, buildings) -> buildings.clear()));
+        producers.each(((block, buildings) -> buildings.clear()));
+    }
+
+    private void updateCP(){
+        clearCP();
+
+        for(PowerGraph graph : graphs){
+            for(Building building : graph.consumers){
+                consumers.get(building.block).add(building);
+            }
+            for(Building building : graph.producers){
+                producers.get(building.block).add(building);
+            }
+        }
+    }
+
     public static void load(){
         teamPowerInfo.clear();
 
         for(TeamData teamData : Vars.state.teams.getActive()){
-            // Log.info("Add Team PowerInfo: " + teamData.team);
             teamPowerInfo.put(teamData.team, new PowerInfo(teamData.team));
         }
     }
