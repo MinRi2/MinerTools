@@ -3,10 +3,11 @@ package MinerTools.ui;
 import MinerTools.*;
 import MinerTools.ui.Dialogs.*;
 import MinerTools.ui.utils.*;
-import arc.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
+import arc.math.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
@@ -65,8 +66,6 @@ public class TeamsInfo extends Table{
                 teams = state.teams.getActive();
                 tableRebuild();
             }
-
-            PowerInfo.updateInfo();
         });
 
         addDivive();
@@ -187,7 +186,76 @@ public class TeamsInfo extends Table{
     }
     private static void addPowerBarTooltip(Bar powerBar, Team team){
         ElementUtils.addTooltip(powerBar, table -> {
+            PowerInfo info = PowerInfo.getPowerInfo(team);
 
+            if(info == null) return;
+
+            table.background(black6);
+
+            table.table(t -> {
+                t.add("Consumers").labelAlign(Align.center).growX();
+
+                t.row();
+
+                t.table(consumers -> {
+                    info.consumers.each((block, buildings) -> {
+                        if(buildings.isEmpty()) return;
+
+                        consumers.table(consumer -> {
+                            consumers.table(i -> {
+                                i.image(block.uiIcon).size(iconLarge);
+                                i.label(() -> "X" + buildings.size);
+                            }).left();
+
+                            consumers.add().width(-1f).growX();
+
+                            consumers.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.red);
+                            consumers.label(() -> {
+                                float sum = 0f;
+                                for(Building building : buildings){
+                                    sum += Mathf.num(building.shouldConsume()) * building.power.status * building.block.consumes.getPower().usage * 60 * building.timeScale();
+                                }
+                                return "" + sum;
+                            }).labelAlign(Align.left).color(Color.red);
+                        }).left().growX();
+
+
+                        consumers.row();
+                    });
+                }).fillX();
+            }).left();
+
+            table.table(t -> {
+                t.add("Producers").labelAlign(Align.center).growX();
+
+                t.row();
+
+                t.table(producers -> {
+                    info.producers.each((block, buildings) -> {
+                        if(buildings.isEmpty()) return;
+
+                        producers.table(producer -> {
+                            producers.table(tt -> {
+                                tt.image(block.uiIcon).size(iconLarge);
+                                tt.label(() -> "X" + buildings.size);
+                            }).left();
+
+                            producers.add().width(-1f).growX();
+
+                            producers.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.green);
+                            producers.label(() -> {
+                                float sum = 0f;
+                                for(Building building : buildings){
+                                    sum += building.getPowerProduction() * building.timeScale() * 60f;
+                                }
+                                return "" + sum;
+                            }).labelAlign(Align.left).color(Color.green);
+                        }).left().growX();
+
+                        producers.row();
+                    });
+                }).fillX();
+            }).padLeft(5f).top();
         }, mobile);
     }
 }

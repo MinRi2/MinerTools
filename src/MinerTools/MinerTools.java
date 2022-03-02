@@ -21,7 +21,7 @@ public class MinerTools extends Mod{
         enableConsole = true;
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            Core.app.post(() -> Core.app.post(PowerInfo::load));
+            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::load)))));
 
             Table t = new Table(Styles.black3);
             t.touchable = Touchable.disabled;

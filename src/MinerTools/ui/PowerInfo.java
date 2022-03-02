@@ -5,35 +5,108 @@ import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 
+import static mindustry.Vars.*;
+
 public class PowerInfo{
     private static final Seq<Building> buildings = new Seq<>();
     private static final ObjectMap<Team, PowerInfo> teamPowerInfo = new ObjectMap<>();
-    private static final Interval timer = new Interval();
-
-    public ObjectSet<PowerGraph> graphs = new ObjectSet<>();
-    public ObjectMap<Block, ObjectSet<Building>> consumers;
-    public ObjectMap<Block, ObjectSet<Building>> producers;
 
     public Team team;
+
+    public ObjectSet<PowerGraph> graphs = new ObjectSet<>();
+    public ObjectMap<Block, ObjectSet<Building>> consumers = new ObjectMap<>();
+    public ObjectMap<Block, ObjectSet<Building>> producers = new ObjectMap<>();
+
+    private final Interval timer = new Interval();
 
     public PowerInfo(Team team){
         this.team = team;
 
         Events.run(Trigger.update, () -> {
-            if(timer.get(5 * 60)){
-                clearInfo();
+            if(timer.get(2 * 60f)){
+                updateCP();
             }
         });
 
-       consumers =  Vars.content.blocks().asMap(block -> block, block -> new ObjectSet<>());
-       producers = Vars.content.blocks().asMap(block -> block, block -> new ObjectSet<>());
+        Events.on(TilePreChangeEvent.class, event -> {
+            if(state.isEditor()) return;
+            removeTile(event.tile);
+        });
+
+        Events.on(TileChangeEvent.class, event -> {
+            if(state.isEditor()) return;
+            addTile(event.tile);
+        });
+
+        if(team.data().buildings != null){
+            buildings.clear();
+            team.data().buildings.getObjects(buildings);
+            for(Building building : buildings){
+                addBuild(building);
+            }
+        }
+
+        for(Block block : content.blocks()){
+            if(block.hasPower){
+                consumers.put(block, new ObjectSet<>());
+                producers.put(block, new ObjectSet<>());
+            }
+        }
+    }
+
+    private void removeTile(Tile tile){
+        if(tile.build != null && tile.build.team == team && tile.isCenter()){
+            removeBuild(tile.build);
+        }
+    }
+
+    private void addTile(Tile tile){
+        if(tile.build != null && tile.build.team == team && tile.isCenter()){
+            addBuild(tile.build);
+        }
+    }
+
+    private void removeBuild(Building building){
+        if(building.block.hasPower && building.power.graph.all.size <= 1){
+            Log.info("Remove building: " + building);
+            graphs.remove(building.power.graph);
+        }
+    }
+
+    private void addBuild(Building building){
+        if(building.block.hasPower){
+            Log.info("Add building: " + building);
+            graphs.add(building.power.graph);
+        }
+    }
+    
+    private void updateCP(){
+        clearCP();
+
+        for(PowerGraph graph : graphs){
+            for(Building building : graph.consumers){
+                consumers.get(building.block).add(building);
+            }
+            for(Building building : graph.producers){
+                producers.get(building.block).add(building);
+            }
+        }
+    }
+
+    private void clearCP(){
+        for(ObjectSet<Building> buildings : consumers.values()){
+            buildings.clear();
+        }
+        for(ObjectSet<Building> buildings : producers.values()){
+            buildings.clear();
+        }
     }
 
     public int getPowerBalance(){
@@ -85,68 +158,12 @@ public class PowerInfo{
         return total;
     }
 
-    public void clear(){
-        graphs.clear();
-    }
-
-    public void update(){
-        buildings.clear();
-        if(team.data().buildings != null){
-            team.data().buildings.getObjects(buildings);
-
-            for(Building building : buildings){
-                if(building.block.hasPower && graphs.add(building.power.graph)){
-                    // updateCP();
-                }
-            }
-        }
-        buildings.clear();
-    }
-
-    private void clearCP(){
-        consumers.each(((block, buildings) -> buildings.clear()));
-        producers.each(((block, buildings) -> buildings.clear()));
-    }
-
-    private void updateCP(){
-        clearCP();
-
-        for(PowerGraph graph : graphs){
-            for(Building building : graph.consumers){
-                consumers.get(building.block).add(building);
-            }
-            for(Building building : graph.producers){
-                producers.get(building.block).add(building);
-            }
-        }
-    }
-
     public static void load(){
         teamPowerInfo.clear();
 
         for(TeamData teamData : Vars.state.teams.getActive()){
             teamPowerInfo.put(teamData.team, new PowerInfo(teamData.team));
         }
-    }
-
-    public static void updateInfo(Team team){
-        if(teamPowerInfo.get(team) != null){
-            teamPowerInfo.get(team).update();
-        }
-    }
-
-    public static void clearInfo(Team team){
-        if(teamPowerInfo.get(team) != null){
-            teamPowerInfo.get(team).clear();
-        }
-    }
-
-    public static void updateInfo(){
-        teamPowerInfo.each(((team, powerInfo) -> powerInfo.update()));
-    }
-
-    public static void clearInfo(){
-        teamPowerInfo.each(((team, powerInfo) -> powerInfo.clear()));
     }
 
     public static PowerInfo getPowerInfo(Team team){
