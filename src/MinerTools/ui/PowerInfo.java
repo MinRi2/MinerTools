@@ -66,7 +66,7 @@ public class PowerInfo{
     }
 
     private void removeBuild(Building building){
-        if(!building.block.hasPower) return;
+        if(!building.block.hasPower || building.power == null) return;
 
         if(building.power.graph.all.size <= 1){
             // Log.info("Remove building: " + building);
@@ -77,7 +77,7 @@ public class PowerInfo{
     }
 
     private void addBuild(Building building){
-        if(!building.block.hasPower) return;
+        if(!building.block.hasPower || building.power == null) return;
 
         // Log.info("Add building: " + building);
         graphs.add(building.power.graph);
