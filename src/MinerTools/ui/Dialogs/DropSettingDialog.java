@@ -67,7 +67,7 @@ public class DropSettingDialog extends BaseDialog{
         itemsT.clear();
 
         for(Item item : items){
-            itemsT.table(Tex.buttonDown, itemT -> {
+            itemsT.table(itemT -> {
                 itemT.image(item.uiIcon).size(32).left();
 
                 itemT.button(Icon.cancelSmall, Styles.emptyi, () -> {

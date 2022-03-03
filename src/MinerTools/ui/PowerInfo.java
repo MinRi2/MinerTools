@@ -24,16 +24,15 @@ public class PowerInfo{
     public ObjectMap<Block, ObjectSet<Building>> consumers = new ObjectMap<>();
     public ObjectMap<Block, ObjectSet<Building>> producers = new ObjectMap<>();
 
-    private final Interval timer = new Interval();
-
     public PowerInfo(Team team){
         this.team = team;
 
-        Events.run(Trigger.update, () -> {
-            if(timer.get(2 * 60f)){
-                updateCP();
+        for(Block block : content.blocks()){
+            if(block.hasPower){
+                consumers.put(block, new ObjectSet<>());
+                producers.put(block, new ObjectSet<>());
             }
-        });
+        }
 
         Events.on(TilePreChangeEvent.class, event -> {
             if(state.isEditor()) return;
@@ -52,13 +51,6 @@ public class PowerInfo{
                 addBuild(building);
             }
         }
-
-        for(Block block : content.blocks()){
-            if(block.hasPower){
-                consumers.put(block, new ObjectSet<>());
-                producers.put(block, new ObjectSet<>());
-            }
-        }
     }
 
     private void removeTile(Tile tile){
@@ -74,38 +66,29 @@ public class PowerInfo{
     }
 
     private void removeBuild(Building building){
-        if(building.block.hasPower && building.power.graph.all.size <= 1){
-            Log.info("Remove building: " + building);
+        if(!building.block.hasPower) return;
+
+        if(building.power.graph.all.size <= 1){
+            // Log.info("Remove building: " + building);
             graphs.remove(building.power.graph);
         }
+        producers.get(building.block).remove(building);
+        consumers.get(building.block).remove(building);
     }
 
     private void addBuild(Building building){
-        if(building.block.hasPower){
-            Log.info("Add building: " + building);
-            graphs.add(building.power.graph);
-        }
-    }
-    
-    private void updateCP(){
-        clearCP();
+        if(!building.block.hasPower) return;
 
-        for(PowerGraph graph : graphs){
-            for(Building building : graph.consumers){
-                consumers.get(building.block).add(building);
-            }
-            for(Building building : graph.producers){
-                producers.get(building.block).add(building);
-            }
-        }
-    }
+        // Log.info("Add building: " + building);
+        graphs.add(building.power.graph);
 
-    private void clearCP(){
-        for(ObjectSet<Building> buildings : consumers.values()){
-            buildings.clear();
-        }
-        for(ObjectSet<Building> buildings : producers.values()){
-            buildings.clear();
+        if(building.block.outputsPower && building.block.consumesPower && !building.block.consumes.getPower().buffered){
+            producers.get(building.block).add(building);
+            consumers.get(building.block).add(building);
+        }else if(building.block.outputsPower){
+            producers.get(building.block).add(building);
+        }else if(building.block.consumesPower){
+            consumers.get(building.block).add(building);
         }
     }
 
@@ -156,6 +139,22 @@ public class PowerInfo{
             total += graph.getBatteryCapacity();
         }
         return total;
+    }
+
+    public float getConsPower(Block block){
+        float sum = 0f;
+        for(Building building : consumers.get(block)){
+            sum += Mathf.num(building.shouldConsume()) * building.power.status * building.block.consumes.getPower().usage * 60 * building.timeScale();
+        }
+        return sum;
+    }
+
+    public float getProdPower(Block block){
+        float sum = 0f;
+        for(Building building : producers.get(block)){
+            sum += building.getPowerProduction() * building.timeScale() * 60f;
+        }
+        return sum;
     }
 
     public static void load(){

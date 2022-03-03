@@ -7,7 +7,6 @@ import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.input.*;
-import arc.math.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
@@ -202,28 +201,23 @@ public class TeamsInfo extends Table{
                         if(buildings.isEmpty()) return;
 
                         consumers.table(consumer -> {
-                            consumers.table(i -> {
-                                i.image(block.uiIcon).size(iconLarge);
-                                i.label(() -> "X" + buildings.size);
+                            consumer.table(tt -> {
+                                tt.image(block.uiIcon).size(iconLarge);
+                                tt.label(() -> "x" + buildings.size).left();
                             }).left();
 
-                            consumers.add().width(-1f).growX();
+                            consumer.add().width(-1f).growX();
 
-                            consumers.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.red);
-                            consumers.label(() -> {
-                                float sum = 0f;
-                                for(Building building : buildings){
-                                    sum += Mathf.num(building.shouldConsume()) * building.power.status * building.block.consumes.getPower().usage * 60 * building.timeScale();
-                                }
-                                return "" + sum;
-                            }).labelAlign(Align.left).color(Color.red);
+                            consumer.table(tt -> {
+                                tt.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.red).left();
+                                tt.label(() -> String.format("%.1f", info.getConsPower(block))).labelAlign(Align.right).color(Color.red);
+                            }).right();
                         }).left().growX();
-
 
                         consumers.row();
                     });
                 }).fillX();
-            }).left();
+            }).top().padLeft(5f).minWidth(220f);
 
             table.table(t -> {
                 t.add("Producers").labelAlign(Align.center).growX();
@@ -235,27 +229,24 @@ public class TeamsInfo extends Table{
                         if(buildings.isEmpty()) return;
 
                         producers.table(producer -> {
-                            producers.table(tt -> {
+                            producer.table(tt -> {
                                 tt.image(block.uiIcon).size(iconLarge);
-                                tt.label(() -> "X" + buildings.size);
+                                tt.label(() -> "x" + buildings.size).left();
                             }).left();
 
-                            producers.add().width(-1f).growX();
+                            producer.add().width(-1f).growX();
 
-                            producers.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.green);
-                            producers.label(() -> {
-                                float sum = 0f;
-                                for(Building building : buildings){
-                                    sum += building.getPowerProduction() * building.timeScale() * 60f;
-                                }
-                                return "" + sum;
-                            }).labelAlign(Align.left).color(Color.green);
+                            producer.table(tt -> {
+                                tt.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.green).left();
+
+                                tt.label(() -> String.format("%.1f", info.getProdPower(block))).labelAlign(Align.right).color(Color.green);
+                            }).right();
                         }).left().growX();
 
                         producers.row();
                     });
                 }).fillX();
-            }).padLeft(5f).top();
+            }).top().padLeft(5f).minWidth(220f);
         }, mobile);
     }
 }
