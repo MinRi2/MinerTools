@@ -46,6 +46,7 @@ public class MinerTools extends Mod{
             t.act(0.1f);
             Core.scene.add(t);
         });
+
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Updater.checkUpdates(this);
 
@@ -56,7 +57,16 @@ public class MinerTools extends Mod{
                 t.add(new MinerToolsTable());
 
                 Table minimap = ui.hudGroup.find("minimap/position");
-                t.update(() -> t.translation.x = -minimap.getPrefWidth());
+                Table overlaymarker = ui.hudGroup.find("overlaymarker");
+                t.update(() -> {
+                    if(t.getPrefWidth() + overlaymarker.getPrefWidth() + minimap.getPrefWidth() > Core.scene.getWidth()){
+                        t.translation.x = 0;
+                        t.translation.y = -minimap.getPrefHeight();
+                    }else{
+                        t.translation.x = -minimap.getPrefWidth();
+                        t.translation.y = 0;
+                    }
+                });
             });
         });
     }
