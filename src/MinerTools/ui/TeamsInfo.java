@@ -14,6 +14,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
@@ -21,11 +22,11 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
-import static MinerTools.MinerUtils.*;
+import static MinerTools.MinerVars.*;
 import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.Core.*;
 import static mindustry.Vars.*;
-import static mindustry.content.Blocks.coreNucleus;
+import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.copper;
 import static mindustry.content.UnitTypes.*;
 import static mindustry.gen.Icon.playersSmall;
@@ -33,6 +34,7 @@ import static mindustry.ui.Styles.*;
 
 public class TeamsInfo extends Table{
     public static int dropHeat = 35;
+
     private final DropSettingDialog dropSetting = new DropSettingDialog();
 
     private Table table;
@@ -44,7 +46,7 @@ public class TeamsInfo extends Table{
         rebuild();
     }
 
-    public void rebuild(){
+    private void rebuild(){
         clear();
 
         table(black3, table -> {
@@ -83,7 +85,7 @@ public class TeamsInfo extends Table{
                 .name("stopBuilding").checked(b -> control.input.isBuilding);
             }
 
-            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerUtils::rebuildBlocks)
+            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerVars::rebuildBlocks)
             .name("buildBlocks").height(35).growX();
 
             /* 结构尚未优化 慎用 */
@@ -137,8 +139,10 @@ public class TeamsInfo extends Table{
                 Team team = data.team;
 
                 table.table(teamTable -> {
-                    teamTable.label(() -> "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
-                    .padRight(3).minWidth(16).left().get().setFontScale(fontScale + 0.15f);
+                    Label label = teamTable.label(() -> "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
+                    .padRight(3).minWidth(16).left().get();
+                    label.setFontScale(fontScale + 0.15f);
+                    addTeamRuleInfoTooltip(label, team);
 
                     teamTable.table(units -> units.update(() -> {
                         units.clear();
@@ -163,8 +167,8 @@ public class TeamsInfo extends Table{
                         () -> team.color,
                         () -> PowerInfo.getPowerInfo(team).getSatisfaction());
 
-                        addPowerBarTooltip(powerBar, team);
                         powerBarTable.add(powerBar).width(100).fillY();
+                        addPowerBarTooltip(powerBarTable, team);
                     }).pad(-1).right();
                 }).pad(4).growX().left();
 
@@ -183,7 +187,36 @@ public class TeamsInfo extends Table{
         table.image(image).size(iconSmall).growX();
         table.label(label).padLeft(3).left().get().setFontScale(0.75f);
     }
-    private static void addPowerBarTooltip(Bar powerBar, Team team){
+
+    private static void addTeamRuleInfoTooltip(Element e, Team team){
+        ElementUtils.addTooltip(e, t -> {
+            t.background(black6);
+
+            t.table(base -> {
+                base.add();
+
+                base.add("Damage").padLeft(5f);
+                base.add("Health").padLeft(5f);
+                base.add("BuildSpeed").padLeft(5f);
+
+                base.row();
+
+                base.image(duo.uiIcon).size(iconMed);
+                base.add("" + team.rules().blockDamageMultiplier).center();
+                base.add("" + team.rules().blockHealthMultiplier).center();
+                base.add("" + team.rules().buildSpeedMultiplier).center();
+
+                base.row();
+
+                base.image(flare.uiIcon).size(iconMed);
+                base.add("" + team.rules().unitDamageMultiplier).center();
+                base.add().center();
+                base.add("" + team.rules().unitBuildSpeedMultiplier).center();
+            });
+        }, mobile);
+    }
+
+    private static void addPowerBarTooltip(Element powerBar, Team team){
         ElementUtils.addTooltip(powerBar, table -> {
             PowerInfo info = PowerInfo.getPowerInfo(team);
 
