@@ -1,5 +1,6 @@
 package MinerTools;
 
+import MinerTools.core.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.math.*;
@@ -19,6 +20,29 @@ public class MinerTools extends Mod{
 
     public MinerTools(){
         enableConsole = true;
+
+        Events.on(EventType.ClientLoadEvent.class, e -> {
+            Updater.checkUpdates(this);
+
+            ui.hudGroup.fill(t -> {
+                t.top().right().name = "miner-tools";
+                t.visible(() -> ui.hudfrag.shown && !ui.minimapfrag.shown());
+
+                t.add(new MinerToolsTable());
+
+                Table minimap = ui.hudGroup.find("minimap/position");
+                Table overlaymarker = ui.hudGroup.find("overlaymarker");
+                t.update(() -> {
+                    if(t.getPrefWidth() + overlaymarker.getPrefWidth() + minimap.getPrefWidth() > Core.scene.getWidth()){
+                        t.translation.x = 0;
+                        t.translation.y = -minimap.getPrefHeight();
+                    }else{
+                        t.translation.x = -minimap.getPrefWidth();
+                        t.translation.y = 0;
+                    }
+                });
+            });
+        });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::load)))));
@@ -47,28 +71,7 @@ public class MinerTools extends Mod{
             Core.scene.add(t);
         });
 
-        Events.on(EventType.ClientLoadEvent.class, e -> {
-            Updater.checkUpdates(this);
-
-            ui.hudGroup.fill(t -> {
-                t.top().right().name = "miner-tools";
-                t.visible(() -> ui.hudfrag.shown && !ui.minimapfrag.shown());
-
-                t.add(new MinerToolsTable());
-
-                Table minimap = ui.hudGroup.find("minimap/position");
-                Table overlaymarker = ui.hudGroup.find("overlaymarker");
-                t.update(() -> {
-                    if(t.getPrefWidth() + overlaymarker.getPrefWidth() + minimap.getPrefWidth() > Core.scene.getWidth()){
-                        t.translation.x = 0;
-                        t.translation.y = -minimap.getPrefHeight();
-                    }else{
-                        t.translation.x = -minimap.getPrefWidth();
-                        t.translation.y = 0;
-                    }
-                });
-            });
-        });
+        Drawer.setEvents();
     }
 
 }

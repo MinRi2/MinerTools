@@ -58,7 +58,7 @@ public class PlayersList extends Table{
 
     private void rebuild(){
         players.clear();
-        lastPlayers.sort(Structs.comps(Structs.comparing(p -> p.team()), Structs.comparingBool(p -> !p.admin)));
+        lastPlayers.sort(Structs.comps(Structs.comparing(Player::team), Structs.comparingBool(p -> !p.admin)));
 
         players.table(t -> {
             /* players */
