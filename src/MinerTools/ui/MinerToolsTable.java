@@ -10,6 +10,8 @@ import arc.struct.*;
 import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+
+import static mindustry.Vars.mobile;
 import static mindustry.content.Blocks.*;
 import static mindustry.gen.Icon.*;
 import static mindustry.ui.Styles.*;
@@ -17,13 +19,15 @@ import static mindustry.ui.Styles.*;
 public class MinerToolsTable extends Table{
     public static Seq<ScrollPane> panes = new Seq<>();
 
-    private final TeamsInfo teamInfos = new TeamsInfo();
+    private final TeamsInfo teamInfo = new TeamsInfo();
     private boolean infoShown = true;
 
     private Table memberTable;
     private int memberIndex = -1;
-    private final Table[] membersTables = new Table[]{new TeamChanger(), new PlayersList(), new Schematics()};
-    private final Drawable[] membersButtonsIcon = new Drawable[]{new TextureRegionDrawable(spawn.uiIcon), players, paste};
+    private final Table[] membersTables = new Table[]{new TeamChanger(), new PlayersList(), new ChatTable(), new Schematics()};
+    private final Drawable[] membersButtonsIcon = new Drawable[]{new TextureRegionDrawable(spawn.uiIcon), players, chat, paste};
+    private final IntSeq mobileOnly = IntSeq.with();
+
     public MinerToolsTable(){
         Events.on(EventType.WorldLoadEvent.class, e -> rebuild());
     }
@@ -32,7 +36,7 @@ public class MinerToolsTable extends Table{
         clear();
 
         table(t -> {
-            t.collapser(tt -> tt.add(teamInfos), () -> infoShown).right();
+            t.collapser(tt -> tt.add(teamInfo), () -> infoShown).right();
 
             ImageButtonStyle style = new ImageButtonStyle(clearTogglePartiali){{
                 up = black3;
@@ -50,6 +54,9 @@ public class MinerToolsTable extends Table{
             members.table(black3, buttons -> {
                 for(int i = 0; i < membersButtonsIcon.length; i++){
                     int finalI = i;
+
+                    if(!mobile && mobileOnly.contains(i)) continue;
+
                     buttons.button(membersButtonsIcon[i], clearTogglePartiali, 35, () -> setMemberIndex(finalI))
                     .update(b -> b.setChecked(memberIndex == finalI)).growY();
 
@@ -80,9 +87,7 @@ public class MinerToolsTable extends Table{
 
         if(memberIndex == -1) return;
 
-        memberTable.table(t -> {
-            t.add(membersTables[memberIndex]).fill().padRight(2f);
-        }).fillY();
+        memberTable.add(membersTables[memberIndex]).fill().padRight(2f);
     }
 
     private void setMemberIndex(int index){
