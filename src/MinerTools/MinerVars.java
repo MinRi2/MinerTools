@@ -1,14 +1,22 @@
 package MinerTools;
 
+import MinerTools.ui.*;
 import MinerTools.ui.Dialogs.*;
+import arc.*;
 import arc.math.*;
+import arc.scene.actions.*;
+import arc.scene.event.*;
+import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.ai.types.*;
+import mindustry.ctype.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
@@ -35,6 +43,31 @@ public class MinerVars{
 
     public static int countPlayer(Team team){
         return Groups.player.count(player -> player.team() == team);
+    }
+
+    public static void showBannedInfo(){
+        Table t = new Table(Styles.black3);
+        t.touchable = Touchable.disabled;
+        if(!state.rules.bannedUnits.isEmpty()){
+            t.add("[accent]BannedUnits:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
+            for(UnlockableContent c : state.rules.bannedUnits){
+                t.image(c.uiIcon).size(iconSmall).left().padLeft(3f);
+            }
+            t.row();
+        }
+        if(!state.rules.bannedBlocks.isEmpty()){
+            t.add("[accent]BannedBlocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
+            for(UnlockableContent c : state.rules.bannedBlocks){
+                t.image(c.uiIcon).size(iconSmall).left().padLeft(3f);
+            }
+            t.row();
+        }
+
+        t.margin(8f).update(() -> t.setPosition(Core.graphics.getWidth()/2f, Core.graphics.getHeight()/2f, Align.center));
+        t.actions(Actions.fadeOut(6.5f, Interp.pow4In), Actions.remove());
+        t.pack();
+        t.act(0.1f);
+        Core.scene.add(t);
     }
 
     public static void rebuildBlocks(){
