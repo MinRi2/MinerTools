@@ -3,24 +3,58 @@ package MinerTools.core;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
+import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
+import mindustry.world.blocks.storage.CoreBlock.*;
 
-import static mindustry.Vars.tilesize;
+import static mindustry.Vars.*;
 
 public class Drawer{
+    public static float maxRadius = 100 * tilesize;
+
+    private static float drawRadius = maxRadius;
 
     public static void setEvents(){
         Events.run(Trigger.draw, () -> {
             Groups.build.each(building -> building instanceof ItemTurretBuild, Drawer::itemTurretAmmo);
+            enemyIndicator();
+        });
+
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            drawRadius = Math.max(state.rules.enemyCoreBuildRadius, maxRadius);
         });
     }
 
+    /**
+     * 敌方单位指示器
+     */
+    public static void enemyIndicator(){
+        Seq<CoreBuild> cores = player.team().cores();
+        final float[] length = {0f};
+
+        Draw.z(Layer.flyingUnit + 0.1f);
+        Groups.unit.each(unit -> unit.team != player.team() && cores.min(core -> length[0] = unit.dst(core)) != null, unit -> {
+            float enemyIndicatorLength = Mathf.lerp(20f, 75f, length[0] / drawRadius);
+
+            Tmp.v1.set(unit).sub(player).setLength(enemyIndicatorLength);
+
+            Draw.color(unit.team.color);
+            Draw.rect(unit.type.fullIcon, player.x + Tmp.v1.x, player.y + Tmp.v1.y, 10f, 10f,  Tmp.v1.angle() - 90f);
+        });
+        Draw.reset();
+    }
+
+    /**
+     * 炮塔子弹显示
+     */
     public static void itemTurretAmmo(Building building){
         if(building instanceof ItemTurretBuild turretBuild && !turretBuild.ammo.isEmpty()){
             ItemTurret block = (ItemTurret)turretBuild.block;
