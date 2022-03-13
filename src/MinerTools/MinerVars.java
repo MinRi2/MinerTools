@@ -1,41 +1,58 @@
 package MinerTools;
 
-import MinerTools.ui.*;
 import MinerTools.ui.Dialogs.*;
 import arc.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.ai.types.*;
+import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
+import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.distribution.Conveyor.*;
+import mindustry.world.blocks.distribution.Junction.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.consumers.*;
+import org.jetbrains.annotations.*;
 
+import static arc.Core.input;
 import static mindustry.Vars.*;
 
 public class MinerVars{
+    public static boolean desktop;
+
     public static float fontScale = 0.75f;
     public static float imgSize = iconSmall * fontScale;
+
+    public static boolean enableUpdateConveyor;
+    public static ObjectSet<Building> updatedBuildings = new ObjectSet<>();
 
     public static Item lastDropItem;
     private static final Seq<Class> blackDropBuild = Seq.with(StorageBlock.class, ItemBridge.class, Autotiler.class, MassDriver.class, NuclearReactor.class);
     private static final Seq<DropBuilding> buildings = new Seq<>();
+
+    public static void init(){
+        desktop = control.input instanceof DesktopInput;
+    }
 
     public static int countMiner(Team team){
         return team.data().units.count(unit -> unit.controller() instanceof MinerAI);
@@ -43,6 +60,29 @@ public class MinerVars{
 
     public static int countPlayer(Team team){
         return Groups.player.count(player -> player.team() == team);
+    }
+
+    public static void tryUpdateConveyor(){
+        Vec2 pos = input.mouseWorld(input.mouseX(), input.mouseY());
+        Building target = world.build(World.toTile(pos.x), World.toTile(pos.y));
+        if(control.input.block instanceof Autotiler && target != null){
+            updatedBuildings.clear();
+            tryUpdateConveyor(target, control.input.block);
+        }
+    }
+
+    public static void tryUpdateConveyor(Building start, Block type){
+        /* StackOverflowError */
+        if(!updatedBuildings.add(start)) return;
+
+        player.unit().addBuild(new BuildPlan(start.tileX(), start.tileY(), start.rotation, type));
+
+        if(start instanceof ChainedBuilding chainedBuild && chainedBuild.next() != null){
+            tryUpdateConveyor(chainedBuild.next(), type);
+        }else if(start instanceof ConveyorBuild build && build.next != null && build.next.team == build.team && build.next instanceof JunctionBuild junctionBuild){
+            Building building = junctionBuild.nearby(build.rotation);
+            if(building != null) tryUpdateConveyor(building, type);
+        }
     }
 
     public static void showBannedInfo(){

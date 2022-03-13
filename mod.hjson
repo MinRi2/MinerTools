@@ -1,4 +1,4 @@
-#!VERSION 1.46
+#!VERSION 1.47
 #!REPO "rlzzj/MinerTools"
 #!BRANCH "master"
 
@@ -18,7 +18,7 @@ main: "MinerTools.MinerTools"
 description: "A java mod for Mindustry."
 
 #the mod version
-version: 1.46
+version: 1.47
 
 hidden: true
 

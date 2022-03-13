@@ -3,7 +3,6 @@ package MinerTools.ui;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -157,7 +156,7 @@ public class PowerInfo{
         return sum;
     }
 
-    public static void load(){
+    public static void init(){
         teamPowerInfo.clear();
 
         for(TeamData teamData : Vars.state.teams.getActive()){

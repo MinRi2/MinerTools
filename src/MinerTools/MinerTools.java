@@ -3,17 +3,15 @@ package MinerTools;
 import MinerTools.core.*;
 import MinerTools.ui.*;
 import arc.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import io.mnemotechnician.autoupdater.*;
-import mindustry.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 
-import static MinerTools.MinerVars.showBannedInfo;
-import static arc.Core.settings;
+import static MinerTools.MinerVars.*;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MinerTools extends Mod{
@@ -24,15 +22,19 @@ public class MinerTools extends Mod{
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Updater.checkUpdates(this);
 
+            MinerVars.init();
+
             initUI();
             betterUiscaleSetting();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::load)))));
+            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::init)))));
 
             showBannedInfo();
         });
+
+        Events.run(Trigger.update, () -> update());
 
         Drawer.setEvents();
     }
@@ -75,5 +77,11 @@ public class MinerTools extends Mod{
         ui.settings.graphics.rebuild();
 
         Scl.setProduct(settings.getInt("_uiscale", 100) / 100f);
+    }
+
+    public static void update(){
+        if((desktop && input.alt()) || (mobile && enableUpdateConveyor)){
+            tryUpdateConveyor();
+        }
     }
 }

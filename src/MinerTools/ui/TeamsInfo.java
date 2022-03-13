@@ -83,6 +83,8 @@ public class TeamsInfo extends Table{
             if(mobile){
                 buttons.button(Icon.hammer, emptytogglei, () -> control.input.isBuilding = !control.input.isBuilding)
                 .name("stopBuilding").checked(b -> control.input.isBuilding);
+                buttons.button(Icon.distribution, emptytogglei, () -> enableUpdateConveyor = !enableUpdateConveyor)
+                .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
             buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerVars::rebuildBlocks)
