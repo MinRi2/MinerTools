@@ -64,12 +64,14 @@ public class MinerTools extends Mod{
 
         settings.put("uiscale", settings.getInt("_uiscale", 100));
 
-        ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
-            //if the user changed their UI scale, but then put it back, don't consider it 'changed'
-            settings.put("uiscalechanged", s != lastUiScale[0]);
-            settings.put("_uiscale", s);
-            return s + "%";
-        }));
+        if(index != -1){
+            ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
+                //if the user changed their UI scale, but then put it back, don't consider it 'changed'
+                settings.put("uiscalechanged", s != lastUiScale[0]);
+                settings.put("_uiscale", s);
+                return s + "%";
+            }));
+        }
         ui.settings.graphics.rebuild();
 
         Scl.setProduct(settings.getInt("_uiscale", 100) / 100f);
