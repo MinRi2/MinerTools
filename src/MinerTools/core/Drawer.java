@@ -17,7 +17,7 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 import static mindustry.Vars.*;
 
 public class Drawer{
-    public static float defRadius = 65 * tilesize;
+    public static float defRadius = 50 * tilesize;
 
     private static float drawRadius = defRadius;
 
@@ -28,7 +28,11 @@ public class Drawer{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            drawRadius = Math.max(state.rules.enemyCoreBuildRadius, defRadius);
+            if(state.rules.polygonCoreProtection){
+                drawRadius = defRadius;
+            }else{
+                drawRadius = Math.max(state.rules.enemyCoreBuildRadius, defRadius);
+            }
         });
     }
 
