@@ -55,7 +55,7 @@ public class ChatTable extends Table{
             textField.setMessageText("Send Message");
             textField.removeInputDialog();
 
-            if(mobile){
+            if(!mobile){
                 textField.keyDown(KeyCode.enter, this::sendMessage);
                 textField.keyDown(KeyCode.up, () -> historyShift(1));
                 textField.keyDown(KeyCode.down, () -> historyShift(-1));
