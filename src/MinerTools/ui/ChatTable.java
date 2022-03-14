@@ -2,6 +2,7 @@ package MinerTools.ui;
 
 import arc.*;
 import arc.input.*;
+import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextField.*;
@@ -12,22 +13,25 @@ import mindustry.game.*;
 import mindustry.gen.*;
 
 import static MinerTools.MinerVars.desktop;
-import static mindustry.Vars.ui;
+import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class ChatTable extends Table{
     private Interval timer = new Interval();
 
     private Seq<String> messages = new Seq<>();
+    private Seq<String> history = new Seq<>();
+
+    private int historyIndex;
 
     private Table messageTable = new Table();
     private ScrollPane pane;
-    private TextArea area;
+    private TextField textField;
 
     private boolean lastIsBottomEdge;
 
     public ChatTable(){
-        Events.on(EventType.WorldLoadEvent.class, e -> resetMessages());
+        Events.on(EventType.WorldLoadEvent.class, e -> history.clear());
 
         TextFieldStyle style = new TextFieldStyle(areaField){{
             background = black6;
@@ -42,17 +46,22 @@ public class ChatTable extends Table{
         row();
 
         table(table -> {
-            area = table.area("", style, s -> {}).padTop(15f).grow().get();
+            textField = table.field("", style, s -> {
+            }).padTop(15f).grow().get();
 
-            area.setMessageText("Send Message");
+            textField.setMessageText("Send Message");
+            textField.removeInputDialog();
 
-            if(desktop){
-                area.keyDown(KeyCode.enter, this::sendMessage);
+            if(mobile){
+                textField.keyDown(KeyCode.enter, this::sendMessage);
+                textField.keyDown(KeyCode.up, () -> historyShift(1));
+                textField.keyDown(KeyCode.down, () -> historyShift(-1));
             }else{
                 table.button(Icon.modeAttack, clearTransi, this::sendMessage).padLeft(5f).growY();
-                table.button(Icon.refresh1, clearTransi, this::clearText).growY();
+                table.button(Icon.up, clearTransi, () -> historyShift(1)).padLeft(1f).growY();
+                table.button(Icon.down, clearTransi, () -> historyShift(-1)).padLeft(1f).growY();
             }
-        }).grow();
+        }).growX();
 
         update(() -> {
             if(timer.get(60f)){
@@ -78,14 +87,22 @@ public class ChatTable extends Table{
     }
 
     private void sendMessage(){
-        if(!area.getText().equals("")){
-            Call.sendChatMessage(area.getText());
-            area.clearText();
+        if(!textField.getText().equals("")){
+            history.insert(0, textField.getText());
+            historyIndex = -1;
+
+            Call.sendChatMessage(textField.getText());
+            textField.clearText();
         }
     }
 
-    private void clearText(){
-        area.clearText();
+    private void historyShift(int shift) {
+        historyIndex = Mathf.clamp(historyIndex + shift, -1, history.size - 1);
+        if (historyIndex < 0) {
+            textField.setText("");
+            return;
+        }
+        textField.setText(history.get(historyIndex));
     }
 
     void rebuild(){
