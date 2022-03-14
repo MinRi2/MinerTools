@@ -51,7 +51,6 @@ public class Schematics extends Table{
             ui.showException(e);
         }
         ScrollPane pane = pane(nonePane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
-        panes.add(pane);
 
         ScrollPane pane2 = pane(nonePane, tagsTable -> {
             for(String tag : tags){
@@ -67,6 +66,10 @@ public class Schematics extends Table{
             schematicsRebuild();
         }).maxHeight(imageSize * 2.5f).right().get();
 
+        pane.setScrollingDisabled(true, false);
+        pane2.setScrollingDisabled(true, false);
+
+        panes.add(pane);
         panes.add(pane2);
     }
 

@@ -14,7 +14,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
