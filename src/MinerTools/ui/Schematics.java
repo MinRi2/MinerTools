@@ -25,7 +25,6 @@ public class Schematics extends Table{
     private Table schematicsTable = new Table(black3);
 
     private int selectedSchemCount;
-    private boolean showSchematics;
 
     private Seq<String> tags = new Seq<>(), selectedTags = new Seq<>();
 

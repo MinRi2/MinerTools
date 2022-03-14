@@ -29,7 +29,7 @@ public class PlayersList extends Table{
     private Player target;
 
     public PlayersList(){
-        ScrollPane pane = pane(players).maxHeight(235).get();
+        ScrollPane pane = pane(nonePane, players).maxHeight(235).get();
         panes.add(pane);
 
         update(() -> {
@@ -62,7 +62,7 @@ public class PlayersList extends Table{
 
         players.table(t -> {
             /* players */
-            t.label(() -> "[#" + player.team().color + "]" + MinerVars.countPlayer(player.team()) + "[] / " + Groups.player.size()).row();
+            t.label(() -> "[#" + player.team().color + "]" + MinerFuncs.countPlayer(player.team()) + "[] / " + Groups.player.size()).row();
 
             for(Player player : lastPlayers){
                 t.table(info -> {

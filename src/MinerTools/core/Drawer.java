@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -18,9 +17,9 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 import static mindustry.Vars.*;
 
 public class Drawer{
-    public static float maxRadius = 100 * tilesize;
+    public static float minRadius = 100 * tilesize;
 
-    private static float drawRadius = maxRadius;
+    private static float drawRadius = minRadius;
 
     public static void setEvents(){
         Events.run(Trigger.draw, () -> {
@@ -29,7 +28,7 @@ public class Drawer{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            drawRadius = Math.max(state.rules.enemyCoreBuildRadius, maxRadius);
+            drawRadius = Math.max(state.rules.enemyCoreBuildRadius, minRadius);
         });
     }
 

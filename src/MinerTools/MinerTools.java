@@ -10,6 +10,7 @@ import mindustry.game.EventType.*;
 import mindustry.mod.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 
+import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;

@@ -22,6 +22,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 
+import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
 import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.Core.*;
@@ -87,11 +88,11 @@ public class TeamsInfo extends Table{
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
-            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerVars::rebuildBlocks)
+            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerFuncs::rebuildBlocks)
             .name("buildBlocks").height(35).growX();
 
             /* 结构尚未优化 慎用 */
-            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, () -> dropItems())
+            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, MinerFuncs::dropItems)
             .name("dropItems").get();
 
             dropButton.changed(() -> {
