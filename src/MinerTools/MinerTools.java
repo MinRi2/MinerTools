@@ -4,7 +4,6 @@ import MinerTools.core.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.scene.ui.layout.*;
-import io.mnemotechnician.autoupdater.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
@@ -21,8 +20,6 @@ public class MinerTools extends Mod{
         enableConsole = true;
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            Updater.checkUpdates(this);
-
             MinerVars.init();
 
             initUI();
