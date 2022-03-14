@@ -31,7 +31,10 @@ public class ChatTable extends Table{
     private boolean lastIsBottomEdge;
 
     public ChatTable(){
-        Events.on(EventType.WorldLoadEvent.class, e -> history.clear());
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            history.clear();
+            historyIndex = -1;
+        });
 
         TextFieldStyle style = new TextFieldStyle(areaField){{
             background = black6;
