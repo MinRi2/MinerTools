@@ -2,8 +2,12 @@ package MinerTools;
 
 import MinerTools.core.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
+import mindustry.content.*;
 import mindustry.input.*;
+import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import mindustry.world.*;
 
 import static arc.Core.settings;
 import static mindustry.Vars.*;
@@ -12,6 +16,9 @@ public class MinerVars{
     public static MUI mui;
 
     public static boolean desktop;
+
+    public static Seq<UnitType> visibleUnits;
+    public static Seq<Block> visibleBlocks;
 
     public static float fontScale = 0.75f;
     public static float imgSize = iconSmall * fontScale;
@@ -24,6 +31,9 @@ public class MinerVars{
         betterUiscaleSetting();
 
         desktop = control.input instanceof DesktopInput;
+
+        visibleBlocks = content.blocks().select(Block::isVisible);
+        visibleUnits = content.units().select(u -> !u.isHidden());
 
         mui.init();
     }

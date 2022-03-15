@@ -31,6 +31,7 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.consumers.*;
 
+import static MinerTools.MinerVars.*;
 import static arc.Core.input;
 import static mindustry.Vars.*;
 
@@ -77,16 +78,38 @@ public class MinerFuncs{
     public static void showBannedInfo(){
         Table t = new Table(Styles.black3);
         t.touchable = Touchable.disabled;
-        if(!state.rules.bannedUnits.isEmpty()){
-            t.add("[accent]BannedUnits:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-            for(UnlockableContent c : state.rules.bannedUnits){
+
+        Seq<UnitType> units = state.rules.bannedUnits.asArray();
+        if(!units.isEmpty()){
+            Seq<UnitType> seq;
+
+            if(units.size < visibleUnits.size / 2){
+                t.add("[red]Banned [accent]Units:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
+                seq = units;
+            }else{
+                t.add("[green]UnBanned [accent]Units:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
+                seq = visibleUnits.select(u -> !units.contains(u));
+            }
+
+            for(UnlockableContent c : seq){
                 t.image(c.uiIcon).size(iconSmall).left().padLeft(3f);
             }
             t.row();
         }
-        if(!state.rules.bannedBlocks.isEmpty()){
-            t.add("[accent]BannedBlocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-            for(UnlockableContent c : state.rules.bannedBlocks){
+
+        Seq<Block> blocks = state.rules.bannedBlocks.asArray();
+        if(!blocks.isEmpty()){
+            Seq<Block> seq;
+
+            if(blocks.size < visibleBlocks.size / 2){
+                t.add("[red]Banned [accent]Blocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
+                seq = blocks;
+            }else{
+                t.add("[green]UnBanned [accent]Blocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
+                seq = visibleBlocks.select(b -> !blocks.contains(b));
+            }
+
+            for(UnlockableContent c : seq){
                 t.image(c.uiIcon).size(iconSmall).left().padLeft(3f);
             }
             t.row();
