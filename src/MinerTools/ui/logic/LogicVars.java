@@ -3,27 +3,21 @@ package MinerTools.ui.logic;
 import MinerTools.ui.*;
 import arc.graphics.*;
 import arc.scene.style.*;
-import arc.scene.ui.layout.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
 import mindustry.logic.*;
 import mindustry.logic.LExecutor.*;
 
-import static MinerTools.ui.MStyles.logicVarsTogglet;
 import static arc.Core.*;
-import static mindustry.Vars.*;
-import static mindustry.ui.Styles.*;
+import static mindustry.Vars.ui;
 
 public class LogicVars extends DraggableTable{
     public static String split = ".";
 
     private LExecutor executor;
 
-    private Table headNodeTable;
-    private Seq<Node> headNodes = new Seq<>();
 
-    private NodesTable nodesTable = new NodesTable();
+    private VariablesTable varsTable = new VariablesTable();
 
     public LogicVars(){
         super();
@@ -60,26 +54,16 @@ public class LogicVars extends DraggableTable{
         row();
 
         table(table -> {
-            table.table(Tex.buttonOver, t -> headNodeTable = t).top();
-            table.table(t -> t.add(nodesTable)).pad(0f).top();
+            table.table(t -> t.add(varsTable)).pad(0f).top();
 
             rebuildVarsTable();
         }).pad(0f).top();
     }
 
     private void rebuildVarsTable(){
-        Table table = headNodeTable;
-
-        table.clear();
-
+        varsTable.clear();
         resetVars();
-
-        for(Node headNode : headNodes){
-            table.button(headNode.name, logicVarsTogglet, () -> nodesTable.handleHeadNode(headNode))
-            .pad(0f).minWidth(85f).checked(b -> nodesTable.contains(headNode)).fillX();
-
-            table.row();
-        }
+        varsTable.rebuild();
     }
 
     private void resetVars(){
@@ -87,42 +71,42 @@ public class LogicVars extends DraggableTable{
             return;
         }
 
-        headNodes.clear();
+        varsTable.vars.clear();
 
         for(Var var : executor.vars){
             if(var.name.contains(split) && !var.name.startsWith("___")){
-                resolveHeadNode(var.name);
+                resolveVar(var.name);
             }
         }
     }
 
-    private void resolveHeadNode(String str){
-        String[] strs = str.split("\\" + split, 2);
+    private void resolveVar(String str){
+        String[] strings = str.split("\\" + split, 2);
 
-        Node node;
-        if((node = headNodes.find(node1 -> node1.name.equals(strs[0]))) == null){
-            node = new Node(strs[0], 0);
-            headNodes.add(node);
+        MVar mVar;
+        if((mVar = varsTable.vars.find(mVar1 -> mVar1.name.equals(strings[0]))) == null){
+            mVar = new MVar(strings[0], 1);
+            varsTable.vars.add(mVar);
         }
 
-        if(strs.length == 2) resolveNode(node, strs[1], new int[]{1});
+        resolveVar(mVar, strings[1], new int[]{2});
     }
 
-    private void resolveNode(Node parent, String str, int[] level){
+    private void resolveVar(MVar parent, String str, int[] level){
         if(!str.contains(split)){
-            parent.addNode(new Node(str, level[0]++));
+            parent.addChild(new MVar(str, level[0]++));
         }else{
-            String[] strs = str.split("\\" + split, 2);
+            String[] strings = str.split("\\" + split, 2);
 
-            Node node;
-            if((node = parent.findChild(node1 -> node1.name.equals(strs[0]))) == null){
-                node = new Node(strs[0], level[0]);
-                parent.addNode(node);
+            MVar mVar;
+            if((mVar = parent.findChild(mVar1 -> mVar1.name.equals(strings[0]))) == null){
+                mVar = new MVar(strings[0], level[0]);
+                parent.addChild(mVar);
             }
 
             level[0]++;
 
-            if(strs.length == 2) resolveNode(node, strs[1], level);
+            if(strings.length == 2) resolveVar(mVar, strings[1], level);
         }
     }
 }
