@@ -3,6 +3,8 @@ package MinerTools.core;
 import MinerTools.ui.*;
 import MinerTools.ui.logic.*;
 
+import static MinerTools.MinerVars.desktop;
+
 public class MUI{
     public MinerToolsTable minerToolsTable;
     public LogicVars logicVars;
@@ -14,7 +16,10 @@ public class MUI{
         MStyles.load();
 
         minerToolsTable = new MinerToolsTable();
-        logicVars = new LogicVars();
+
+        if(desktop){
+            logicVars = new LogicVars();
+        }
 
         addUI();
     }
