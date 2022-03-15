@@ -51,9 +51,8 @@ public class MVar{
     public boolean equals(Object o){
         if(this == o) return true;
         if(o == null || getClass() != o.getClass()) return false;
-        MVar varNode = (MVar)o;
-        if(hasParent() && varNode.hasParent() && parent != varNode.parent) return false;
-        return name.equals(varNode.name);
+        MVar mVar = (MVar)o;
+        return level == mVar.level && name.equals(mVar.name);
     }
 
     @Override

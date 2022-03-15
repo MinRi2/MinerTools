@@ -2,20 +2,29 @@ package MinerTools.ui.logic;
 
 import arc.*;
 import arc.graphics.*;
-import arc.scene.ui.Button.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import arc.util.*;
 
 import static MinerTools.ui.MStyles.logicVarTogglet;
+import static MinerTools.ui.logic.LogicVars.split;
 import static mindustry.ui.Styles.*;
 
 public class VariablesTable extends Table{
     public Seq<MVar> vars = new Seq<>();
     public Seq<MVar> selectedVars = new Seq<>();
 
+    private Table paneTable1;
+    private ScrollPane pane1;
+
     public VariablesTable(){
         super();
+
+        pane1 = new ScrollPane(paneTable1 = new Table().top(), nonePane);
+    }
+
+    public String makeVarName(){
+        return selectedVars.toString(split, v -> v.name);
     }
 
     public void rebuild(){
@@ -32,21 +41,21 @@ public class VariablesTable extends Table{
 
             table.row();
 
-            table.pane(nonePane, t -> {
-                t.top();
+            table.add(pane1).maxHeight(Core.graphics.getHeight() / 2f).scrollX(false).get();
 
-                for(MVar mVar : vars){
-                    t.button(b -> {
-                        b.add(mVar.name).center();
-                    }, logicVarTogglet, () -> {
-                        handleMVar(mVar);
-                    }).fillX().checked(b -> selectedVars.contains(mVar));
+            paneTable1.clear();
 
-                    t.row();
-                }
-            }).maxHeight(Core.graphics.getHeight() / 2.5f).scrollX(false);
+            Table t = paneTable1;
+            for(MVar mVar : vars){
+                t.button(b -> {
+                    b.add(mVar.name).center();
+                }, logicVarTogglet, () -> {
+                    handleMVar(mVar);
+                }).fillX().checked(b -> selectedVars.contains(mVar));
 
-        }).top();
+                t.row();
+            }
+        }).growX().top();
 
         for(MVar mVar : selectedVars){
             if(!mVar.hasChildren()){
@@ -71,8 +80,8 @@ public class VariablesTable extends Table{
 
                         t.row();
                     }
-                }).maxHeight(Core.graphics.getHeight() / 2.5f).scrollX(false);
-            }).top();
+                }).maxHeight(Core.graphics.getHeight() / 2f).scrollX(false).get();
+            }).growX().top();
         }
     }
 
@@ -89,11 +98,7 @@ public class VariablesTable extends Table{
         rebuild();
     }
 
-    /** Removes all children, actions, and listeners from this group. */
-    @Override
-    public void clear(){
-        super.clear();
-
+    public void clearSeq(){
         selectedVars.clear();
     }
 }

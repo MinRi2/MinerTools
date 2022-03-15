@@ -7,9 +7,11 @@ import arc.util.*;
 import mindustry.gen.*;
 import mindustry.logic.*;
 import mindustry.logic.LExecutor.*;
+import mindustry.ui.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.ui;
+import static mindustry.ui.Styles.black6;
 
 public class LogicVars extends DraggableTable{
     public static String split = ".";
@@ -46,23 +48,34 @@ public class LogicVars extends DraggableTable{
     private void rebuild(){
         clear();
 
-        table(((TextureRegionDrawable)Tex.whiteui).tint(Color.red),table -> {
-            table.label(() -> "Logic Vars");
+        table(((TextureRegionDrawable)Tex.whiteui).tint(Color.blue),table -> {
+            table.label(() -> "Logic Vars").center();
             setDraggier(table);
         }).pad(0f).fillX();
 
         row();
 
+        table(black6, table -> {
+            table.label(() -> varsTable.makeVarName());
+            table.add().growX();
+            table.button(Icon.copy, Styles.clearPartiali, () -> app.setClipboardText(varsTable.makeVarName()));
+        }).pad(0f).fillX();
+
+        row();
+
         table(table -> {
-            table.table(t -> t.add(varsTable)).pad(0f).top();
+            table.add(varsTable).pad(0f).top().growX();
 
             rebuildVarsTable();
-        }).pad(0f).top();
+        }).pad(0f).top().fillX();
     }
 
     private void rebuildVarsTable(){
         varsTable.clear();
+        varsTable.clearSeq();
+
         resetVars();
+
         varsTable.rebuild();
     }
 
