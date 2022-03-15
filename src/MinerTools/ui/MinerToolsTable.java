@@ -11,7 +11,7 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
-import static mindustry.Vars.mobile;
+import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.gen.Icon.*;
 import static mindustry.ui.Styles.*;
@@ -30,6 +30,27 @@ public class MinerToolsTable extends Table{
 
     public MinerToolsTable(){
         Events.on(EventType.WorldLoadEvent.class, e -> rebuild());
+    }
+
+    public void addUI(){
+        ui.hudGroup.fill(t -> {
+            t.top().right().name = "miner-tools";
+            t.visible(() -> ui.hudfrag.shown && !ui.minimapfrag.shown());
+
+            t.add(this);
+
+            Table minimap = ui.hudGroup.find("minimap/position");
+            Table overlaymarker = ui.hudGroup.find("overlaymarker");
+            t.update(() -> {
+                if(t.getPrefWidth() + overlaymarker.getPrefWidth() + minimap.getPrefWidth() > Core.scene.getWidth()){
+                    t.translation.x = 0;
+                    t.translation.y = -minimap.getPrefHeight();
+                }else{
+                    t.translation.x = -minimap.getPrefWidth();
+                    t.translation.y = 0;
+                }
+            });
+        });
     }
 
     public void rebuild(){
