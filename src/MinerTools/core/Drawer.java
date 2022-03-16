@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -18,7 +19,7 @@ import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class Drawer{
-    public static float defRadius = 50 * tilesize;
+    public static float defRadius = 100 * tilesize;
 
     private static float drawRadius = defRadius;
 
@@ -49,8 +50,8 @@ public class Drawer{
         final float[] length = {0f};
 
         Draw.z(Layer.flyingUnit + 0.1f);
-        Groups.unit.each(unit -> unit.team != player.team() && cores.min(core -> length[0] = unit.dst(core)) != null, unit -> {
-            float enemyIndicatorLength = Mathf.lerp(20f, 75f, length[0] / drawRadius);
+        Groups.unit.each(unit -> unit.team != player.team() && cores.min(core -> length[0] = unit.dst(core)).within(unit, drawRadius), unit -> {
+            float enemyIndicatorLength = Mathf.lerp(20f, 55f, length[0] / drawRadius);
 
             Tmp.v1.set(unit).sub(player).setLength(enemyIndicatorLength);
 

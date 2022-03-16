@@ -1,6 +1,7 @@
 package MinerTools;
 
 import MinerTools.core.*;
+import MinerTools.input.*;
 import MinerTools.ui.*;
 import arc.*;
 import mindustry.game.*;
@@ -9,6 +10,7 @@ import mindustry.mod.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
+import static MinerTools.input.ModBinding.updateConveyor;
 import static arc.Core.input;
 import static mindustry.Vars.*;
 
@@ -33,7 +35,7 @@ public class MinerTools extends Mod{
     }
 
     public static void update(){
-        if((desktop && input.alt()) || (mobile && enableUpdateConveyor)){
+        if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
             tryUpdateConveyor();
         }
     }

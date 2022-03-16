@@ -24,6 +24,7 @@ import mindustry.ui.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
+import static MinerTools.input.ModBinding.dropItem;
 import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -100,7 +101,7 @@ public class TeamsInfo extends Table{
             });
 
             dropButton.update(() -> {
-                if(timer.get(1, dropHeat) && input.keyDown(KeyCode.h)){
+                if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
                     dropButton.fireClick();
                 }
             });

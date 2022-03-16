@@ -1,15 +1,18 @@
 package MinerTools;
 
 import MinerTools.core.*;
-import MinerTools.io.*;
+import MinerTools.input.*;
+import arc.KeyBinds.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.input.*;
 import mindustry.type.*;
+import mindustry.ui.dialogs.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
 
-import static arc.Core.settings;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MinerVars{
@@ -30,6 +33,20 @@ public class MinerVars{
         mui = new MUI();
 
         betterUiscaleSetting();
+
+        // update controls
+        if(!mobile){
+            KeyBind[] bindings = Binding.values();
+            KeyBind[] modBindings = ModBinding.values();
+
+            KeyBind[] newBindings = new KeyBind[bindings.length + modBindings.length];
+            System.arraycopy(bindings, 0, newBindings, 0, bindings.length);
+            System.arraycopy(modBindings, 0, newBindings, bindings.length, modBindings.length);
+
+            keybinds.setDefaults(newBindings);
+            Reflect.invoke(keybinds, "load");
+            Reflect.invoke(ui.controls, "setup");
+        }
 
         desktop = control.input instanceof DesktopInput;
 
