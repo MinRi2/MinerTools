@@ -2,11 +2,12 @@ package MinerTools.core;
 
 import MinerTools.ui.*;
 import MinerTools.ui.logic.*;
+import MinerTools.ui.settings.MSettingsTable;
 
 import static MinerTools.MinerVars.desktop;
 
 public class MUI{
-    public MSettingsTable mSettings;
+    public MSettingsTable minerSettings;
     public MinerToolsTable minerToolsTable;
     public LogicVars logicVars;
 
@@ -16,7 +17,7 @@ public class MUI{
     public void init(){
         MStyles.load();
 
-        mSettings = new MSettingsTable();
+        minerSettings = new MSettingsTable();
 
         minerToolsTable = new MinerToolsTable();
 

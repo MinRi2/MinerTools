@@ -1,9 +1,9 @@
 package MinerTools;
 
 import MinerTools.core.*;
+import MinerTools.io.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import mindustry.content.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
@@ -13,6 +13,7 @@ import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class MinerVars{
+
     public static MUI mui;
 
     public static boolean desktop;

@@ -1,7 +1,7 @@
 package MinerTools.io;
 
+import MinerTools.*;
 import arc.files.*;
-import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
@@ -14,8 +14,8 @@ import mindustry.world.blocks.defense.turrets.*;
 import static mindustry.Vars.*;
 
 public class DropManager{
-    public static Fi root;
-    public static String settingName = "settings";
+    private static Fi root;
+    private static String settingName = "dropSettings";
 
     public static void init(){
         root = modDirectory.child("MinerTools");

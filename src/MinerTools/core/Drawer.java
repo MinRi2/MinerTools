@@ -14,6 +14,7 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 
+import static arc.Core.settings;
 import static mindustry.Vars.*;
 
 public class Drawer{
@@ -23,8 +24,12 @@ public class Drawer{
 
     public static void setEvents(){
         Events.run(Trigger.draw, () -> {
-            Groups.build.each(building -> building instanceof ItemTurretBuild, Drawer::itemTurretAmmo);
-            enemyIndicator();
+            if(settings.getBool("itemTurretAmmoShow")){
+                Groups.build.each(building -> building instanceof ItemTurretBuild, Drawer::itemTurretAmmo);
+            }
+            if(settings.getBool("enemyUnitIndicator")){
+                enemyIndicator();
+            }
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
