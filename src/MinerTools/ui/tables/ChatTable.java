@@ -1,5 +1,6 @@
-package MinerTools.ui;
+package MinerTools.ui.tables;
 
+import MinerTools.ui.*;
 import arc.*;
 import arc.input.*;
 import arc.math.*;
@@ -12,7 +13,6 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
-import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 

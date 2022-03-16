@@ -1,6 +1,6 @@
 package MinerTools.ui.logic;
 
-import MinerTools.ui.*;
+import MinerTools.ui.tables.*;
 import arc.graphics.*;
 import arc.scene.style.*;
 import arc.util.*;

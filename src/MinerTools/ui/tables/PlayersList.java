@@ -1,4 +1,4 @@
-package MinerTools.ui;
+package MinerTools.ui.tables;
 
 import MinerTools.*;
 import arc.*;

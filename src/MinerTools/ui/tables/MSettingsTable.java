@@ -1,4 +1,4 @@
-package MinerTools.ui;
+package MinerTools.ui.tables;
 
 import arc.util.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
