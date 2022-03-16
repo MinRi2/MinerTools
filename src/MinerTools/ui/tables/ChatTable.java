@@ -13,6 +13,7 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
+import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 

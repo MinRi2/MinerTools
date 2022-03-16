@@ -1,5 +1,7 @@
 package MinerTools.ui.tables;
 
+import arc.*;
+import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
