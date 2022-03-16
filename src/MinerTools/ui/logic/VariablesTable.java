@@ -2,6 +2,7 @@ package MinerTools.ui.logic;
 
 import arc.*;
 import arc.graphics.*;
+import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -14,13 +15,10 @@ public class VariablesTable extends Table{
     public Seq<MVar> vars = new Seq<>();
     public Seq<MVar> selectedVars = new Seq<>();
 
-    private Table paneTable1;
-    private ScrollPane pane1;
+    private Seq<ScrollPane> panes = new Seq<>();
 
     public VariablesTable(){
         super();
-
-        pane1 = new ScrollPane(paneTable1 = new Table().top(), nonePane);
     }
 
     public String makeVarName(){
@@ -41,11 +39,15 @@ public class VariablesTable extends Table{
 
             table.row();
 
-            table.add(pane1).maxHeight(Core.graphics.getHeight() / 2f).scrollX(false).get();
+            if(panes.isEmpty()){
+                panes.add(new ScrollPane(new Table().top(), nonePane));
+            }
 
-            paneTable1.clear();
+            Table t = (Table)panes.get(0).getWidget();
 
-            Table t = paneTable1;
+            table.add(panes.get(0)).maxHeight(Core.graphics.getHeight() / 2f).scrollX(false).get();
+
+            t.clear();
             for(MVar mVar : vars){
                 t.button(b -> {
                     b.add(mVar.name).center();
@@ -69,18 +71,23 @@ public class VariablesTable extends Table{
 
                 table.row();
 
-                table.pane(nonePane, t -> {
-                    t.top();
+                if(panes.size - 1 < mVar.level){
+                    panes.add(new ScrollPane(new Table().top(), nonePane));
+                }
 
-                    for(MVar v : mVar.children){
-                        t.button(b -> {
-                            b.add(v.name).center();
-                        }, logicVarTogglet, () -> handleMVar(v))
-                        .fillX().checked(b -> selectedVars.contains(v));
+                table.add(panes.get(mVar.level)).maxHeight(Core.graphics.getHeight() / 2f).scrollX(false).get();
 
-                        t.row();
-                    }
-                }).maxHeight(Core.graphics.getHeight() / 2f).scrollX(false).get();
+                Table t = (Table)panes.get(mVar.level).getWidget();
+
+                t.clear();
+                for(MVar v : mVar.children){
+                    t.button(b -> {
+                        b.add(v.name).center();
+                    }, logicVarTogglet, () -> handleMVar(v))
+                    .fillX().checked(b -> selectedVars.contains(v));
+
+                    t.row();
+                }
             }).growX().top();
         }
     }
