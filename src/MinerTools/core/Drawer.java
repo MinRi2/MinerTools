@@ -47,10 +47,18 @@ public class Drawer{
      */
     public static void enemyIndicator(){
         Seq<CoreBuild> cores = player.team().cores();
+
+        if(cores.isEmpty()){
+            return;
+        }
+
         final float[] length = {0f};
 
         Draw.z(Layer.flyingUnit + 0.1f);
-        Groups.unit.each(unit -> unit.team != player.team() && cores.min(core -> length[0] = unit.dst(core)).within(unit, drawRadius), unit -> {
+        Groups.unit.each(unit -> {
+            CoreBuild core = cores.min(c -> length[0] = unit.dst(c));
+            return unit.team != player.team() && core != null && core.within(unit, drawRadius);
+        }, unit -> {
             float enemyIndicatorLength = Mathf.lerp(20f, 55f, length[0] / drawRadius);
 
             Tmp.v1.set(unit).sub(player).setLength(enemyIndicatorLength);

@@ -13,10 +13,15 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
+import static MinerTools.MinerVars.mui;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class ChatTable extends Table{
+    public static final String playerNameStart = "[coral][", playerNameEnd ="[coral]]";
+    public static final String messageStart = ":[white] ";
+
     private Interval timer = new Interval();
 
     private Seq<String> messages = new Seq<>();
@@ -53,16 +58,17 @@ public class ChatTable extends Table{
             }).padTop(15f).grow().get();
 
             textField.setMessageText("Send Message");
+            textField.setMaxLength(maxTextLength);
             textField.removeInputDialog();
 
             if(!mobile){
                 textField.keyDown(KeyCode.enter, this::sendMessage);
-                textField.keyDown(KeyCode.up, () -> historyShift(1));
-                textField.keyDown(KeyCode.down, () -> historyShift(-1));
+                textField.keyDown(KeyCode.up, this::historyShiftUp);
+                textField.keyDown(KeyCode.down, this::historyShiftDown);
             }else{
                 table.button(Icon.modeAttack, clearTransi, this::sendMessage).padLeft(5f).growY();
-                table.button(Icon.up, clearTransi, () -> historyShift(1)).padLeft(1f).growY();
-                table.button(Icon.down, clearTransi, () -> historyShift(-1)).padLeft(1f).growY();
+                table.button(Icon.up, clearTransi, this::historyShiftUp).padLeft(1f).growY();
+                table.button(Icon.down, clearTransi, this::historyShiftDown).padLeft(1f).growY();
             }
         }).growX();
 
@@ -77,6 +83,7 @@ public class ChatTable extends Table{
 
     private void resetMessages(){
         messages.set(Reflect.<Seq<String>>get(ui.chatfrag, "messages"));
+        messages.reverse();
 
         boolean isBottomEdge = pane.isBottomEdge();
 
@@ -99,6 +106,14 @@ public class ChatTable extends Table{
         }
     }
 
+    private void historyShiftUp(){
+        historyShift(1);
+    }
+
+    private void historyShiftDown(){
+        historyShift(-1);
+    }
+
     private void historyShift(int shift) {
         historyIndex = Mathf.clamp(historyIndex + shift, -1, history.size - 1);
         if (historyIndex < 0) {
@@ -108,14 +123,43 @@ public class ChatTable extends Table{
         textField.setText(history.get(historyIndex));
     }
 
-    void rebuild(){
+    private void rebuild(){
         messageTable.clear();
 
         if(messages.isEmpty()) return;
 
-        for(int i = messages.size - 1; i >= 0; i--){
-            messageTable.labelWrap(messages.get(i)).growX().left();
+        for(String message : messages){
+            Label label = messageTable.labelWrap(message).growX().left().get();
+
+            /* Ctrl+MouseLeft --> copy the player's name */
+            label.clicked(KeyCode.mouseLeft, () -> {
+                if(input.ctrl()) mui.setClipboardText(catchPlayerName(message));
+            });
+            /* Ctrl+MouseRight --> copy the message */
+            label.clicked(KeyCode.mouseRight, () -> {
+                if(input.ctrl()) mui.setClipboardText(catchSendMessage(message));
+            });
+
             messageTable.row();
         }
+    }
+
+    private String catchPlayerName(String message){
+        // [coral][[[#FEEB2CFF][white]'PlayerName'[coral]]:[white] 'Message'
+        if(message.contains(playerNameStart) && message.contains(messageStart)){
+            int startIndex = message.indexOf(playerNameStart);
+            int endIndex = message.indexOf(messageStart);
+            return message.substring(startIndex + 1 + playerNameStart.length(), endIndex - playerNameEnd.length());
+        }
+        return "";
+    }
+
+    private String catchSendMessage(String message){
+        // [coral][[[#FEEB2CFF][white]'PlayerName'[coral]]:[white] 'Message'
+        if(message.contains(messageStart)){
+            int startIndex = message.indexOf(messageStart);
+            return message.substring(startIndex + 1);
+        }
+        return "";
     }
 }
