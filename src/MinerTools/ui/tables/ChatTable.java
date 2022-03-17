@@ -13,13 +13,12 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
-import static MinerTools.MinerVars.mui;
+import static MinerTools.MinerVars.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class ChatTable extends Table{
-    public static final String playerNameStart = "[coral][", playerNameEnd ="[coral]]";
     public static final String messageStart = ":[white] ";
 
     private Interval timer = new Interval();
@@ -28,6 +27,8 @@ public class ChatTable extends Table{
     private Seq<String> history = new Seq<>();
 
     private int historyIndex;
+    /* For mobile */
+    private boolean copyMode;
 
     private Table messageTable = new Table();
     private ScrollPane pane;
@@ -39,6 +40,7 @@ public class ChatTable extends Table{
         Events.on(EventType.WorldLoadEvent.class, e -> {
             history.clear();
             historyIndex = -1;
+            pane.setScrollY(Float.MAX_VALUE);
         });
 
         TextFieldStyle style = new TextFieldStyle(areaField){{
@@ -61,14 +63,15 @@ public class ChatTable extends Table{
             textField.setMaxLength(maxTextLength);
             textField.removeInputDialog();
 
-            if(!mobile){
+            if(desktop){
                 textField.keyDown(KeyCode.enter, this::sendMessage);
                 textField.keyDown(KeyCode.up, this::historyShiftUp);
                 textField.keyDown(KeyCode.down, this::historyShiftDown);
             }else{
-                table.button(Icon.modeAttack, clearTransi, this::sendMessage).padLeft(5f).growY();
-                table.button(Icon.up, clearTransi, this::historyShiftUp).padLeft(1f).growY();
-                table.button(Icon.down, clearTransi, this::historyShiftDown).padLeft(1f).growY();
+                table.button(Icon.modeAttack, clearTransi, this::sendMessage).growY();
+                table.button(Icon.copy, clearToggleTransi, this::toggleCopyMode).growY().checked(b -> copyMode);
+                table.button(Icon.up, clearTransi, this::historyShiftUp).growY();
+                table.button(Icon.down, clearTransi, this::historyShiftDown).growY();
             }
         }).growX();
 
@@ -123,6 +126,10 @@ public class ChatTable extends Table{
         textField.setText(history.get(historyIndex));
     }
 
+    private void toggleCopyMode(){
+        copyMode = !copyMode;
+    }
+
     private void rebuild(){
         messageTable.clear();
 
@@ -131,31 +138,24 @@ public class ChatTable extends Table{
         for(String message : messages){
             Label label = messageTable.labelWrap(message).growX().left().get();
 
-            /* Ctrl+MouseLeft --> copy the player's name */
-            label.clicked(KeyCode.mouseLeft, () -> {
-                if(input.ctrl()) mui.setClipboardText(catchPlayerName(message));
-            });
-            /* Ctrl+MouseRight --> copy the message */
-            label.clicked(KeyCode.mouseRight, () -> {
-                if(input.ctrl()) mui.setClipboardText(catchSendMessage(message));
-            });
+            if(desktop){
+                /* Ctrl + MouseLeft --> copy the message */
+                label.clicked(KeyCode.mouseLeft, () -> {
+                    if(input.ctrl()) mui.setClipboardText(catchSendMessage(message));
+                });
+            }else{
+                /* click --> copy the message */
+                label.clicked(() -> {
+                    if(copyMode) mui.setClipboardText(catchSendMessage(message));
+                });
+            }
 
             messageTable.row();
         }
     }
 
-    private String catchPlayerName(String message){
-        // [coral][[[#FEEB2CFF][white]'PlayerName'[coral]]:[white] 'Message'
-        if(message.contains(playerNameStart) && message.contains(messageStart)){
-            int startIndex = message.indexOf(playerNameStart);
-            int endIndex = message.indexOf(messageStart);
-            return message.substring(startIndex + 1 + playerNameStart.length(), endIndex - playerNameEnd.length());
-        }
-        return "";
-    }
-
     private String catchSendMessage(String message){
-        // [coral][[[#FEEB2CFF][white]'PlayerName'[coral]]:[white] 'Message'
+        // [coral][['PlayerColor'[white]'PlayerName'[coral]]:[white] 'Message'
         if(message.contains(messageStart)){
             int startIndex = message.indexOf(messageStart);
             return message.substring(startIndex + 1);

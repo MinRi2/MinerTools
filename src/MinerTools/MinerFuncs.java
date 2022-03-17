@@ -9,7 +9,9 @@ import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.ai.types.*;
+import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.entities.units.*;
@@ -116,7 +118,7 @@ public class MinerFuncs{
         }
 
         t.margin(8f).update(() -> t.setPosition(Core.graphics.getWidth()/2f, Core.graphics.getHeight()/2f, Align.center));
-        t.actions(Actions.fadeOut(6.5f, Interp.pow4In), Actions.remove());
+        t.actions(Actions.fadeOut(8.5f, Interp.pow4In), Actions.remove());
         t.pack();
         t.act(0.1f);
         Core.scene.add(t);
