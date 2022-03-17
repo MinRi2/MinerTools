@@ -27,8 +27,10 @@ public class PowerInfo{
         this.team = team;
 
         for(Block block : content.blocks()){
-            if(block.hasPower){
+            if(block.consumesPower){
                 consumers.put(block, new ObjectSet<>());
+            }
+            if(block.outputsPower){
                 producers.put(block, new ObjectSet<>());
             }
         }
@@ -65,18 +67,26 @@ public class PowerInfo{
     }
 
     private void removeBuild(Building building){
-        if(!building.block.hasPower || building.power == null) return;
+        if((!building.block.consumesPower && !building.block.outputsPower) || building.power == null){
+            return;
+        }
 
         if(building.power.graph.all.size <= 1){
             // Log.info("Remove building: " + building);
             graphs.remove(building.power.graph);
         }
-        producers.get(building.block).remove(building);
-        consumers.get(building.block).remove(building);
+        if(building.block.consumesPower){
+            consumers.get(building.block).remove(building);
+        }
+        if(building.block.outputsPower){
+            producers.get(building.block).remove(building);
+        }
     }
 
     private void addBuild(Building building){
-        if(!building.block.hasPower || building.power == null) return;
+        if((!building.block.consumesPower && !building.block.outputsPower) || building.power == null){
+            return;
+        }
 
         // Log.info("Add building: " + building);
         graphs.add(building.power.graph);
@@ -97,6 +107,10 @@ public class PowerInfo{
             total += graph.getPowerBalance();
         }
         return (int)(total * 60);
+    }
+
+    public float getOutput(){
+        return getPowerProduced() - getPowerNeeded();
     }
 
     public float getSatisfaction(){

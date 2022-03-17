@@ -166,10 +166,12 @@ public class TeamsInfo extends Table{
                     teamTable.table(powerBarTable -> {
                         powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
 
+                        PowerInfo powerInfo = PowerInfo.getPowerInfo(team);
+
                         Bar powerBar = new Bar(
-                        () -> (PowerInfo.getPowerInfo(team).getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(PowerInfo.getPowerInfo(team).getPowerBalance()),
+                        () -> (powerInfo.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(powerInfo.getPowerBalance()),
                         () -> team.color,
-                        () -> PowerInfo.getPowerInfo(team).getSatisfaction());
+                        powerInfo::getSatisfaction);
 
                         powerBarTable.add(powerBar).width(100).fillY();
                         addPowerBarTooltip(powerBarTable, team);

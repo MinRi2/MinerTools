@@ -34,7 +34,7 @@ public class ElementUtils{
                 this.targetActor = element;
                 Vec2 pos = element.localToStageCoordinates(Tmp.v1.set(0, 0));
                 container.pack();
-                container.setPosition(pos.x, pos.y, Align.topLeft);
+                container.setPosition(pos.x, pos.y, Align.top);
                 container.setOrigin(0, element.getHeight());
             }
         };
