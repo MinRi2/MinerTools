@@ -14,8 +14,6 @@ import mindustry.game.*;
 import mindustry.gen.*;
 
 import static mindustry.Vars.*;
-import static mindustry.content.Blocks.*;
-import static mindustry.gen.Icon.*;
 import static mindustry.ui.Styles.*;
 
 public class MinerToolsTable extends Table{
@@ -24,11 +22,10 @@ public class MinerToolsTable extends Table{
     private final TeamsInfo teamInfo = new TeamsInfo();
     private boolean infoShown = true;
 
-    private Table memberTable;
-    private int memberIndex = -1;
-    private final Table[] membersTables = new Table[]{new TeamChanger(), new PlayersList(), new ChatTable(), new Schematics()};
-    private final Drawable[] membersButtonsIcon = new Drawable[]{new TextureRegionDrawable(spawn.uiIcon), players, chat, paste};
-    private final IntSeq mobileOnly = IntSeq.with();
+    private final MemberManager memberManager = new MemberManager();
+
+    private MemberTable shown;
+    private final Seq<MemberTable> members = Seq.with(new TeamChanger(), new PlayersList(), new ChatTable(), new Schematics());
 
     public MinerToolsTable(){
         Events.on(EventType.WorldLoadEvent.class, e -> rebuild());
@@ -55,7 +52,7 @@ public class MinerToolsTable extends Table{
         });
     }
 
-    public void rebuild(){
+    private void rebuild(){
         clear();
 
         table(t -> {
@@ -71,26 +68,23 @@ public class MinerToolsTable extends Table{
 
         row();
 
-        table(members -> {
-            members.table(member -> memberTable = member).fillX().growY();
+        table(t -> {
+            t.table(memberManager::setContainer).fillX().growY();
 
-            members.table(black3, buttons -> {
-                for(int i = 0; i < membersButtonsIcon.length; i++){
-                    int finalI = i;
+            t.table(black3, buttons -> {
+                for(MemberTable member : members){
 
-                    if(!mobile && mobileOnly.contains(i)) continue;
+                    if(!mobile && member.mobileOnly) continue;
 
-                    buttons.button(membersButtonsIcon[i], clearTogglePartiali, 35, () -> setMemberIndex(finalI))
-                    .update(b -> b.setChecked(memberIndex == finalI)).growY();
+                    buttons.button(member.icon, clearTogglePartiali, 35, () -> setMember(member))
+                    .checked(b -> shown == member).growY();
 
                     buttons.row();
                 }
 
-                buttons.button(Icon.none, clearTogglePartiali, 35, () -> setMemberIndex(-1))
-                .update(b -> b.setChecked(memberIndex == -1)).growY();
+                buttons.button(Icon.none, clearTogglePartiali, 35, () -> setMember(null))
+                .checked(b -> shown == null).growY();
             }).fillX().growY();
-
-            membersRebuild();
         }).right();
 
         update(() -> {
@@ -105,16 +99,25 @@ public class MinerToolsTable extends Table{
         });
     }
 
-    private void membersRebuild(){
-        memberTable.clear();
-
-        if(memberIndex == -1) return;
-
-        memberTable.add(membersTables[memberIndex]).fill().padRight(2f);
+    public void setMember(MemberTable member){
+        shown = member;
+        memberManager.setMember(member);
     }
 
-    private void setMemberIndex(int index){
-        memberIndex = index;
-        membersRebuild();
+    public static class MemberManager{
+        private Table container;
+
+        public void setContainer(Table container){
+            this.container = container;
+        }
+
+        public void setMember(MemberTable member){
+            container.clear();
+
+            if(member != null){
+                container.add(member).fill().padRight(2f);
+                member.memberRebuild();
+            }
+        }
     }
 }

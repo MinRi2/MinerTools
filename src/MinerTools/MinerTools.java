@@ -24,7 +24,7 @@ public class MinerTools extends Mod{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::init)))));
+//            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::init)))));
 
             showBannedInfo();
         });

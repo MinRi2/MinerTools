@@ -18,7 +18,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class PlayersList extends Table{
+public class PlayersList extends MemberTable{
     private static final Seq<Player> tmpSeq = new Seq<>();
     private static final Interval timer = new Interval();
 
@@ -29,6 +29,8 @@ public class PlayersList extends Table{
     private Player target;
 
     public PlayersList(){
+        icon = Icon.players;
+
         ScrollPane pane = pane(nonePane, players).maxHeight(235).get();
         panes.add(pane);
 

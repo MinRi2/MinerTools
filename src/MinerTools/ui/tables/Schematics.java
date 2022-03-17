@@ -1,12 +1,11 @@
 package MinerTools.ui.tables;
 
-import arc.*;
-import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.game.*;
+import mindustry.gen.*;
 import mindustry.ui.dialogs.*;
 import mindustry.ui.dialogs.SchematicsDialog.*;
 
@@ -19,7 +18,7 @@ import static arc.util.Scaling.fit;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class Schematics extends Table{
+public class Schematics extends MemberTable{
     public static float imageSize = 85f;
 
     private Table schematicsTable = new Table(black3);
@@ -32,6 +31,8 @@ public class Schematics extends Table{
 
 
     public Schematics(){
+        icon = Icon.paste;
+
         try{
             tagsField = SchematicsDialog.class.getDeclaredField("tags");
             tagsField.setAccessible(true);

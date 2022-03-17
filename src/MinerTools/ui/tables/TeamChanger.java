@@ -1,23 +1,24 @@
 package MinerTools.ui.tables;
 
+import arc.scene.style.*;
 import arc.scene.ui.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.game.*;
 
 import static mindustry.Vars.*;
+import static mindustry.content.Blocks.spawn;
 import static mindustry.gen.Call.sendChatMessage;
 import static mindustry.gen.Icon.play;
 import static mindustry.gen.Tex.whiteui;
 import static mindustry.ui.Styles.*;
 
-public class TeamChanger extends Table{
+public class TeamChanger extends MemberTable{
     public static int minSkipWave = 0, maxSkipWave = 50;
 
     private int skipWave;
 
     public TeamChanger(){
-        visible(() -> ui.hudfrag.shown && !ui.minimapfrag.shown());
+        icon = new TextureRegionDrawable(spawn.uiIcon);
         rebuild();
     }
 

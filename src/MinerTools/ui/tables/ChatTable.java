@@ -18,7 +18,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class ChatTable extends Table{
+public class ChatTable extends MemberTable{
     public static final String messageStart = ":[white] ";
 
     private Interval timer = new Interval();
@@ -37,12 +37,18 @@ public class ChatTable extends Table{
     private boolean lastIsBottomEdge;
 
     public ChatTable(){
+        icon = Icon.chat;
+
         Events.on(EventType.WorldLoadEvent.class, e -> {
             history.clear();
             historyIndex = -1;
             pane.setScrollY(Float.MAX_VALUE);
         });
 
+        setup();
+    }
+
+    private void setup(){
         TextFieldStyle style = new TextFieldStyle(areaField){{
             background = black6;
         }};
@@ -109,6 +115,15 @@ public class ChatTable extends Table{
         }
     }
 
+    private String catchSendMessage(String message){
+        // [coral][['PlayerColor'[white]'PlayerName'[coral]]:[white] 'Message'
+        if(message.contains(messageStart)){
+            int startIndex = message.indexOf(messageStart);
+            return message.substring(startIndex + 1);
+        }
+        return "";
+    }
+
     private void historyShiftUp(){
         historyShift(1);
     }
@@ -154,12 +169,8 @@ public class ChatTable extends Table{
         }
     }
 
-    private String catchSendMessage(String message){
-        // [coral][['PlayerColor'[white]'PlayerName'[coral]]:[white] 'Message'
-        if(message.contains(messageStart)){
-            int startIndex = message.indexOf(messageStart);
-            return message.substring(startIndex + 1);
-        }
-        return "";
+    @Override
+    public void memberRebuild(){
+        pane.setScrollY(Float.MAX_VALUE);
     }
 }

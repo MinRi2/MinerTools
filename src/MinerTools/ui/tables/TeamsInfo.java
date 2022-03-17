@@ -63,7 +63,6 @@ public class TeamsInfo extends Table{
         panes.add(pane);
 
         table.background(black3);
-        tableRebuild();
         table.update(() -> {
             if(timer.get(0, 120)){
                 teams = state.teams.getActive();
@@ -163,19 +162,17 @@ public class TeamsInfo extends Table{
 
                     teamTable.add().growX();
 
-                    teamTable.table(powerBarTable -> {
+                    /*teamTable.table(powerBarTable -> {
                         powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
 
-                        PowerInfo powerInfo = PowerInfo.getPowerInfo(team);
-
                         Bar powerBar = new Bar(
-                        () -> (powerInfo.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(powerInfo.getPowerBalance()),
+                        () -> (PowerInfo.getPowerInfo(team).getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(PowerInfo.getPowerInfo(team).getPowerBalance()),
                         () -> team.color,
-                        powerInfo::getSatisfaction);
+                        () -> PowerInfo.getPowerInfo(team).getSatisfaction());
 
                         powerBarTable.add(powerBar).width(100).fillY();
                         addPowerBarTooltip(powerBarTable, team);
-                    }).pad(-1).right();
+                    }).pad(-1).right();*/
                 }).pad(4).growX().left();
 
                 table.row();
