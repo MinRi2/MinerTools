@@ -18,6 +18,7 @@ ext{
     mindustryVersion = 'v135'
     jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+    output = System.getenv("AppData") + "/mindustry/mods"
 }
 
 //java 8 backwards compatibility flag
@@ -28,7 +29,7 @@ allprojects{
 }
 
 dependencies{
-    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:23.0.0'
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
@@ -75,6 +76,15 @@ task deploy(type: Jar){
     archiveFileName = "${project.archivesBaseName}.jar"
 
     from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
+
+    delete{
+        delete "$output/${project.archivesBaseName}Desktop.jar"
+    }
+
+    copy {
+        into "$output/"
+        from "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
+    }
 
     doLast{
         delete{
