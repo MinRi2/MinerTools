@@ -95,11 +95,13 @@ public class TeamsInfo extends Table{
                 if(lastDropItem != null) dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
             });
 
-            dropButton.update(() -> {
-                if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
-                    dropButton.fireClick();
-                }
-            });
+            if(desktop){
+                dropButton.update(() -> {
+                    if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
+                        dropButton.fireClick();
+                    }
+                });
+            }
 
             dropButton.addListener(new ElementGestureListener(){
                 @Override
