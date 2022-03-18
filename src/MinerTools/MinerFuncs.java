@@ -27,6 +27,7 @@ import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
 import mindustry.world.blocks.distribution.Junction.*;
 import mindustry.world.blocks.power.*;
+import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.blocks.units.*;
@@ -160,7 +161,7 @@ public class MinerFuncs{
 
         if(dropBuildings.isEmpty()) return;
 
-        dropBuildings.sort(db -> db.status.ordinal());
+        dropBuildings.sort(Structs.comps(Structs.comparing(db -> db.status.ordinal()), Structs.comparingBool(db -> db.building.block instanceof GenericCrafter)));
 
         for(DropBuilding db : dropBuildings){
             if(DropBuilding.drop(db)) break;
