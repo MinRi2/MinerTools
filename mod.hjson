@@ -14,7 +14,7 @@ main: "MinerTools.MinerTools"
 description: "A java mod for Mindustry."
 
 #the mod version
-version: 1.50
+version: 1.51
 
 hidden: true
 
