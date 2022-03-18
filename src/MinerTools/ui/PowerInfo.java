@@ -82,9 +82,6 @@ public class PowerInfo{
             return;
         }
 
-        if(building.power.graph.all.size <= 1){
-            Log.info(graphs.remove(building.power.graph));
-        }
         if(building.block.consumesPower){
             consumers.get(building.block).remove(building);
         }

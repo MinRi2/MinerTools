@@ -65,7 +65,8 @@ public class TeamsInfo extends Table{
         table.background(black3);
         table.update(() -> {
             if(timer.get(0, 120)){
-                teams = state.teams.getActive();
+                teams.set(state.teams.getActive());
+                teams.sort(data -> -data.unitCount);
                 tableRebuild();
             }
         });
@@ -75,11 +76,6 @@ public class TeamsInfo extends Table{
         /* useful buttons */
         table(black3, buttons -> {
             buttons.defaults().height(35).growX();
-
-            /* A button for wayzer plugin
-            * see https://github.com/way-zer/ScriptAgent4MindustryExt
-            * */
-            buttons.button(playersSmall, clearTransi, () -> Call.sendChatMessage("/list"));
 
             if(mobile){
                 buttons.button(Icon.hammer, emptytogglei, () -> control.input.isBuilding = !control.input.isBuilding)
@@ -142,7 +138,7 @@ public class TeamsInfo extends Table{
                 Team team = data.team;
 
                 table.table(teamTable -> {
-                    Label label = teamTable.label(() -> "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
+                    Label label = teamTable.label(() -> (team == player.team() ? "[green]" + Iconc.players : "") + "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
                     .padRight(3).minWidth(16).left().get();
                     label.setFontScale(fontScale + 0.15f);
                     addTeamRuleInfoTooltip(label, team);

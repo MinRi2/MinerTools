@@ -28,7 +28,9 @@ public class MinerToolsTable extends Table{
     private final Seq<MemberTable> members = Seq.with(new TeamChanger(), new PlayersList(), new ChatTable(), new Schematics());
 
     public MinerToolsTable(){
-        Events.on(EventType.WorldLoadEvent.class, e -> rebuild());
+        rebuild();
+
+        Events.on(EventType.WorldLoadEvent.class, e -> memberManager.setMember(shown));
     }
 
     public void addUI(){

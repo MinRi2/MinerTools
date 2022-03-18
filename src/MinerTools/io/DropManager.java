@@ -45,7 +45,7 @@ public class DropManager{
                 int turretID = reads.i();
                 ItemTurret turret = (ItemTurret)content.block(turretID);
 
-                Log.log(LogLevel.info, turretID + ": " + turret);
+                Log.info("MinerTools.DropManager read " + turret.emoji());
 
                 int size = reads.i();
                 Seq<Item> seq = new Seq();
