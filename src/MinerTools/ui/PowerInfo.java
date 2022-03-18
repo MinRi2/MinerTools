@@ -1,8 +1,10 @@
 package MinerTools.ui;
 
+import MinerTools.*;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -11,11 +13,20 @@ import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 
+import java.lang.reflect.*;
+
+import static arc.Core.graphics;
 import static mindustry.Vars.*;
 
 public class PowerInfo{
+    private static Field lastFrameUpdatedField;
+
     private static final Seq<Building> buildings = new Seq<>();
     private static final ObjectMap<Team, PowerInfo> teamPowerInfo = new ObjectMap<>();
+
+    {
+        lastFrameUpdatedField = MinerUtils.getField(PowerGraph.class, "lastFrameUpdated");
+    }
 
     public Team team;
 
@@ -67,13 +78,12 @@ public class PowerInfo{
     }
 
     private void removeBuild(Building building){
-        if((!building.block.consumesPower && !building.block.outputsPower) || building.power == null){
+        if(!building.block.hasPower || building.power == null){
             return;
         }
 
         if(building.power.graph.all.size <= 1){
-            // Log.info("Remove building: " + building);
-            graphs.remove(building.power.graph);
+            Log.info(graphs.remove(building.power.graph));
         }
         if(building.block.consumesPower){
             consumers.get(building.block).remove(building);
@@ -84,11 +94,10 @@ public class PowerInfo{
     }
 
     private void addBuild(Building building){
-        if((!building.block.consumesPower && !building.block.outputsPower) || building.power == null){
+        if(!building.block.hasPower || building.power == null){
             return;
         }
 
-        // Log.info("Add building: " + building);
         graphs.add(building.power.graph);
 
         if(building.block.outputsPower && building.block.consumesPower && !building.block.consumes.getPower().buffered){
@@ -170,6 +179,34 @@ public class PowerInfo{
         return sum;
     }
 
+    private void updateGraph(){
+        graphs.clear();
+
+        consumers.each((block, buildings) -> {
+            for(Building building : buildings){
+                graphs.add(building.power.graph);
+            }
+        });
+
+        producers.each((block, buildings) -> {
+            for(Building building : buildings){
+                graphs.add(building.power.graph);
+            }
+        });
+    }
+
+    public void updateActive(){
+        for(PowerGraph graph : graphs){
+            if(graph == null){
+                continue;
+            }
+            if(state.isPaused()) MinerUtils.setValue(lastFrameUpdatedField, graph, graphics.getFrameId());
+            if(!(graphics.getFrameId() - MinerUtils.<Long>getValue(lastFrameUpdatedField, graph) < 2L)){
+                updateGraph();
+            }
+        }
+    }
+
     public static void init(){
         teamPowerInfo.clear();
 
@@ -180,5 +217,9 @@ public class PowerInfo{
 
     public static PowerInfo getPowerInfo(Team team){
         return teamPowerInfo.get(team);
+    }
+
+    public static void updateAll(){
+        teamPowerInfo.each((team, powerInfo) -> powerInfo.updateActive());
     }
 }

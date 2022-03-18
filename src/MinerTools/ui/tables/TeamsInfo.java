@@ -162,7 +162,7 @@ public class TeamsInfo extends Table{
 
                     teamTable.add().growX();
 
-                    /*teamTable.table(powerBarTable -> {
+                    teamTable.table(powerBarTable -> {
                         powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
 
                         Bar powerBar = new Bar(
@@ -172,7 +172,7 @@ public class TeamsInfo extends Table{
 
                         powerBarTable.add(powerBar).width(100).fillY();
                         addPowerBarTooltip(powerBarTable, team);
-                    }).pad(-1).right();*/
+                    }).pad(-1).right();
                 }).pad(4).growX().left();
 
                 table.row();

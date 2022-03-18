@@ -77,10 +77,6 @@ task deploy(type: Jar){
 
     from{ [zipTree("$buildDir/libs/${project.archivesBaseName}Desktop.jar"), zipTree("$buildDir/libs/${project.archivesBaseName}Android.jar")] }
 
-    delete{
-        delete "$output/${project.archivesBaseName}Desktop.jar"
-    }
-
     copy {
         into "$output/"
         from "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
@@ -90,6 +86,7 @@ task deploy(type: Jar){
         delete{
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
+            delete "$output/${project.archivesBaseName}Desktop.jar"
         }
     }
 }

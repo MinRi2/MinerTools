@@ -24,19 +24,20 @@ public class MinerTools extends Mod{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-//            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::init)))));
+            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::init)))));
 
             showBannedInfo();
         });
 
-        Events.run(Trigger.update, () -> update());
+        Events.run(Trigger.update, this::update);
 
         Drawer.setEvents();
     }
 
-    public static void update(){
+    public void update(){
         if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
             tryUpdateConveyor();
         }
+        PowerInfo.updateAll();
     }
 }
