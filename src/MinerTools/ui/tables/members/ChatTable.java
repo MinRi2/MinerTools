@@ -4,6 +4,7 @@ import MinerTools.ui.*;
 import arc.*;
 import arc.input.*;
 import arc.math.*;
+import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextField.*;
@@ -14,12 +15,16 @@ import mindustry.game.*;
 import mindustry.gen.*;
 
 import static MinerTools.MinerVars.*;
+import static MinerTools.core.MUI.*;
+import static MinerTools.ui.MStyles.chatb;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class ChatTable extends MemberTable{
-    public static final String messageStart = ":[white] ";
+    private static final String messageStart = ":[white] ";
+    public static final Seq<String> quickWords = Seq.with("Test", "gg", "Hello");
+    public static Table quickWordTable = new Table();
 
     private Interval timer = new Interval();
 
@@ -86,11 +91,35 @@ public class ChatTable extends MemberTable{
             if(timer.get(60f)){
                 resetMessages();
             }
+//            if(input.alt() && input.keyTap(KeyCode.b)){
+//                showQuickTable();
+//            }
         });
 
-        Events.on(EventType.PlayerChatEvent.class, e -> Log.info("PlayerChatting!!!"));
+//        setupQuickWordTable();
 
         MinerToolsTable.panes.add(pane);
+    }
+
+    private void setupQuickWordTable(){
+        Table table = quickWordTable;
+
+        table.update(() -> {
+            Element result = scene.hit(input.mouseX(), input.mouseY(), true);
+            if(result == null || !result.isDescendantOf(table)){
+                table.remove();
+            }
+        });
+    }
+
+    private void showQuickTable(){
+        Table table = quickWordTable;
+
+        rebuildQuickWordTable();
+
+        table.setPosition(input.mouseX(), input.mouseY() + 10f, Align.top);
+
+        scene.add(table);
     }
 
     private void resetMessages(){
@@ -163,17 +192,48 @@ public class ChatTable extends MemberTable{
             if(desktop){
                 /* Ctrl + MouseLeft --> copy the message */
                 label.clicked(KeyCode.mouseLeft, () -> {
-                    if(input.ctrl()) mui.setClipboardText(catchSendMessage(message));
+                    if(input.ctrl()) setClipboardText(catchSendMessage(message));
                 });
             }else{
                 /* click --> copy the message */
                 label.clicked(() -> {
-                    if(copyMode) mui.setClipboardText(catchSendMessage(message));
+                    if(copyMode) setClipboardText(catchSendMessage(message));
                 });
             }
 
             messageTable.row();
         }
+    }
+
+    private void rebuildQuickWordTable(){
+        Table table = quickWordTable;
+
+        table.clear();
+
+        table.table(black5, t -> {
+            TextField field = t.field("", text -> {}).growX().height(45f).get();
+            t.button(Icon.saveSmall, clearPartiali, () -> {
+                quickWords.add(field.getText());
+                rebuildQuickWordTable();
+            }).fillY();
+        }).fill();
+
+        table.row();
+
+        table.pane(nonePane, t -> {
+            for(String quickWord : quickWords){
+                table.button(b -> {
+                    b.labelWrap(quickWord).growX().left();
+                }, chatb, () -> {
+                    Call.sendChatMessage(quickWord);
+                    resetMessages();
+                    table.remove();
+                }).minSize(250f, 45f);
+                table.row();
+            }
+        }).maxHeight(45f * 7);
+
+        table.pack();
     }
 
     @Override

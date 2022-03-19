@@ -2,23 +2,28 @@ package MinerTools.core;
 
 import MinerTools.ui.*;
 import MinerTools.ui.logic.*;
-import MinerTools.ui.settings.MSettingsTable;
+import MinerTools.ui.settings.*;
+import MinerTools.ui.tables.*;
 import arc.*;
+import arc.func.*;
 import arc.math.*;
+import arc.math.geom.*;
+import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.ui.*;
 
 import static MinerTools.MinerVars.desktop;
-import static arc.Core.app;
+import static arc.Core.*;
 import static mindustry.Vars.state;
 
 public class MUI{
+    private static final float padding = 0f;
+
     public MSettingsTable minerSettings;
-    public MinerToolsTable minerToolsTable;
+    public BaseTable minerToolsTable;
     public LogicVars logicVars;
 
     public MUI(){
@@ -42,7 +47,7 @@ public class MUI{
         minerToolsTable.addUI();
     }
 
-    public void showInfoToast(String info, float duration, int align){
+    public static void showInfoToast(String info, float duration, int align){
         Table table = new Table();
         table.setFillParent(true);
         table.touchable = Touchable.disabled;
@@ -54,7 +59,7 @@ public class MUI{
         Core.scene.add(table);
     }
 
-    public void setClipboardText(String text){
+    public static void setClipboardText(String text){
         /* Do not copy the empty text */
         if(!text.equals("")){
             app.setClipboardText(text);
