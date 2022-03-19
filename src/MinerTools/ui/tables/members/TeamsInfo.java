@@ -1,4 +1,4 @@
-package MinerTools.ui.tables;
+package MinerTools.ui.tables.members;
 
 import MinerTools.*;
 import MinerTools.ui.*;

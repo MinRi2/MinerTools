@@ -1,5 +1,6 @@
-package MinerTools.ui.tables;
+package MinerTools.ui.tables.members;
 
+import MinerTools.ui.tables.members.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.util.*;

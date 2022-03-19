@@ -1,4 +1,4 @@
-package MinerTools.ui.tables;
+package MinerTools.ui.tables.members;
 
 import MinerTools.ui.*;
 import arc.*;
@@ -10,7 +10,6 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 

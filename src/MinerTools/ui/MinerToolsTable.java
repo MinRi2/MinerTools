@@ -1,7 +1,7 @@
 package MinerTools.ui;
 
-import MinerTools.ui.tables.Schematics;
-import MinerTools.ui.tables.*;
+import MinerTools.ui.tables.members.Schematics;
+import MinerTools.ui.tables.members.*;
 import arc.*;
 import arc.scene.*;
 import arc.scene.style.*;
