@@ -1,6 +1,5 @@
 package MinerTools.ui.tables.members;
 
-import MinerTools.ui.tables.members.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -16,7 +15,7 @@ import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.graphics.Color.white;
 import static arc.util.Align.center;
 import static arc.util.Scaling.fit;
-import static mindustry.Vars.*;
+import static mindustry.Vars.ui;
 import static mindustry.ui.Styles.*;
 
 public class Schematics extends MemberTable{

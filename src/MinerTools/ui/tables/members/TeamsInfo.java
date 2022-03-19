@@ -1,13 +1,12 @@
 package MinerTools.ui.tables.members;
 
 import MinerTools.*;
-import MinerTools.ui.*;
 import MinerTools.ui.Dialogs.*;
+import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.input.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
@@ -31,7 +30,6 @@ import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
 import static mindustry.content.Items.copper;
 import static mindustry.content.UnitTypes.*;
-import static mindustry.gen.Icon.playersSmall;
 import static mindustry.ui.Styles.*;
 
 public class TeamsInfo extends Table{
