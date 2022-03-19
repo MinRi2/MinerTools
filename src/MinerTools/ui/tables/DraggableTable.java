@@ -4,11 +4,10 @@ import arc.input.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 
 /** Table that can be dragged */
-public class DraggableTable extends Table{
+public class DraggableTable extends BaseTable{
     public Element draggier;
     public boolean isDragging = false;
 

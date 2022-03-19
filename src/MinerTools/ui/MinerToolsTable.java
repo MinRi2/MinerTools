@@ -1,5 +1,6 @@
 package MinerTools.ui;
 
+import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.members.Schematics;
 import MinerTools.ui.tables.members.*;
 import arc.*;
@@ -16,7 +17,8 @@ import mindustry.gen.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class MinerToolsTable extends Table{
+public class MinerToolsTable extends BaseTable{
+    /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
 
     private final TeamsInfo teamInfo = new TeamsInfo();
