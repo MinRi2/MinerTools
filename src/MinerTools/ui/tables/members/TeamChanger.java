@@ -1,12 +1,11 @@
 package MinerTools.ui.tables.members;
 
-import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.util.*;
 import mindustry.game.*;
+import mindustry.gen.*;
 
 import static mindustry.Vars.*;
-import static mindustry.content.Blocks.spawn;
 import static mindustry.gen.Call.sendChatMessage;
 import static mindustry.gen.Icon.play;
 import static mindustry.gen.Tex.whiteui;
@@ -18,7 +17,7 @@ public class TeamChanger extends MemberTable{
     private int skipWave;
 
     public TeamChanger(){
-        icon = new TextureRegionDrawable(spawn.uiIcon);
+        icon = Icon.editor;
         rebuild();
     }
 
