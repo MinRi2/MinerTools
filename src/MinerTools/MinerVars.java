@@ -2,6 +2,7 @@ package MinerTools;
 
 import MinerTools.core.*;
 import MinerTools.input.*;
+import MinerTools.io.*;
 import arc.KeyBinds.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -16,7 +17,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MinerVars{
-
+    public static MinerToolsSettings mSettings;
     public static MUI mui;
 
     public static boolean desktop;
@@ -30,6 +31,7 @@ public class MinerVars{
     public static boolean enableUpdateConveyor;
 
     public static void init(){
+        mSettings = new MinerToolsSettings();
         mui = new MUI();
 
         betterUiscaleSetting();
@@ -53,6 +55,7 @@ public class MinerVars{
         visibleBlocks = content.blocks().select(Block::isVisible);
         visibleUnits = content.units().select(u -> !u.isHidden());
 
+        mSettings.init();
         mui.init();
     }
 
