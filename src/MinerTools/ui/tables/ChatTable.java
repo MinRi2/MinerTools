@@ -10,6 +10,7 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
@@ -34,6 +35,7 @@ public class ChatTable extends MemberTable{
     private ScrollPane pane;
     private TextField textField;
 
+    private int lastSize;
     private boolean lastIsBottomEdge;
 
     public ChatTable(){
@@ -87,22 +89,28 @@ public class ChatTable extends MemberTable{
             }
         });
 
+        Events.on(EventType.PlayerChatEvent.class, e -> Log.info("PlayerChatting!!!"));
+
         MinerToolsTable.panes.add(pane);
     }
 
     private void resetMessages(){
+        lastSize = messages.size;
+
         messages.set(Reflect.<Seq<String>>get(ui.chatfrag, "messages"));
         messages.reverse();
 
-        boolean isBottomEdge = pane.isBottomEdge();
+        lastIsBottomEdge = pane.isBottomEdge();
 
         rebuild();
 
-        if(lastIsBottomEdge && !isBottomEdge){
-            pane.setScrollY(Float.MAX_VALUE);
+        if(lastIsBottomEdge && messages.size != lastSize){
+            app.post(this::scrollBottom);
         }
+    }
 
-        lastIsBottomEdge = isBottomEdge;
+    private void scrollBottom(){
+        pane.setScrollY(Float.MAX_VALUE);
     }
 
     private void sendMessage(){
