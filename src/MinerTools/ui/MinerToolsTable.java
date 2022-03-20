@@ -18,9 +18,6 @@ import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class MinerToolsTable extends BaseTable{
-    /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
-    public static Seq<ScrollPane> panes = new Seq<>();
-
     private final TeamsInfo teamInfo = new TeamsInfo();
     private boolean infoShown = true;
 
@@ -90,17 +87,6 @@ public class MinerToolsTable extends BaseTable{
                 .checked(b -> shown == null).growY();
             }).fillX().growY();
         }).right();
-
-        update(() -> {
-            for(ScrollPane pane : panes){
-                if(pane.hasScroll()){
-                    Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
-                    if(result == null || !result.isDescendantOf(pane)){
-                        Core.scene.setScrollFocus(null);
-                    }
-                }
-            }
-        });
     }
 
     public void setMember(MemberTable member){

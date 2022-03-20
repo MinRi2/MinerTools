@@ -5,21 +5,24 @@ import MinerTools.ui.logic.*;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
 import arc.*;
-import arc.func.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.ui.*;
 
 import static MinerTools.MinerVars.desktop;
-import static arc.Core.*;
+import static arc.Core.app;
 import static mindustry.Vars.state;
 
 public class MUI{
+    /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
+    public static Seq<ScrollPane> panes = new Seq<>();
+
     private static final float padding = 0f;
 
     public MSettingsTable minerSettings;
@@ -45,6 +48,18 @@ public class MUI{
 
     public void addUI(){
         minerToolsTable.addUI();
+        new MembersTable();
+    }
+
+    public void update(){
+        for(ScrollPane pane : panes){
+            if(pane.hasScroll()){
+                Element result = Core.scene.hit(Core.input.mouseX(), Core.input.mouseY(), true);
+                if(result == null || !result.isDescendantOf(pane)){
+                    Core.scene.setScrollFocus(null);
+                }
+            }
+        }
     }
 
     public static void showInfoToast(String info, float duration, int align){
