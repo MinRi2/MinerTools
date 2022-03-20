@@ -23,8 +23,6 @@ public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
 
-    private static final float padding = 0f;
-
     public MSettingsTable minerSettings;
     public BaseTable minerToolsTable;
     public LogicVars logicVars;
