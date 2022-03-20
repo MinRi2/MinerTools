@@ -39,7 +39,6 @@ public class DraggableTable extends BaseTable{
         if(name != null && !name.equals("")){
             float x = mSettings.getFloat("ui." + name + ".pos" + ".x");
             float y = mSettings.getFloat("ui." + name + ".pos" + ".y");
-            Log.info("MinerTools DraggableTable Read: " + "(" + x + "," + y + ")");
             setPosition(x, y);
             keepInStage();
         }
@@ -47,11 +46,19 @@ public class DraggableTable extends BaseTable{
 
     public void setDraggier(Element draggier){
         Element lastDraggier = this.draggier;
-        this.draggier = draggier;
         if(lastDraggier != draggier){
+            this.draggier = draggier;
             if(lastDraggier != null) lastDraggier.getListeners().removeAll(l -> l instanceof DragListener);
             addListener();
         }
+    }
+
+    public boolean isLocked(){
+        return mSettings.getBool("ui." + name + ".pos" + "locked");
+    }
+
+    public void toggleLocked(){
+        mSettings.put("ui." + name + ".pos" + "locked", !isLocked());
     }
 
     public void addListener(){
@@ -80,15 +87,16 @@ public class DraggableTable extends BaseTable{
 
         @Override
         public void touchDragged(InputEvent event, float x, float y, int pointer){
-            Vec2 v = target.localToStageCoordinates(Tmp.v1.set(x, y));
-            target.setPosition(v.x - fromx, v.y - fromy);
+            if(!target.isLocked()){
+                Vec2 v = target.localToStageCoordinates(Tmp.v1.set(x, y));
+                target.setPosition(v.x - fromx, v.y - fromy);
 
-            target.pack();
-            target.keepInStage();
+                target.keepInStage();
 
-            if(target.savePos){
-                mSettings.put("ui." + target.name + ".pos" + ".x", target.x);
-                mSettings.put("ui." + target.name + ".pos" + ".y", target.y);
+                if(target.savePos){
+                    mSettings.put("ui." + target.name + ".pos" + ".x", target.x);
+                    mSettings.put("ui." + target.name + ".pos" + ".y", target.y);
+                }
             }
         }
 
