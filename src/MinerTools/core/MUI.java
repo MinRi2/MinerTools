@@ -48,7 +48,6 @@ public class MUI{
 
     public void addUI(){
         minerToolsTable.addUI();
-        new MembersTable();
     }
 
     public void update(){
