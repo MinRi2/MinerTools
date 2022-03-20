@@ -1,13 +1,11 @@
-package MinerTools.ui.tables.members;
+package MinerTools.ui.tables.floats;
 
 import MinerTools.core.*;
-import MinerTools.ui.*;
 import arc.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.*;
 import arc.scene.ui.*;
-import arc.scene.ui.ScrollPane.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -22,7 +20,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class ChatTable extends MemberTable{
+public class ChatTable extends FloatTable{
     private static final String messageStart = ":[white] ";
     public static final Seq<String> quickWords = Seq.with("Test", "gg", "Hello");
     public static Table quickWordTable = new Table();
@@ -40,11 +38,13 @@ public class ChatTable extends MemberTable{
     private ScrollPane pane;
     private TextField textField;
 
+    private TextFieldStyle fstyle;
+
     private int lastSize;
     private boolean lastIsBottomEdge;
 
     public ChatTable(){
-        icon = Icon.chat;
+        super("chat");
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             history.clear();
@@ -52,20 +52,21 @@ public class ChatTable extends MemberTable{
             pane.setScrollY(Float.MAX_VALUE);
         });
 
-        setup();
-    }
-
-    private void setup(){
-        TextFieldStyle style = new TextFieldStyle(areaField){{
+        fstyle = new TextFieldStyle(areaField){{
             background = black6;
         }};
+    }
 
-        pane = pane(nonePane, messageTable).minWidth(350f).maxHeight(235f).scrollX(false).get();
+    @Override
+    protected void rebuildCont(Table cont){
+        super.rebuildCont(cont);
 
-        row();
+        pane = cont.pane(nonePane, messageTable).minWidth(350f).maxHeight(235f).scrollX(false).get();
 
-        table(table -> {
-            textField = table.field("", style, s -> {
+        cont.row();
+
+        cont.table(table -> {
+            textField = table.field("", fstyle, s -> {
             }).padTop(15f).grow().get();
 
             textField.setMessageText("Send Message");
@@ -83,15 +84,6 @@ public class ChatTable extends MemberTable{
                 table.button(Icon.down, clearTransi, this::historyShiftDown).growY();
             }
         }).growX();
-
-        update(() -> {
-            if(timer.get(60f)){
-                resetMessages();
-            }
-//            if(input.alt() && input.keyTap(KeyCode.b)){
-//                showQuickTable();
-//            }
-        });
 
 //        setupQuickWordTable();
 
@@ -127,15 +119,11 @@ public class ChatTable extends MemberTable{
 
         lastIsBottomEdge = pane.isBottomEdge();
 
-        rebuild();
+        rebuildMessagesTable();
 
         if(lastIsBottomEdge && messages.size != lastSize){
-            app.post(this::scrollBottom);
+            app.post(this::scrollToBottom);
         }
-    }
-
-    private void scrollBottom(){
-        pane.setScrollY(Float.MAX_VALUE);
     }
 
     private void sendMessage(){
@@ -174,11 +162,15 @@ public class ChatTable extends MemberTable{
         textField.setText(history.get(historyIndex));
     }
 
+    private void scrollToBottom(){
+        pane.setScrollY(Float.MAX_VALUE);
+    }
+
     private void toggleCopyMode(){
         copyMode = !copyMode;
     }
 
-    private void rebuild(){
+    private void rebuildMessagesTable(){
         messageTable.clear();
 
         if(messages.isEmpty()) return;
@@ -234,7 +226,14 @@ public class ChatTable extends MemberTable{
     }
 
     @Override
-    public void memberRebuild(){
-        pane.setScrollY(Float.MAX_VALUE);
+    protected void update(){
+        super.update();
+
+        if(timer.get(60f)){
+            resetMessages();
+        }
+//            if(input.alt() && input.keyTap(KeyCode.b)){
+//                showQuickTable();
+//            }
     }
 }

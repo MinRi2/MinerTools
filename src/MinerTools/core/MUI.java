@@ -4,6 +4,7 @@ import MinerTools.ui.*;
 import MinerTools.ui.logic.*;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
+import MinerTools.ui.tables.floats.*;
 import arc.*;
 import arc.math.*;
 import arc.scene.*;
@@ -23,9 +24,17 @@ public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
 
+    // Settings
     public MSettingsTable minerSettings;
-    public BaseTable minerToolsTable;
+
+    // MinerToolsTable
+    public MinerToolsTable minerToolsTable;
+
+    // DraggableTable
     public LogicVars logicVars;
+
+    // FloatTable
+    public ChatTable chat;
 
     public MUI(){
     }
@@ -36,6 +45,8 @@ public class MUI{
         minerSettings = new MSettingsTable();
 
         minerToolsTable = new MinerToolsTable();
+
+        chat = new ChatTable();
 
         if(desktop){
             logicVars = new LogicVars();

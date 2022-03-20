@@ -4,9 +4,7 @@ import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.members.Schematics;
 import MinerTools.ui.tables.members.*;
 import arc.*;
-import arc.scene.*;
 import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -24,7 +22,7 @@ public class MinerToolsTable extends BaseTable{
     private final MemberManager memberManager = new MemberManager();
 
     private MemberTable shown;
-    private final Seq<MemberTable> members = Seq.with(new TeamChanger(), new PlayersList(), new ChatTable(), new Schematics());
+    private final Seq<MemberTable> members = Seq.with(new TeamChanger(), new PlayersList(), new Schematics());
 
     public MinerToolsTable(){
         rebuild();
