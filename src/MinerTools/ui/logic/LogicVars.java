@@ -22,7 +22,7 @@ public class LogicVars extends DraggableTable{
     private VariablesTable varsTable = new VariablesTable();
 
     public LogicVars(){
-        super();
+        super(true);
 
         ui.logic.shown(() -> {
             executor = Reflect.get(ui.logic, "executor");
