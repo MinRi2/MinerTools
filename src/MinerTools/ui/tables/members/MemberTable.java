@@ -1,9 +1,10 @@
 package MinerTools.ui.tables.members;
 
+import MinerTools.ui.tables.*;
 import arc.scene.style.*;
-import arc.scene.ui.layout.*;
+import org.jetbrains.annotations.ApiStatus.*;
 
-public class MemberTable extends Table{
+public class MemberTable extends BaseTable{
     /* 仅电脑显示 */
     public boolean desktopOnly = false;
     /* 仅手机显示 */
@@ -13,5 +14,11 @@ public class MemberTable extends Table{
     /**
      * MemberTable设置成自己时会调用此方法
      */
-    public void memberRebuild(){}
+    @OverrideOnly
+    public void memberRebuild(){
+        rebuild();
+    }
+
+    @OverrideOnly
+    private void rebuild(){}
 }

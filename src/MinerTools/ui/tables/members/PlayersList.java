@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.members;
 
 import MinerTools.*;
+import MinerTools.core.*;
 import arc.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
@@ -13,7 +14,6 @@ import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 
-import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
@@ -32,7 +32,7 @@ public class PlayersList extends MemberTable{
         icon = Icon.players;
 
         ScrollPane pane = pane(nonePane, players).maxHeight(235).get();
-        panes.add(pane);
+        MUI.panes.add(pane);
 
         update(() -> {
             if(timer.get(60) && !lastPlayers.equals(Groups.player.copy(tmpSeq))){

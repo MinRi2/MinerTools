@@ -37,8 +37,6 @@ public class MinerToolsSettings{
             Log.err("MinerToolsSettings: Failed to create file: ", e);
         }
 
-        put("Test", 0);
-
         load();
     }
 
@@ -47,8 +45,14 @@ public class MinerToolsSettings{
     }
 
     public void put(String name, Object obj){
+        put(name, obj, false);
+    }
+
+    public void put(String name, Object obj, boolean unique){
         MinerSetting ms = findSetting(name);
+
         if(ms != null){
+            if(unique) return;
             ms.value = obj;
         }else{
             mSettings.add(new MinerSetting(name, obj));
@@ -87,7 +91,9 @@ public class MinerToolsSettings{
     }
 
     private void load(){
-        loadSettings();
+        if(settings.file().length() != 0L || backup.file().length() != 0L){
+            loadSettings();
+        }
         Log.info(mSettings);
     }
 
@@ -139,6 +145,8 @@ public class MinerToolsSettings{
 
         writes.i(mSettings.size);
         for(MinerSetting setting : mSettings){
+            Log.info("MinerToolsSettings: Saving " + setting.name + ": " + setting.value);
+
             Object value = setting.value;
 
             writes.str(setting.name);

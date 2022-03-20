@@ -39,5 +39,6 @@ public class MinerTools extends Mod{
             tryUpdateConveyor();
         }
         PowerInfo.updateAll();
+        mui.update();
     }
 }

@@ -1,5 +1,6 @@
 package MinerTools.ui.tables.members;
 
+import MinerTools.core.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.input.*;
@@ -35,7 +36,7 @@ public class ChatTable extends MemberTable{
     /* For mobile */
     private boolean copyMode;
 
-    private Table messageTable = new Table();
+    private Table messageTable = new Table(black3);
     private ScrollPane pane;
     private TextField textField;
 
@@ -59,11 +60,7 @@ public class ChatTable extends MemberTable{
             background = black6;
         }};
 
-        ScrollPaneStyle paneStyle = new ScrollPaneStyle(nonePane){{
-            background = black3;
-        }};
-
-        pane = pane(paneStyle, messageTable).minWidth(350f).maxHeight(235f).scrollX(false).get();
+        pane = pane(nonePane, messageTable).minWidth(350f).maxHeight(235f).scrollX(false).get();
 
         row();
 
@@ -98,7 +95,7 @@ public class ChatTable extends MemberTable{
 
 //        setupQuickWordTable();
 
-        MinerToolsTable.panes.add(pane);
+        MUI.panes.add(pane);
     }
 
     private void setupQuickWordTable(){

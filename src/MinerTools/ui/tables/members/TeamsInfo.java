@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.members;
 
 import MinerTools.*;
+import MinerTools.core.*;
 import MinerTools.ui.Dialogs.*;
 import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
@@ -24,7 +25,6 @@ import mindustry.ui.*;
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
 import static MinerTools.input.ModBinding.dropItem;
-import static MinerTools.ui.MinerToolsTable.panes;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
@@ -58,7 +58,7 @@ public class TeamsInfo extends Table{
         addDivive();
 
         ScrollPane pane = pane(nonePane, p -> table = p).fillX().left().maxHeight(135).scrollX(false).get();
-        panes.add(pane);
+        MUI.panes.add(pane);
 
         table.background(black3);
         table.update(() -> {
