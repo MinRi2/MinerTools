@@ -23,6 +23,7 @@ import mindustry.world.blocks.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
+import mindustry.world.blocks.distribution.ItemBridge.*;
 import mindustry.world.blocks.distribution.Junction.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.blocks.production.*;
@@ -70,9 +71,23 @@ public class MinerFuncs{
 
         if(start instanceof ChainedBuilding chainedBuild && chainedBuild.next() != null){
             tryUpdateConveyor(chainedBuild.next(), type);
-        }else if(start instanceof ConveyorBuild build && build.next != null && build.next.team == build.team && build.next instanceof JunctionBuild junctionBuild){
-            Building building = junctionBuild.nearby(build.rotation);
-            if(building != null) tryUpdateConveyor(building, type);
+        }else if(start instanceof ConveyorBuild build && build.next != null && build.next.team == build.team){
+            if(build.next instanceof JunctionBuild junction){
+                Building building = junction.nearby(build.rotation);
+
+                if(building != null) tryUpdateConveyor(building, type);
+            }else if(build.next instanceof ItemBridgeBuild bridge){
+                Tile otherTile = world.tile(bridge.link);
+                ItemBridge block = (ItemBridge)bridge.block;
+
+                if(block.linkValid(bridge.tile, otherTile)){
+                    ItemBridgeBuild other = (ItemBridgeBuild)otherTile.build;
+
+                    for(Building building : other.proximity){
+                        tryUpdateConveyor(building, type);
+                    }
+                }
+            }
         }
     }
 
