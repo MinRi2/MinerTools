@@ -17,6 +17,8 @@ public class MinerToolsSettings{
     private Fi root, settings, backup;
 
     protected Seq<MinerSetting> mSettings = new Seq<>();
+
+    private boolean loaded = false;
     private boolean modified = false;
 
     public void init(){
@@ -38,6 +40,10 @@ public class MinerToolsSettings{
         }
 
         load();
+
+        Timer.schedule(() -> {
+            if(modified) save();
+        }, 0f, 60f * 1);
     }
 
     public MinerSetting findSetting(String name){
@@ -45,10 +51,10 @@ public class MinerToolsSettings{
     }
 
     public void put(String name, Object obj){
-        put(name, obj, false);
+        put(name, obj, false, false);
     }
 
-    public void put(String name, Object obj, boolean unique){
+    public void put(String name, Object obj, boolean unique, boolean forceSave){
         MinerSetting ms = findSetting(name);
 
         if(ms != null){
@@ -59,7 +65,7 @@ public class MinerToolsSettings{
         }
         modified = true;
 
-        save();
+        if(forceSave) save();
     }
 
     public <T> T get(String name, T def){
@@ -94,7 +100,7 @@ public class MinerToolsSettings{
         if(settings.file().length() != 0L || backup.file().length() != 0L){
             loadSettings();
         }
-        Log.info(mSettings);
+        loaded = true;
     }
 
     private void loadSettings(){
@@ -129,15 +135,16 @@ public class MinerToolsSettings{
                 case typeLong -> value = reads.l();
                 case typeFloat -> value = reads.f();
                 case typeString -> value = reads.str();
-                default -> throw new IOException("Field to load type: " + type);
+                default -> throw new IOException("MinerToolsSettings: Field to load type: " + type);
             }
 
-            Log.info("MinerToolsSettings: Read:" + name + "/ Value:" + value + "(" + type + ")");
             mSettings.add(new MinerSetting(name, value));
         }
     }
 
     private void save(){
+        if(!loaded) return;
+
         Log.info("MinerToolsSettings: Saving");
         settings.copyTo(backup);
 
@@ -145,7 +152,6 @@ public class MinerToolsSettings{
 
         writes.i(mSettings.size);
         for(MinerSetting setting : mSettings){
-            Log.info("MinerToolsSettings: Saving " + setting.name + ": " + setting.value);
 
             Object value = setting.value;
 
@@ -176,9 +182,6 @@ public class MinerToolsSettings{
     public static class MinerSetting{
         public String name;
         public Object value;
-
-        public MinerSetting(){
-        }
 
         public MinerSetting(String name, Object value){
             this.name = name;
