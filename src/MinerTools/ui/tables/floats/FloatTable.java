@@ -37,8 +37,8 @@ public class FloatTable extends DraggableTable{
     }
 
     private void init(){
-        title = new Table(Tex.pane);
-        cont = new Table(Tex.buttonRight);
+        title = new Table(black6);
+        cont = new Table();
     }
 
     private void rebuild(){
