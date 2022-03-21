@@ -54,6 +54,7 @@ public class FloatTable extends DraggableTable{
         collapser(cont, () -> showCont).fillX().top().right();
 
         pack();
+        keepInStage();
         invalidateHierarchy();
     }
 
