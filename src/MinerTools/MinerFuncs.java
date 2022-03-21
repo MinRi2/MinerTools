@@ -149,13 +149,6 @@ public class MinerFuncs{
         }
     }
 
-    /*public static void dropItems(){
-        indexer.eachBlock(player.team(), player.x, player.y, itemTransferRange,
-            build -> build.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0 && !(build.block instanceof CoreBlock || build.block instanceof ItemBridge ||build.block instanceof Autotiler ||build.block instanceof MassDriver),
-            build -> Call.transferInventory(player, build)
-        );
-    }*/
-
     public static void dropItems(){
         dropBuildings.clear();
 
@@ -230,7 +223,7 @@ public class MinerFuncs{
 
             if(player.unit().hasItem() && building.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0){
                 status = DropStatus.PLAYER;
-            }else if(lastDropItem != null && !player.unit().hasItem()){
+            }else if(lastDropItem != null && !player.unit().hasItem() && building.acceptItem(building, lastDropItem)){
                 status = DropStatus.LAST;
             }else if(autoDrop && consumeItems != null){
                 status = DropStatus.AUTO;
