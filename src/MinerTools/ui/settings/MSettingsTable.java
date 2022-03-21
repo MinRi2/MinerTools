@@ -2,8 +2,10 @@ package MinerTools.ui.settings;
 
 import MinerTools.core.*;
 import MinerTools.ui.tables.*;
+import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
+import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -128,12 +130,12 @@ public class MSettingsTable extends BaseTable{
         }
 
         public static abstract class MSetting{
-            public String name;
-            public String title;
+            String name, title, describe;
 
             public MSetting(String name){
                 this.name = name;
                 title = bundle.get("miner-tools.setting." + name + ".name");
+                describe = bundle.get("miner-tools.setting." + name + ".describe");
             }
 
             public MSetting(String name, Object def){
@@ -144,7 +146,13 @@ public class MSettingsTable extends BaseTable{
 
             public abstract void add(Table table);
 
-            public void putSetting(Object value){
+            protected void addDesc(Element element){
+                if(!describe.equals("???miner-tools.setting." + name + ".describe???")){
+                    ElementUtils.addTooltip(element, describe, Align.topLeft, true);
+                }
+            }
+
+            protected void putSetting(Object value){
                 mSettings.put(name, value, false, true);
             }
         }
@@ -174,6 +182,8 @@ public class MSettingsTable extends BaseTable{
                 });
 
                 box.left();
+                addDesc(box);
+
                 table.add(box).left().padTop(3f);
                 table.row();
             }
@@ -212,7 +222,7 @@ public class MSettingsTable extends BaseTable{
 
                 slider.change();
 
-                table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f);
+                addDesc(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
                 table.row();
             }
         }

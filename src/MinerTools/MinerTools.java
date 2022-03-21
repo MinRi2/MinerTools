@@ -1,7 +1,6 @@
 package MinerTools;
 
 import MinerTools.core.*;
-import MinerTools.input.*;
 import MinerTools.ui.*;
 import arc.*;
 import mindustry.game.*;
