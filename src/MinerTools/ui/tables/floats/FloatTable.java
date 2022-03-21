@@ -37,8 +37,8 @@ public class FloatTable extends DraggableTable{
     }
 
     private void init(){
-        title = new Table(black6);
-        cont = new Table();
+        title = new Table(Tex.pane);
+        cont = new Table(Tex.buttonRight);
     }
 
     private void rebuild(){
@@ -51,10 +51,8 @@ public class FloatTable extends DraggableTable{
 
         row();
 
-        collapser(cont, () -> showCont).fillX().top().right();
+        collapser(cont, true, () -> showCont).growX().top().left();
 
-        pack();
-        keepInStage();
         invalidateHierarchy();
     }
 
@@ -63,17 +61,22 @@ public class FloatTable extends DraggableTable{
 
         title.add(Core.bundle.get("miner-tools.floats." + name)).padLeft(3f).growX().left();
 
-        ImageButton lockedBut = title.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked)
-        .width(35f).right().checked(b -> isLocked()).get();
+        title.table(buttons -> {
+            buttons.defaults().width(35f).growY().right();
 
-        ImageButton shownBut = title.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont)
-        .width(35f).right().get();
+            ImageButton lockedBut = buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked)
+            .checked(b -> isLocked()).get();
 
-        lockedBut.changed(() -> lockedBut.getImage().setDrawable(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall));
-        shownBut.changed(() -> shownBut.getImage().setDrawable(showCont ? Icon.upSmall : Icon.downSmall));
+            ImageButton shownBut = buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont)
+            .get();
 
-        title.button("x", floatb, () -> {
-        }).width(35f).right();
+            lockedBut.changed(() -> lockedBut.getImage().setDrawable(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall));
+            shownBut.changed(() -> shownBut.getImage().setDrawable(showCont ? Icon.upSmall : Icon.downSmall));
+
+            buttons.button("x", floatb, () -> {
+            });
+        }).growY().right();
+
     }
 
     @OverrideOnly
@@ -91,6 +94,7 @@ public class FloatTable extends DraggableTable{
             remove();
         }
         pack();
+        keepInStage();
     }
 
     private void toggleCont(){

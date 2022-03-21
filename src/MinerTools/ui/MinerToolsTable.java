@@ -55,7 +55,7 @@ public class MinerToolsTable extends BaseTable{
         clear();
 
         table(t -> {
-            t.collapser(tt -> tt.add(teamInfo), () -> infoShown).right();
+            t.collapser(teamInfo, true, () -> infoShown).right();
 
             ImageButtonStyle style = new ImageButtonStyle(clearTogglePartiali){{
                 up = black3;
