@@ -26,9 +26,10 @@ public class FloatTable extends DraggableTable{
 
         setLastPos();
 
+        setup();
+
         Events.on(EventType.WorldLoadEvent.class, e -> {
             addUI();
-            rebuild();
         });
 
         setDraggier(title);
@@ -36,16 +37,17 @@ public class FloatTable extends DraggableTable{
         update(this::update);
     }
 
-    private void init(){
+    /**
+     * 在rebuildCont方法执行前初始化变量
+     */
+    protected void init(){
         title = new Table(black6);
         cont = new Table();
     }
 
-    private void rebuild(){
-        clearChildren();
-
-        rebuildTitle();
-        rebuildCont(cont);
+    private void setup(){
+        setupTitle();
+        setupCont(cont);
 
         add(title).fillX().minWidth(250f);
 
@@ -56,7 +58,7 @@ public class FloatTable extends DraggableTable{
         invalidateHierarchy();
     }
 
-    private void rebuildTitle(){
+    private void setupTitle(){
         title.clearChildren();
 
         title.add(Core.bundle.get("miner-tools.floats." + name)).padLeft(3f).growX().left();
@@ -76,11 +78,10 @@ public class FloatTable extends DraggableTable{
             buttons.button("x", floatb, () -> {
             });
         }).growY().right();
-
     }
 
     @OverrideOnly
-    protected void rebuildCont(Table cont){
+    protected void setupCont(Table cont){
         cont.clear();
     }
 

@@ -51,6 +51,11 @@ public class ChatTable extends FloatTable{
             historyIndex = -1;
             pane.setScrollY(Float.MAX_VALUE);
         });
+    }
+
+    @Override
+    protected void init(){
+        super.init();
 
         fstyle = new TextFieldStyle(areaField){{
             background = black6;
@@ -58,8 +63,8 @@ public class ChatTable extends FloatTable{
     }
 
     @Override
-    protected void rebuildCont(Table cont){
-        super.rebuildCont(cont);
+    protected void setupCont(Table cont){
+        super.setupCont(cont);
 
         pane = cont.pane(nonePane, messageTable).minWidth(350f).maxHeight(235f).scrollX(false).get();
 
@@ -88,6 +93,13 @@ public class ChatTable extends FloatTable{
 //        setupQuickWordTable();
 
         MUI.panes.add(pane);
+    }
+
+    @Override
+    public void addUI(){
+        super.addUI();
+
+        scrollToBottom();
     }
 
     private void setupQuickWordTable(){
