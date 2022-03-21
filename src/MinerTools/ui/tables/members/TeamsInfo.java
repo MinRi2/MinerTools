@@ -55,7 +55,7 @@ public class TeamsInfo extends Table{
             addInfo(table, gamma.uiIcon, () -> "[#" + player.team().color + "]" + countPlayer(player.team()) + "[white]" + "/" + "[accent]" + Groups.player.size());
         }).fillX();
 
-        addDivive();
+        addDivide();
 
         ScrollPane pane = pane(nonePane, p -> table = p).fillX().left().maxHeight(135).scrollX(false).get();
         MUI.panes.add(pane);
@@ -69,7 +69,7 @@ public class TeamsInfo extends Table{
             }
         });
 
-        addDivive();
+        addDivide();
 
         /* useful buttons */
         table(black3, buttons -> {
@@ -127,7 +127,7 @@ public class TeamsInfo extends Table{
             });
         }).minWidth(45f * 4f).fillX();
 
-        addDivive();
+        addDivide();
     }
 
     private void tableRebuild(){
@@ -176,7 +176,7 @@ public class TeamsInfo extends Table{
         }
     }
 
-    private void addDivive(){
+    private void addDivide(){
         row();
         image().height(3).fillX().update(i -> i.setColor(player.team().color));
         row();
