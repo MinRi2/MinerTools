@@ -1,44 +1,220 @@
 package MinerTools.ui.settings;
 
+import MinerTools.core.*;
+import MinerTools.ui.tables.*;
 import arc.*;
+import arc.func.*;
+import arc.scene.event.*;
+import arc.scene.style.*;
+import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
 import arc.util.*;
+import mindustry.gen.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 
-import static mindustry.Vars.ui;
+import static MinerTools.MinerVars.mSettings;
+import static arc.Core.bundle;
+import static mindustry.Vars.*;
+import static mindustry.ui.Styles.*;
 
-public class MSettingsTable extends SettingsTable{
-    public static Table menu;
-    public static Table prefs;
+public class MSettingsTable extends BaseTable{
+    public static Seq<MSettingTable> settingTables = new Seq<>();
 
-    {
-        menu = Reflect.get(ui.settings, "menu");
-        prefs = Reflect.get(ui.settings, "prefs");
-    }
+    private MSettingTable show;
+    private Table settingTableCont = new Table();
 
     public MSettingsTable(){
         addSettings();
 
+        setup();
+    }
+
+    @Override
+    public void addUI(){
+        Table menu = Reflect.get(ui.settings, "menu");
+        Table prefs = Reflect.get(ui.settings, "prefs");
+
+        menu.row();
+        menu.button("MinerTools", Styles.cleart, () -> {
+            prefs.clearChildren();
+            prefs.add(this);
+        }).name("miner-tools-settings");
+
         menu.update(() -> {
             if(menu.find("miner-tools-settings") == null){
-                addMenuButton();
+                addUI();
             }
         });
     }
 
     public void addSettings(){
-        checkPref("enemyUnitIndicator", true);
-        checkPref("itemTurretAmmoShow", true);
+        MSettingTable graphics = new MSettingTable(Icon.image);
+
+        graphics.checkPref("enemyUnitIndicator", true);
+        graphics.sliderPref("enemyUnitIndicatorRadius", 100, 25, 250, s -> {
+            Drawer.setDefEnemyRadius(s * tilesize);
+            return s + "(Tile)";
+        });
+
+        graphics.checkPref("itemTurretAmmoShow", true);
     }
 
-    private void addMenuButton(){
-        menu.row();
-        menu.button("MinerTools", Styles.cleart, this::visible).name("miner-tools-settings");
+    private void setup(){
+        add("MinerToolsSettings").center().row();
+        image().color(Pal.accent).growX();
+
+        row();
+
+        table(buttons -> {
+            for(MSettingTable settingTable : settingTables){
+                buttons.button(settingTable.icon, clearToggleTransi, () -> {
+                    settingTableCont.clear();
+
+                    if(show != settingTable){
+                        show = settingTable;
+                        settingTableCont.add(settingTable).left();
+                    }else{
+                        show = null;
+                    }
+                }).grow().checked(b -> show == settingTable);
+            }
+        }).minWidth(70f * settingTables.size);
+
+        row();
+
+        add(settingTableCont).growX();
     }
 
-    private void visible(){
-        prefs.clearChildren();
-        prefs.add(this);
+    public static class MSettingTable extends Table{
+        public Drawable icon;
+        public Seq<MSetting> settings = new Seq<>();
+
+        public MSettingTable(Drawable icon){
+            this.icon = icon;
+            settingTables.add(this);
+        }
+
+        public MCheckSetting checkPref(String name, boolean def){
+            return checkPref(name, def, null);
+        }
+
+        public MCheckSetting checkPref(String name, boolean def, Boolc changed){
+            MCheckSetting setting;
+            settings.add(setting = new MCheckSetting(name, def, changed));
+            rebuild();
+            return setting;
+        }
+
+        public MSliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
+            return sliderPref(name, def, min, max, 1, s);
+        }
+
+        public MSliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
+            MSliderSetting setting;
+            settings.add(setting = new MSliderSetting(name, def, min, max, step, s));
+            rebuild();
+            return setting;
+        }
+
+        private void rebuild(){
+            clearChildren();
+
+            for(MSetting setting : settings){
+                setting.add(this);
+            }
+        }
+
+        public static abstract class MSetting{
+            public String name;
+            public String title;
+
+            public MSetting(String name){
+                this.name = name;
+                title = bundle.get("miner-tools.setting." + name + ".name");
+            }
+
+            public MSetting(String name, Object def){
+                this(name);
+
+                mSettings.put(name, def, true, true);
+            }
+
+            public abstract void add(Table table);
+
+            public void putSetting(Object value){
+                mSettings.put(name, value, false, true);
+            }
+        }
+
+        public static class MCheckSetting extends MSetting{
+            boolean def;
+            Boolc changed;
+
+            public MCheckSetting(String name, boolean def, Boolc changed){
+                super(name, def);
+                this.def = def;
+                this.changed = changed;
+            }
+
+            @Override
+            public void add(Table table){
+                CheckBox box = new CheckBox(title);
+
+                box.update(() -> box.setChecked(mSettings.getBool(name)));
+
+                box.changed(() -> {
+                    putSetting(box.isChecked());
+
+                    if(changed != null){
+                        changed.get(box.isChecked());
+                    }
+                });
+
+                box.left();
+                table.add(box).left().padTop(3f);
+                table.row();
+            }
+        }
+
+        public static class MSliderSetting extends MSetting{
+            int def, min, max, step;
+            StringProcessor sp;
+
+            public MSliderSetting(String name, int def, int min, int max, int step, StringProcessor s){
+                super(name, def);
+                this.def = def;
+                this.min = min;
+                this.max = max;
+                this.step = step;
+                this.sp = s;
+            }
+
+            @Override
+            public void add(Table table){
+                Slider slider = new Slider(min, max, step, false);
+
+                slider.setValue(mSettings.getInt(name));
+
+                Label value = new Label("", Styles.outlineLabel);
+                Table content = new Table();
+                content.add(title, Styles.outlineLabel).left().growX().wrap();
+                content.add(value).padLeft(10f).right();
+                content.margin(3f, 33f, 3f, 33f);
+                content.touchable = Touchable.disabled;
+
+                slider.changed(() -> {
+                    putSetting((int)slider.getValue());
+                    value.setText(sp.get((int)slider.getValue()));
+                });
+
+                slider.change();
+
+                table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f);
+                table.row();
+            }
+        }
     }
 }

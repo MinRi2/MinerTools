@@ -3,7 +3,6 @@ package MinerTools.core;
 import MinerTools.ui.*;
 import MinerTools.ui.logic.*;
 import MinerTools.ui.settings.*;
-import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.floats.*;
 import arc.*;
 import arc.math.*;
@@ -18,7 +17,7 @@ import mindustry.ui.*;
 
 import static MinerTools.MinerVars.desktop;
 import static arc.Core.app;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 
 public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
@@ -57,6 +56,7 @@ public class MUI{
 
     public void addUI(){
         minerToolsTable.addUI();
+        minerSettings.addUI();
     }
 
     public void update(){

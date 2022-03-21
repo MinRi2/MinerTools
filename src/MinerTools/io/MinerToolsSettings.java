@@ -54,11 +54,11 @@ public class MinerToolsSettings{
         put(name, obj, false, false);
     }
 
-    public void put(String name, Object obj, boolean unique, boolean forceSave){
+    public void put(String name, Object obj, boolean isDef, boolean forceSave){
         MinerSetting ms = findSetting(name);
 
         if(ms != null){
-            if(unique) return;
+            if(isDef) return;
             ms.value = obj;
         }else{
             mSettings.add(new MinerSetting(name, obj));
@@ -80,20 +80,40 @@ public class MinerToolsSettings{
         return get(name, false);
     }
 
+    public boolean getBool(String name, boolean def){
+        return get(name, def);
+    }
+
     public int getInt(String name){
         return get(name, 0);
+    }
+
+    public int getInt(String name, int def){
+        return get(name, def);
     }
 
     public long getLong(String name){
         return get(name, 0L);
     }
 
+    public long getLong(String name, long def){
+        return get(name, def);
+    }
+
     public float getFloat(String name){
         return get(name, 0f);
     }
 
+    public float getFloat(String name, float def){
+        return get(name, def);
+    }
+
     public String getString(String name){
         return get(name, "");
+    }
+
+    public String getString(String name, String def){
+        return get(name, def);
     }
 
     private void load(){

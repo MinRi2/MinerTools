@@ -5,7 +5,6 @@ import arc.graphics.g2d.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.entities.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -15,29 +14,35 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 
-import static arc.Core.settings;
+import static MinerTools.MinerVars.mSettings;
 import static mindustry.Vars.*;
 
 public class Drawer{
-    public static float defRadius = 100 * tilesize;
+    public static float defEnemyRadius;
 
-    private static float drawRadius = defRadius;
+    private static float enemyRadius = defEnemyRadius;
+
+    public static void setDefEnemyRadius(float r){
+        defEnemyRadius = r;
+    }
 
     public static void setEvents(){
+        defEnemyRadius = mSettings.getInt("enemyUnitIndicatorRadius") * tilesize;
+
         Events.run(Trigger.draw, () -> {
-            if(settings.getBool("itemTurretAmmoShow")){
+            if(mSettings.getBool("itemTurretAmmoShow")){
                 Groups.build.each(building -> building instanceof ItemTurretBuild, Drawer::itemTurretAmmo);
             }
-            if(settings.getBool("enemyUnitIndicator")){
+            if(mSettings.getBool("enemyUnitIndicator")){
                 enemyIndicator();
             }
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             if(state.rules.polygonCoreProtection){
-                drawRadius = defRadius;
+                enemyRadius = defEnemyRadius;
             }else{
-                drawRadius = Math.max(state.rules.enemyCoreBuildRadius, defRadius);
+                enemyRadius = Math.max(state.rules.enemyCoreBuildRadius, defEnemyRadius);
             }
         });
     }
@@ -57,9 +62,9 @@ public class Drawer{
         Draw.z(Layer.flyingUnit + 0.1f);
         Groups.unit.each(unit -> {
             CoreBuild core = cores.min(c -> length[0] = unit.dst(c));
-            return unit.team != player.team() && core != null && core.within(unit, drawRadius);
+            return unit.team != player.team() && core != null && core.within(unit, enemyRadius);
         }, unit -> {
-            float enemyIndicatorLength = Mathf.lerp(20f, 55f, length[0] / drawRadius);
+            float enemyIndicatorLength = Mathf.lerp(20f, 55f, length[0] / enemyRadius);
 
             Tmp.v1.set(unit).sub(player).setLength(enemyIndicatorLength);
 

@@ -21,6 +21,8 @@ public class MinerTools extends Mod{
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
             MinerVars.init();
+
+            Drawer.setEvents();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
@@ -30,8 +32,6 @@ public class MinerTools extends Mod{
         });
 
         Events.run(Trigger.update, this::update);
-
-        Drawer.setEvents();
     }
 
     public void update(){
