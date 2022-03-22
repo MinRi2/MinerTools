@@ -34,7 +34,7 @@ public class ChatTable extends FloatTable{
     /* For mobile */
     private boolean copyMode;
 
-    private Table messageTable = new Table(black3);
+    private Table messageTable;
     private ScrollPane pane;
     private TextField textField;
 
@@ -45,17 +45,14 @@ public class ChatTable extends FloatTable{
 
     public ChatTable(){
         super("chat");
-
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            history.clear();
-            historyIndex = -1;
-            pane.setScrollY(Float.MAX_VALUE);
-        });
     }
 
     @Override
     protected void init(){
         super.init();
+
+        messageTable = new Table(black3);
+        pane = new ScrollPane(messageTable, nonePane);
 
         fstyle = new TextFieldStyle(areaField){{
             background = black6;
@@ -64,9 +61,7 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void setupCont(Table cont){
-        super.setupCont(cont);
-
-        pane = cont.pane(nonePane, messageTable).minWidth(350f).maxHeight(235f).scrollX(false).get();
+        cont.add(pane).minWidth(350f).maxHeight(235f).scrollX(false);
 
         cont.row();
 
@@ -83,10 +78,14 @@ public class ChatTable extends FloatTable{
                 textField.keyDown(KeyCode.up, this::historyShiftUp);
                 textField.keyDown(KeyCode.down, this::historyShiftDown);
             }else{
-                table.button(Icon.modeAttack, clearTransi, this::sendMessage).growY();
-                table.button(Icon.copy, clearToggleTransi, this::toggleCopyMode).growY().checked(b -> copyMode);
-                table.button(Icon.up, clearTransi, this::historyShiftUp).growY();
-                table.button(Icon.down, clearTransi, this::historyShiftDown).growY();
+                table.table(buttons -> {
+                    buttons.defaults().width(25f).growY();
+
+                    buttons.button(Icon.modeAttackSmall, clearTransi, this::sendMessage);
+                    buttons.button(Icon.copySmall, clearToggleTransi, this::toggleCopyMode).checked(b -> copyMode);
+                    buttons.button(Icon.upSmall, clearTransi, this::historyShiftUp);
+                    buttons.button(Icon.downSmall, clearTransi, this::historyShiftDown);
+                }).growY();
             }
         }).growX();
 
@@ -99,6 +98,8 @@ public class ChatTable extends FloatTable{
     public void addUI(){
         super.addUI();
 
+        history.clear();
+        historyIndex = -1;
         scrollToBottom();
     }
 
