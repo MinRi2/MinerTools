@@ -54,11 +54,11 @@ public class DraggableTable extends BaseTable{
     }
 
     public boolean isLocked(){
-        return mSettings.getBool("ui." + name + ".pos" + "locked");
+        return mSettings.getBool("ui." + name + ".pos" + ".locked");
     }
 
     public void toggleLocked(){
-        mSettings.put("ui." + name + ".pos" + "locked", !isLocked());
+        mSettings.put("ui." + name + ".pos" + ".locked", !isLocked());
     }
 
     public void addListener(){
