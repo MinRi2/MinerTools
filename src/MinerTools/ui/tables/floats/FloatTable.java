@@ -4,6 +4,7 @@ import MinerTools.ui.tables.*;
 import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import org.jetbrains.annotations.ApiStatus.*;
@@ -24,6 +25,7 @@ public class FloatTable extends DraggableTable{
 
         init();
 
+        setDraggier(title);
         setLastPos();
 
         setup();
@@ -31,8 +33,6 @@ public class FloatTable extends DraggableTable{
         Events.on(EventType.WorldLoadEvent.class, e -> {
             addUI();
         });
-
-        setDraggier(title);
 
         update(this::update);
     }
@@ -53,7 +53,7 @@ public class FloatTable extends DraggableTable{
 
         row();
 
-        collapser(cont, true, () -> showCont).growX().top().left();
+        collapser(cont, false, () -> showCont).growX().top().left();
 
         invalidateHierarchy();
     }
@@ -66,24 +66,32 @@ public class FloatTable extends DraggableTable{
         title.table(buttons -> {
             buttons.defaults().width(35f).growY().right();
 
-            ImageButton lockedBut = buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked)
-            .checked(b -> isLocked()).get();
+            buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked)
+            .checked(b -> {
+                b.getStyle().imageUp = (isLocked() ? Icon.lockSmall : Icon.lockOpenSmall);
+                return isLocked();
+            });
 
-            ImageButton shownBut = buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont)
-            .get();
-
-            lockedBut.changed(() -> lockedBut.getImage().setDrawable(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall));
-            shownBut.changed(() -> shownBut.getImage().setDrawable(showCont ? Icon.upSmall : Icon.downSmall));
+            buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont)
+            .update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
 
             buttons.button("x", floatb, () -> {
             });
         }).growY().right();
     }
 
-    @OverrideOnly
-    protected void setupCont(Table cont){
-        cont.clear();
+    private void toggleCont(){
+        showCont = !showCont;
+
+        if(showCont){
+            y -= cont.getPrefHeight();
+        }else{
+            y += cont.getPrefHeight();
+        }
     }
+
+    @OverrideOnly
+    protected void setupCont(Table cont){}
 
     @Override
     public void addUI(){
@@ -94,11 +102,9 @@ public class FloatTable extends DraggableTable{
         if(state.isMenu()){
             remove();
         }
+
         pack();
         keepInStage();
-    }
-
-    private void toggleCont(){
-        showCont = !showCont;
+        invalidateHierarchy();
     }
 }
