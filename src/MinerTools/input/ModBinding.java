@@ -5,7 +5,8 @@ import arc.input.*;
 import arc.input.InputDevice.*;
 
 public enum ModBinding implements KeyBind{
-    dropItem(KeyCode.h, "MinerTools"),
+    buildBlocks(KeyCode.l, "MinerTools"),
+    dropItem(KeyCode.h),
     updateConveyor(KeyCode.altLeft)
     ;
 

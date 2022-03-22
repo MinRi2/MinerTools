@@ -24,7 +24,7 @@ import mindustry.ui.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
-import static MinerTools.input.ModBinding.dropItem;
+import static MinerTools.input.ModBinding.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
@@ -82,24 +82,18 @@ public class TeamsInfo extends Table{
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
-            buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerFuncs::rebuildBlocks)
-            .name("buildBlocks").height(35).growX();
+            ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerFuncs::rebuildBlocks)
+            .name("rebuildBlocks").height(35).growX().get();
 
             /* 结构尚未优化 慎用 */
             ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, MinerFuncs::dropItems)
             .name("dropItems").get();
 
             dropButton.changed(() -> {
-                if(lastDropItem != null) dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
+                if(lastDropItem != null){
+                    dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
+                }
             });
-
-            if(desktop){
-                dropButton.update(() -> {
-                    if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
-                        dropButton.fireClick();
-                    }
-                });
-            }
 
             dropButton.addListener(new ElementGestureListener(){
                 @Override
@@ -109,9 +103,8 @@ public class TeamsInfo extends Table{
                 }
             });
 
-            buttons.button(Icon.trashSmall, clearTransi, () -> ui.showConfirm(
-            bundle.get("miner-tools.buttons.tooltips.quickVoteGameOver"),
-            () -> {
+            buttons.button(Icon.trashSmall, clearTransi, () ->
+            ui.showConfirm(bundle.get("miner-tools.buttons.tooltips.quickVoteGameOver"), () -> {
                 Call.sendChatMessage("/vote gameover");
                 Call.sendChatMessage("1");
             })).name("quickVoteGameOver");
@@ -125,6 +118,17 @@ public class TeamsInfo extends Table{
                     ElementUtils.addTooltip(child, bundle.get("miner-tools.buttons.tooltips." + child.name), mobile);
                 }
             });
+
+            if(desktop){
+                buttons.update(() -> {
+                    if(input.keyDown(buildBlocks)){
+                        MinerFuncs.rebuildBlocks();
+                    }
+                    if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
+                        dropButton.fireClick();
+                    }
+                });
+            }
         }).minWidth(45f * 4f).fillX();
 
         addDivide();
