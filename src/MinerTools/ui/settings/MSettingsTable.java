@@ -57,7 +57,13 @@ public class MSettingsTable extends BaseTable{
 
         graphics.checkPref("enemyUnitIndicator", true);
         graphics.sliderPref("enemyUnitIndicatorRadius", 100, 25, 250, s -> {
-            Drawer.setDefEnemyRadius(s * tilesize);
+            Drawer.readDef();
+            return s + "(Tile)";
+        });
+
+        graphics.checkPref("turretAlert", true);
+        graphics.sliderPref("turretAlertRadius", 10, 5, 50, s -> {
+            Drawer.readDef();
             return s + "(Tile)";
         });
 
