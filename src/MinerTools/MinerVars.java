@@ -9,7 +9,6 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.input.*;
 import mindustry.type.*;
-import mindustry.ui.dialogs.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
 
