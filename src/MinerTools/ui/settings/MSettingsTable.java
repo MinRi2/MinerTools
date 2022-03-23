@@ -66,6 +66,11 @@ public class MSettingsTable extends BaseTable{
             Drawer.readDef();
             return s + "(Tile)";
         });
+        graphics.checkPref("unitAlert", true);
+        graphics.sliderPref("unitAlertRadius", 10, 5, 50, s -> {
+            Drawer.readDef();
+            return s + "(Tile)";
+        });
 
         graphics.checkPref("itemTurretAmmoShow", true);
     }
