@@ -35,7 +35,7 @@ public class Drawer{
         UnitType type = unit.type;
         return (type.weapons.any()) && // in white list
         (unit.team != player.team()) && // isEnemy
-        (unit.ammo > 0f) && // hasAmmo
+        (state.rules.unitAmmo && unit.ammo > 0f) && // hasAmmo
         (player.unit().isFlying() ? type.targetAir : type.targetGround) && // can hit player
         (unit.within(player, unitAlertRadius + type.maxRange)); // within player
     };
