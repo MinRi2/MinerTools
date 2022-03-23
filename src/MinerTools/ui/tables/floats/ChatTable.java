@@ -61,7 +61,7 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void setupCont(Table cont){
-        cont.add(pane).minWidth(350f).maxHeight(235f).scrollX(false);
+        cont.add(pane).minWidth(350f).maxHeight(170f).scrollX(false);
 
         cont.row();
 
@@ -245,8 +245,8 @@ public class ChatTable extends FloatTable{
         if(timer.get(60f)){
             resetMessages();
         }
-//            if(input.alt() && input.keyTap(KeyCode.b)){
-//                showQuickTable();
-//            }
+//        if(input.alt() && input.keyTap(KeyCode.b)){
+//            showQuickTable();
+//        }
     }
 }
