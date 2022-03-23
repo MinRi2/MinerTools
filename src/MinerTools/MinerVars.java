@@ -25,9 +25,6 @@ public class MinerVars{
     public static Seq<UnitType> visibleUnits;
     public static Seq<Block> visibleBlocks;
 
-    public static float fontScale = 0.75f;
-    public static float imgSize = iconSmall * fontScale;
-
     public static boolean enableUpdateConveyor;
 
     public static void init(){

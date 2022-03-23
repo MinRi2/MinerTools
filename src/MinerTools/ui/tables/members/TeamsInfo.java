@@ -34,6 +34,8 @@ import static mindustry.ui.Styles.*;
 
 public class TeamsInfo extends Table{
     public static int dropHeat = 35;
+    public static float fontScale = 0.75f;
+    public static float imgSize = iconSmall * fontScale;
 
     private final DropSettingDialog dropSetting = new DropSettingDialog();
 

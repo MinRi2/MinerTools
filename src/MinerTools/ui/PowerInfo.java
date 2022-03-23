@@ -4,7 +4,6 @@ import MinerTools.*;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -204,7 +203,7 @@ public class PowerInfo{
         }
     }
 
-    public static void init(){
+    public static void load(){
         teamPowerInfo.clear();
 
         for(TeamData teamData : Vars.state.teams.getActive()){

@@ -3,6 +3,7 @@ package MinerTools;
 import MinerTools.core.*;
 import MinerTools.ui.*;
 import arc.*;
+import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
@@ -25,7 +26,7 @@ public class MinerTools extends Mod{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(() -> Core.app.post(PowerInfo::init)))));
+            Timer.schedule(PowerInfo::load, 5f);
 
             showBannedInfo();
         });

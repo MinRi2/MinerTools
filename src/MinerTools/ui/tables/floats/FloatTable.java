@@ -2,9 +2,7 @@ package MinerTools.ui.tables.floats;
 
 import MinerTools.ui.tables.*;
 import arc.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import org.jetbrains.annotations.ApiStatus.*;
