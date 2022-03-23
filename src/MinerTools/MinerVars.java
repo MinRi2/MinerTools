@@ -7,9 +7,11 @@ import arc.KeyBinds.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
+import mindustry.ui.fragments.*;
 import mindustry.world.*;
 
 import static arc.Core.*;
