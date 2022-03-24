@@ -261,7 +261,7 @@ public class Drawer{
             float x = turret.x + block.size * tilesize / 3f;
             float y = turret.y + block.size * tilesize / 3f;
 
-            float s = Mathf.lerp(6f, size, (float)entry.amount / block.maxAmmo);
+            float s = Mathf.lerp(6f, size, Math.min(1f, (float)entry.amount / block.maxAmmo));
             Draw.rect(item.uiIcon, x, y, s, s);
             Draw.alpha(0.75f);
             Draw.rect(item.uiIcon, x, y, size, size);
