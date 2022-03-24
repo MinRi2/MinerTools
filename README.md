@@ -1,3 +1,4 @@
+[Also try MI2-Utilities-Java!](https://github.com/BlackDeluxeCat/MI2-Utilities-Java/)
 # 功能
 ## 各队伍的信息
 1. 队伍玩家数量(Tooltip显示基础队伍规则)
