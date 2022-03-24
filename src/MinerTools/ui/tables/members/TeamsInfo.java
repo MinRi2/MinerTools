@@ -14,6 +14,7 @@ import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.struct.ObjectMap.*;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.game.*;
@@ -21,6 +22,7 @@ import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
@@ -111,7 +113,7 @@ public class TeamsInfo extends Table{
                 Call.sendChatMessage("1");
             })).name("quickVoteGameOver");
 
-            buttons.getChildren().each(child -> {
+            for(Element child : buttons.getChildren()){
                 ImageButton imageButton = (ImageButton)child;
                 imageButton.getStyle().up = none;
 
@@ -119,7 +121,7 @@ public class TeamsInfo extends Table{
                 if(child.name != null){
                     ElementUtils.addTooltip(child, bundle.get("miner-tools.buttons.tooltips." + child.name), mobile);
                 }
-            });
+            }
 
             if(desktop){
                 buttons.update(() -> {
@@ -235,7 +237,10 @@ public class TeamsInfo extends Table{
                 t.row();
 
                 t.table(consumers -> {
-                    info.consumers.each((block, buildings) -> {
+                    for(Entry<Block, ObjectSet<Building>> entry : info.consumers.entries()){
+                        var block = entry.key;
+                        var buildings = entry.value;
+
                         if(buildings.isEmpty()) return;
 
                         consumers.table(consumer -> {
@@ -253,7 +258,7 @@ public class TeamsInfo extends Table{
                         }).left().growX();
 
                         consumers.row();
-                    });
+                    }
                 }).fillX();
             }).top().padLeft(5f).minWidth(220f);
 
@@ -263,7 +268,10 @@ public class TeamsInfo extends Table{
                 t.row();
 
                 t.table(producers -> {
-                    info.producers.each((block, buildings) -> {
+                    for(Entry<Block, ObjectSet<Building>> entry : info.producers.entries()){
+                        var block = entry.key;
+                        var buildings = entry.value;
+
                         if(buildings.isEmpty()) return;
 
                         producers.table(producer -> {
@@ -282,7 +290,7 @@ public class TeamsInfo extends Table{
                         }).left().growX();
 
                         producers.row();
-                    });
+                    }
                 }).fillX();
             }).top().padLeft(5f).minWidth(220f);
         }, mobile);

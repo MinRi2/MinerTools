@@ -4,6 +4,7 @@ import MinerTools.*;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.struct.ObjectMap.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -18,12 +19,12 @@ import static arc.Core.graphics;
 import static mindustry.Vars.*;
 
 public class PowerInfo{
-    private static Field lastFrameUpdatedField;
+    private static final Field lastFrameUpdatedField;
 
     private static final Seq<Building> buildings = new Seq<>();
     private static final ObjectMap<Team, PowerInfo> teamPowerInfo = new ObjectMap<>();
 
-    {
+    static{
         lastFrameUpdatedField = MinerUtils.getField(PowerGraph.class, "lastFrameUpdated");
     }
 
@@ -181,17 +182,19 @@ public class PowerInfo{
     private void updateGraph(){
         graphs.clear();
 
-        consumers.each((block, buildings) -> {
+        for(Entry<Block, ObjectSet<Building>> entry : consumers.entries()){
+            var buildings = entry.value;
             for(Building building : buildings){
                 graphs.add(building.power.graph);
             }
-        });
+        }
 
-        producers.each((block, buildings) -> {
+        for(Entry<Block, ObjectSet<Building>> entry : producers.entries()){
+            var buildings = entry.value;
             for(Building building : buildings){
                 graphs.add(building.power.graph);
             }
-        });
+        }
     }
 
     public void updateActive(){
@@ -219,6 +222,9 @@ public class PowerInfo{
     }
 
     public static void updateAll(){
-        teamPowerInfo.each((team, powerInfo) -> powerInfo.updateActive());
+        for(Entry<Team, PowerInfo> entry : teamPowerInfo.entries()){
+            PowerInfo powerInfo = entry.value;
+            powerInfo.updateActive();
+        }
     }
 }
