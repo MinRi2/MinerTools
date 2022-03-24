@@ -14,6 +14,7 @@ import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -37,6 +38,8 @@ public class Drawer{
     public static float turretAlertRadius;
 
     private static float enemyRadius = defEnemyRadius;
+
+    private static final Seq<Building> tmp = new Seq<>();
 
     private static final Boolf<Unit> unitAlertValid = unit -> {
         UnitType type = unit.type;
@@ -65,28 +68,42 @@ public class Drawer{
                 drawSelect(select);
             }
 
-            Groups.build.each(building -> {
-                if(building instanceof TurretBuild turretBuild){
-                    if(mSettings.getBool("turretAlert")){
-                        turretAlert(turretBuild);
-                    }
+            Seq<TeamData> activeTeams = state.teams.getActive();
+            for(TeamData data : activeTeams){
+                if(data.buildings == null){
+                    continue;
+                }
 
-                    if(mSettings.getBool("itemTurretAmmoShow") && building instanceof ItemTurretBuild itemTurretBuild){
-                        itemTurretAmmo(itemTurretBuild);
+                tmp.clear();
+
+                data.buildings.getObjects(tmp);
+                for(Building building : tmp){
+                    if(building instanceof TurretBuild turretBuild){
+                        if(mSettings.getBool("turretAlert")){
+                            turretAlert(turretBuild);
+                        }
+
+                        if(mSettings.getBool("itemTurretAmmoShow") && building instanceof ItemTurretBuild itemTurretBuild){
+                            itemTurretAmmo(itemTurretBuild);
+                        }
                     }
                 }
-            });
+
+                tmp.clear();
+            }
 
             var cores = player.team().cores();
-            Groups.unit.each(unit -> {
-                if(mSettings.getBool("unitAlert")){
-                    unitAlert(unit);
-                }
+            for(TeamData data : activeTeams){
+                for(Unit unit : data.units){
+                    if(mSettings.getBool("unitAlert")){
+                        unitAlert(unit);
+                    }
 
-                if(mSettings.getBool("enemyUnitIndicator") && cores.any()){
-                    enemyIndicator(unit, cores);
+                    if(mSettings.getBool("enemyUnitIndicator") && cores.any()){
+                        enemyIndicator(unit, cores);
+                    }
                 }
-            });
+            }
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {

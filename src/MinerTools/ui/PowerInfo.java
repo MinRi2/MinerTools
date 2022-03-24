@@ -57,10 +57,13 @@ public class PowerInfo{
 
         if(team.data().buildings != null){
             buildings.clear();
+
             team.data().buildings.getObjects(buildings);
             for(Building building : buildings){
                 addBuild(building);
             }
+
+            buildings.clear();
         }
     }
 
