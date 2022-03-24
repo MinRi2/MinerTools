@@ -41,23 +41,6 @@ public class Drawer{
 
     private static final Seq<Building> tmp = new Seq<>();
 
-    private static final Boolf<Unit> unitAlertValid = unit -> {
-        UnitType type = unit.type;
-        return (type.weapons.any()) && // in white list
-        (unit.team != player.team()) && // isEnemy
-        (!state.rules.unitAmmo || unit.ammo > 0f) && // hasAmmo
-        (player.unit().isFlying() ? type.targetAir : type.targetGround) && // can hit player
-        (unit.within(player, unitAlertRadius + type.maxRange)); // within player
-    };
-
-    private static final Boolf<TurretBuild> turretAlertValid = turretBuild -> {
-        Turret block = (Turret)turretBuild.block;
-        return (turretBuild.team != player.team()) && // isEnemy
-        (turretBuild.cons.status() == BlockStatus.active && turretBuild.hasAmmo()) && // hasAmmo
-        (player.unit().isFlying() ? block.targetAir : block.targetGround) && // can hit player
-        (turretBuild.within(player, turretAlertRadius + block.range)); // within player
-    };
-
     public static void setEvents(){
         readDef();
 
@@ -178,11 +161,28 @@ public class Drawer{
         }
     }
 
+    private static boolean unitAlertValid(Unit unit){
+        UnitType type = unit.type;
+        return (type.weapons.any()) && // in white list
+        (unit.team != player.team()) && // isEnemy
+        (!state.rules.unitAmmo || unit.ammo > 0f) && // hasAmmo
+        (player.unit().isFlying() ? type.targetAir : type.targetGround) && // can hit player
+        (unit.within(player, unitAlertRadius + type.maxRange)); // within player
+    };
+
+    private static boolean turretAlertValid(TurretBuild turretBuild){
+        Turret block = (Turret)turretBuild.block;
+        return (turretBuild.team != player.team()) && // isEnemy
+        (turretBuild.cons.status() == BlockStatus.active && turretBuild.hasAmmo()) && // hasAmmo
+        (player.unit().isFlying() ? block.targetAir : block.targetGround) && // can hit player
+        (turretBuild.within(player, turretAlertRadius + block.range)); // within player
+    };
+
     /**
      * 敌方单位警戒
      */
     public static void unitAlert(Unit unit){
-        if(unitAlertValid.get(unit)){
+        if(unitAlertValid(unit)){
             Draw.z(Layer.flyingUnit + 0.1f);
 
             Lines.stroke(1.2f, unit.team.color);
@@ -227,7 +227,7 @@ public class Drawer{
      * 敌方炮塔警戒
      */
     public static void turretAlert(TurretBuild turret){
-        if(turretAlertValid.get(turret)){
+        if(turretAlertValid(turret)){
             Draw.z(Layer.turret + 0.1f);
 
             Lines.stroke(1.2f, turret.team.color);
