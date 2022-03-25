@@ -1,7 +1,6 @@
 package MinerTools.ui.tables.floats;
 
 import MinerTools.core.*;
-import arc.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.*;
@@ -10,7 +9,6 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 
 import static MinerTools.MinerVars.*;
@@ -27,7 +25,6 @@ public class ChatTable extends FloatTable{
 
     private Interval timer = new Interval();
 
-    private Seq<String> messages = new Seq<>();
     private Seq<String> history = new Seq<>();
 
     private int historyIndex;
@@ -40,7 +37,7 @@ public class ChatTable extends FloatTable{
 
     private TextFieldStyle fstyle;
 
-    private int lastSize;
+    private int lastMessageSize;
     private boolean lastIsBottomEdge;
 
     public ChatTable(){
@@ -98,6 +95,7 @@ public class ChatTable extends FloatTable{
     public void addUI(){
         super.addUI();
 
+        messageTable.clear();
         history.clear();
         historyIndex = -1;
         scrollToBottom();
@@ -125,18 +123,23 @@ public class ChatTable extends FloatTable{
     }
 
     private void resetMessages(){
-        lastSize = messages.size;
-
-        messages.set(Reflect.<Seq<String>>get(ui.chatfrag, "messages"));
-        messages.reverse();
+        var messages = Reflect.<Seq<String>>get(ui.chatfrag, "messages");
+        int messageSize = messages.size;
 
         lastIsBottomEdge = pane.isBottomEdge();
 
-        rebuildMessagesTable();
+        if(lastMessageSize != messageSize){
+            int n = messageSize - lastMessageSize;
+            for(int i = 0; i < n; i++){
+                addMessage(messages.get(i));
+            }
 
-        if(lastIsBottomEdge && messages.size != lastSize){
-            app.post(this::scrollToBottom);
+            if(lastIsBottomEdge){
+                app.post(this::scrollToBottom);
+            }
         }
+
+        lastMessageSize = messageSize;
     }
 
     private void sendMessage(){
@@ -166,9 +169,9 @@ public class ChatTable extends FloatTable{
         historyShift(-1);
     }
 
-    private void historyShift(int shift) {
+    private void historyShift(int shift){
         historyIndex = Mathf.clamp(historyIndex + shift, -1, history.size - 1);
-        if (historyIndex < 0) {
+        if(historyIndex < 0){
             textField.setText("");
             return;
         }
@@ -183,28 +186,22 @@ public class ChatTable extends FloatTable{
         copyMode = !copyMode;
     }
 
-    private void rebuildMessagesTable(){
-        messageTable.clear();
+    private void addMessage(String msg){
+        Label label = messageTable.labelWrap(msg).growX().left().get();
 
-        if(messages.isEmpty()) return;
-
-        for(String message : messages){
-            Label label = messageTable.labelWrap(message).growX().left().get();
-
-            if(desktop){
-                /* Ctrl + MouseLeft --> copy the message */
-                label.clicked(KeyCode.mouseLeft, () -> {
-                    if(input.ctrl()) setClipboardText(catchSendMessage(message));
-                });
-            }else{
-                /* click --> copy the message */
-                label.clicked(() -> {
-                    if(copyMode) setClipboardText(catchSendMessage(message));
-                });
-            }
-
-            messageTable.row();
+        if(desktop){
+            /* Ctrl + MouseLeft --> copy the message */
+            label.clicked(KeyCode.mouseLeft, () -> {
+                if(input.ctrl()) setClipboardText(catchSendMessage(msg));
+            });
+        }else{
+            /* click --> copy the message */
+            label.clicked(() -> {
+                if(copyMode) setClipboardText(catchSendMessage(msg));
+            });
         }
+
+        messageTable.row();
     }
 
     private void rebuildQuickWordTable(){
@@ -213,7 +210,8 @@ public class ChatTable extends FloatTable{
         table.clear();
 
         table.table(black5, t -> {
-            TextField field = t.field("", text -> {}).growX().height(45f).get();
+            TextField field = t.field("", text -> {
+            }).growX().height(45f).get();
             t.button(Icon.saveSmall, clearPartiali, () -> {
                 quickWords.add(field.getText());
                 rebuildQuickWordTable();

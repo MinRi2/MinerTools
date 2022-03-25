@@ -7,7 +7,9 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
+import mindustry.world.*;
 import mindustry.world.blocks.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.payloads.*;
 
 import static MinerTools.MinerFuncs.*;

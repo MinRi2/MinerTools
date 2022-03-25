@@ -13,6 +13,7 @@ import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.ui.fragments.*;
 import mindustry.world.*;
+import mindustry.world.blocks.distribution.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -52,6 +53,12 @@ public class MinerVars{
 
         visibleBlocks = content.blocks().select(Block::isVisible);
         visibleUnits = content.units().select(u -> !u.isHidden());
+
+        for(Block b : content.blocks()){
+            if(b instanceof ItemBridge){
+                b.allowConfigInventory = true;
+            }
+        }
 
         mSettings.init();
         mui.init();
