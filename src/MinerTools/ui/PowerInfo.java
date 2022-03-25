@@ -85,11 +85,14 @@ public class PowerInfo{
             return;
         }
 
-        if(building.block.consumesPower){
-            consumers.get(building.block).remove(building);
+        var consSet = consumers.get(building.block);
+        if(consSet != null){
+            consSet.remove(building);
         }
-        if(building.block.outputsPower){
-            producers.get(building.block).remove(building);
+
+        var proSet = producers.get(building.block);
+        if(proSet != null){
+            proSet.remove(building);
         }
     }
 
@@ -100,12 +103,15 @@ public class PowerInfo{
 
         graphs.add(building.power.graph);
 
-        if(building.block.outputsPower && building.block.consumesPower && !building.block.consumes.getPower().buffered){
+        var consSet = consumers.get(building.block);
+        var proSet = producers.get(building.block);
+
+        if(consSet != null && proSet != null && !building.block.consumes.getPower().buffered){
             producers.get(building.block).add(building);
             consumers.get(building.block).add(building);
-        }else if(building.block.outputsPower){
+        }else if(consSet != null){
             producers.get(building.block).add(building);
-        }else if(building.block.consumesPower){
+        }else if(proSet != null){
             consumers.get(building.block).add(building);
         }
     }
