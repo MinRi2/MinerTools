@@ -12,7 +12,6 @@ import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
-import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 
 import static arc.Core.*;
@@ -25,19 +24,20 @@ public class PlayersList extends MemberTable{
 
     private final Seq<Player> lastPlayers = new Seq<>();
 
-    private Table players = new Table(black3);
+    private Table playersTable = new Table(black3);
 
     private Player target;
 
     public PlayersList(){
         icon = Icon.players;
 
-        ScrollPane pane = pane(nonePane, players).maxHeight(235).get();
+        ScrollPane pane = pane(nonePane, playersTable).maxHeight(235).get();
         MUI.panes.add(pane);
 
         update(() -> {
             if(timer.get(60f * 3) && !lastPlayers.equals(Groups.player.copy(tmpSeq))){
                 lastPlayers.clear().set(tmpSeq);
+                tmpSeq.clear();
                 rebuild();
             }
         });
@@ -60,10 +60,10 @@ public class PlayersList extends MemberTable{
     }
 
     private void rebuild(){
-        players.clear();
+        playersTable.clear();
         lastPlayers.sort(Structs.comps(Structs.comparing(Player::team), Structs.comparingBool(p -> !p.admin)));
 
-        players.table(t -> {
+        playersTable.table(t -> {
             /* players */
             t.label(() -> "[#" + player.team().color + "]" + MinerFuncs.countPlayer(player.team()) + "[] / " + Groups.player.size()).row();
 
