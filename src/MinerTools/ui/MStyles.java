@@ -2,6 +2,7 @@ package MinerTools.ui;
 
 import arc.scene.ui.Button.*;
 import arc.scene.ui.TextButton.*;
+import arc.scene.ui.TextField.*;
 
 import static mindustry.gen.Tex.*;
 import static mindustry.ui.Styles.*;
@@ -9,6 +10,7 @@ import static mindustry.ui.Styles.*;
 public class MStyles{
     public static ButtonStyle logicVarTogglet, chatb;
     public static TextButtonStyle floatb;
+    public static TextFieldStyle noneField;
 
     public static void load(){
         logicVarTogglet = new ButtonStyle(defaultb){{
@@ -27,6 +29,10 @@ public class MStyles{
             up = none;
             over = flatOver;
             down = flatDown;
+        }};
+
+        noneField = new TextFieldStyle(defaultField){{
+            background = none;
         }};
     }
 }

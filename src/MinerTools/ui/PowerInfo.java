@@ -5,6 +5,7 @@ import arc.*;
 import arc.math.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -22,7 +23,7 @@ public class PowerInfo{
     private static final Field lastFrameUpdatedField;
 
     private static final Seq<Building> buildings = new Seq<>();
-    private static final ObjectMap<Team, PowerInfo> teamPowerInfo = new ObjectMap<>();
+    private static final Seq<PowerInfo> teamsInfo = new Seq<>();
 
     static{
         lastFrameUpdatedField = MinerUtils.getField(PowerGraph.class, "lastFrameUpdated");
@@ -107,12 +108,12 @@ public class PowerInfo{
         var proSet = producers.get(building.block);
 
         if(consSet != null && proSet != null && !building.block.consumes.getPower().buffered){
-            producers.get(building.block).add(building);
-            consumers.get(building.block).add(building);
+            consSet.add(building);
+            proSet.add(building);
         }else if(consSet != null){
-            producers.get(building.block).add(building);
+            consSet.add(building);
         }else if(proSet != null){
-            consumers.get(building.block).add(building);
+            proSet.add(building);
         }
     }
 
@@ -216,20 +217,19 @@ public class PowerInfo{
     }
 
     public static void load(){
-        teamPowerInfo.clear();
+        teamsInfo.clear();
 
         for(TeamData teamData : Vars.state.teams.getActive()){
-            teamPowerInfo.put(teamData.team, new PowerInfo(teamData.team));
+            teamsInfo.add(new PowerInfo(teamData.team));
         }
     }
 
     public static PowerInfo getPowerInfo(Team team){
-        return teamPowerInfo.get(team);
+        return teamsInfo.find(info -> info.team == team);
     }
 
     public static void updateAll(){
-        for(Entry<Team, PowerInfo> entry : teamPowerInfo.entries()){
-            PowerInfo powerInfo = entry.value;
+        for(PowerInfo powerInfo : teamsInfo){
             powerInfo.updateActive();
         }
     }

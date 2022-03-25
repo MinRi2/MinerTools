@@ -58,6 +58,7 @@ public class MinerFuncs{
         if(control.input.block instanceof Autotiler && target != null){
             updatedBuildings.clear();
             tryUpdateConveyor(target, control.input.block);
+            updatedBuildings.clear();
         }
     }
 

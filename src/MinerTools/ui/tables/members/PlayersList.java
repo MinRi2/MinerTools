@@ -13,6 +13,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
+import mindustry.world.blocks.defense.turrets.Turret.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -35,8 +36,8 @@ public class PlayersList extends MemberTable{
         MUI.panes.add(pane);
 
         update(() -> {
-            if(timer.get(60) && !lastPlayers.equals(Groups.player.copy(tmpSeq))){
-                Groups.player.copy(lastPlayers.clear());
+            if(timer.get(60f * 3) && !lastPlayers.equals(Groups.player.copy(tmpSeq))){
+                lastPlayers.clear().set(tmpSeq);
                 rebuild();
             }
         });
@@ -50,7 +51,7 @@ public class PlayersList extends MemberTable{
 
             if(target != null){
                 Position pos = target;
-                if(target.unit() instanceof BlockUnitc block && block.tile() instanceof ItemTurretBuild build){
+                if(target.unit() instanceof BlockUnitc block && block.tile() instanceof TurretBuild build){
                     pos = build.targetPos;
                 }
                 camera.position.lerpDelta(pos, 0.08f);

@@ -13,7 +13,7 @@ import mindustry.gen.*;
 
 import static MinerTools.MinerVars.*;
 import static MinerTools.core.MUI.*;
-import static MinerTools.ui.MStyles.chatb;
+import static MinerTools.ui.MStyles.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
@@ -94,11 +94,6 @@ public class ChatTable extends FloatTable{
     @Override
     public void addUI(){
         super.addUI();
-
-        messageTable.clear();
-        history.clear();
-        historyIndex = -1;
-        scrollToBottom();
     }
 
     private void setupQuickWordTable(){
@@ -221,19 +216,41 @@ public class ChatTable extends FloatTable{
         table.row();
 
         table.pane(nonePane, t -> {
-            for(String quickWord : quickWords){
-                table.button(b -> {
-                    b.labelWrap(quickWord).growX().left();
-                }, chatb, () -> {
-                    Call.sendChatMessage(quickWord);
-                    resetMessages();
-                    table.remove();
-                }).minSize(250f, 45f);
-                table.row();
-            }
+            Runnable[] rebuildQuickWords = new Runnable[1];
+            rebuildQuickWords[0] = () -> {
+                t.clear();
+
+                for(int i = 0; i < quickWords.size; i++){
+                    String quickWord = quickWords.get(i);
+
+                    int finalI = i;
+                    table.button(b -> {
+                        b.field(quickWord, noneField, text -> {
+                            quickWords.set(finalI, text);
+                            rebuildQuickWords[0].run();
+                        }).growX().left();
+                    }, chatb, () -> {
+                        Call.sendChatMessage(quickWord);
+                        resetMessages();
+                    }).minSize(250f, 45f);
+                    table.row();
+                }
+            };
+
+            rebuildQuickWords[0].run();
         }).maxHeight(45f * 7);
 
         table.pack();
+    }
+
+    @Override
+    protected void worldLoad(){
+        messageTable.clear();
+        history.clear();
+        historyIndex = -1;
+
+        resetMessages();
+        scrollToBottom();
     }
 
     @Override

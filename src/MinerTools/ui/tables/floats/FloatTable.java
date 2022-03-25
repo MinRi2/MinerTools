@@ -30,6 +30,7 @@ public class FloatTable extends DraggableTable{
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             addUI();
+            worldLoad();
         });
 
         update(this::update);
@@ -95,6 +96,9 @@ public class FloatTable extends DraggableTable{
     public void addUI(){
         scene.add(this);
     }
+
+    @OverrideOnly
+    protected void worldLoad(){}
 
     protected void update(){
         if(state.isMenu()){

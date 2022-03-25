@@ -41,7 +41,7 @@ public class TeamsInfo extends Table{
 
     private final DropSettingDialog dropSetting = new DropSettingDialog();
 
-    private Table table;
+    private Table main;
 
     private Seq<TeamData> teams = new Seq<>();
     private final Interval timer = new Interval(2);
@@ -61,12 +61,12 @@ public class TeamsInfo extends Table{
 
         addDivide();
 
-        ScrollPane pane = pane(nonePane, p -> table = p).fillX().left().maxHeight(135).scrollX(false).get();
+        ScrollPane pane = pane(nonePane, p -> main = p).fillX().left().maxHeight(135).scrollX(false).get();
         MUI.panes.add(pane);
 
-        table.background(black3);
-        table.update(() -> {
-            if(timer.get(0, 120)){
+        main.background(black3);
+        main.update(() -> {
+            if(timer.get(0, 60f * 3)){
                 teams.set(state.teams.getActive());
                 teams.sort(data -> -data.unitCount);
                 tableRebuild();
@@ -139,13 +139,13 @@ public class TeamsInfo extends Table{
     }
 
     private void tableRebuild(){
-        table.clear();
+        main.clear();
 
         for(TeamData data : teams){
             if(data.units.size > 0){
                 Team team = data.team;
 
-                table.table(teamTable -> {
+                main.table(teamTable -> {
                     Label label = teamTable.label(() -> (team == player.team() ? "[green]" + Iconc.players : "") + "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
                     .padRight(3).minWidth(16).left().get();
                     label.setFontScale(fontScale + 0.15f);
@@ -179,7 +179,7 @@ public class TeamsInfo extends Table{
                     }).pad(-1).right();
                 }).pad(4).growX().left();
 
-                table.row();
+                main.row();
             }
         }
     }

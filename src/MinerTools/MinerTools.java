@@ -7,10 +7,6 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
-import mindustry.world.*;
-import mindustry.world.blocks.*;
-import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.payloads.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
@@ -36,13 +32,14 @@ public class MinerTools extends Mod{
         });
 
         Events.run(Trigger.update, this::update);
+
+        Timer.schedule(PowerInfo::updateAll, 1f, 3f);
     }
 
     public void update(){
         if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
             tryUpdateConveyor();
         }
-        PowerInfo.updateAll();
         mui.update();
     }
 }
