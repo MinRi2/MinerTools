@@ -1,0 +1,33 @@
+package MinerTools;
+
+import arc.*;
+import arc.util.*;
+import arc.util.serialization.*;
+import mindustry.mod.Mods.*;
+import mindustry.ui.dialogs.*;
+
+import static mindustry.Vars.*;
+
+public class Updater{
+    private static LoadedMod mod;
+    private static String repo;
+
+    public static void checkUpdate(){
+        mod = mods.locateMod("scheme-size");
+        repo = mod.getRepo();
+
+        Log.info(repo);
+
+        Http.get(ghApi + "/repos/" + repo + "/releases/latest", res -> {
+            var json = Jval.read(res.getResultAsString());
+            String version = json.getString("tag_name").substring(1);
+
+            if(version.equals(mod.meta.version)) return;
+            ui.showCustomConfirm("@miner-tools.updater.name",
+            Core.bundle.format("miner-tools.updater.info", mod.meta.version, version),
+            "@miner-tools.updater.load", "@ok", () -> {
+                Reflect.invoke(ModsDialog.class, ui.mods, "githubImportMod", new Object[]{repo, true}, String.class, boolean.class);
+            }, () -> {});
+        }, e -> {});
+    }
+}

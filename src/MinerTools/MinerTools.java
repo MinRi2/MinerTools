@@ -10,6 +10,7 @@ import mindustry.mod.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
+import static MinerTools.Updater.checkUpdate;
 import static MinerTools.input.ModBinding.updateConveyor;
 import static arc.Core.input;
 import static mindustry.Vars.*;
@@ -20,6 +21,8 @@ public class MinerTools extends Mod{
         enableConsole = true;
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
+            checkUpdate();
+
             MinerVars.init();
 
             Drawer.setEvents();
