@@ -241,7 +241,7 @@ public class TeamsInfo extends Table{
                         var block = entry.key;
                         var buildings = entry.value;
 
-                        if(buildings.isEmpty()) return;
+                        if(buildings.isEmpty()) continue;
 
                         consumers.table(consumer -> {
                             consumer.table(tt -> {
@@ -272,7 +272,7 @@ public class TeamsInfo extends Table{
                         var block = entry.key;
                         var buildings = entry.value;
 
-                        if(buildings.isEmpty()) return;
+                        if(buildings.isEmpty()) continue;
 
                         producers.table(producer -> {
                             producer.table(tt -> {
