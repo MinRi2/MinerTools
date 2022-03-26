@@ -13,7 +13,7 @@ public class Updater{
     private static String repo;
 
     public static void checkUpdate(){
-        mod = mods.locateMod("scheme-size");
+        mod = mods.locateMod("miner-tools");
         repo = mod.getRepo();
 
         Log.info(repo);
