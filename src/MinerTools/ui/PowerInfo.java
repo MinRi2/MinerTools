@@ -4,7 +4,6 @@ import MinerTools.*;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
-import arc.struct.ObjectMap.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
@@ -22,7 +21,7 @@ import static mindustry.Vars.*;
 public class PowerInfo{
     private static final Field lastFrameUpdatedField;
 
-    private static final Seq<Building> buildings = new Seq<>();
+    private static final Seq<Building> tmp = new Seq<>();
     private static final Seq<PowerInfo> teamsInfo = new Seq<>();
 
     static{
@@ -39,11 +38,13 @@ public class PowerInfo{
         this.team = team;
 
         for(Block block : content.blocks()){
-            if(block.consumesPower){
-                consumers.put(block, new ObjectSet<>());
-            }
-            if(block.outputsPower){
-                producers.put(block, new ObjectSet<>());
+            if(block.hasPower){
+                if(block.consumesPower){
+                    consumers.put(block, new ObjectSet<>());
+                }
+                if(block.outputsPower){
+                    producers.put(block, new ObjectSet<>());
+                }
             }
         }
 
@@ -58,14 +59,14 @@ public class PowerInfo{
         });
 
         if(team.data().buildings != null){
-            buildings.clear();
+            tmp.clear();
 
-            team.data().buildings.getObjects(buildings);
-            for(Building building : buildings){
+            team.data().buildings.getObjects(tmp);
+            for(Building building : tmp){
                 addBuild(building);
             }
 
-            buildings.clear();
+            tmp.clear();
         }
     }
 
@@ -186,24 +187,6 @@ public class PowerInfo{
         return sum;
     }
 
-    private void updateGraph(){
-        graphs.clear();
-
-        for(Entry<Block, ObjectSet<Building>> entry : consumers.entries()){
-            var buildings = entry.value;
-            for(Building building : buildings){
-                graphs.add(building.power.graph);
-            }
-        }
-
-        for(Entry<Block, ObjectSet<Building>> entry : producers.entries()){
-            var buildings = entry.value;
-            for(Building building : buildings){
-                graphs.add(building.power.graph);
-            }
-        }
-    }
-
     public void updateActive(){
         for(PowerGraph graph : graphs){
             if(graph == null){
@@ -211,7 +194,7 @@ public class PowerInfo{
             }
             if(state.isPaused()) MinerUtils.setValue(lastFrameUpdatedField, graph, graphics.getFrameId());
             if(!(graphics.getFrameId() - MinerUtils.<Long>getValue(lastFrameUpdatedField, graph) < 2L)){
-                updateGraph();
+                graphs.remove(graph);
             }
         }
     }

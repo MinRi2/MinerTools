@@ -73,10 +73,8 @@ public class Drawer{
                 }
 
                 tmp.clear();
-            }
 
-            var cores = player.team().cores();
-            for(TeamData data : activeTeams){
+                var cores = player.team().cores();
                 for(Unit unit : data.units){
                     if(mSettings.getBool("unitAlert")){
                         unitAlert(unit);
