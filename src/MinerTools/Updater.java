@@ -16,13 +16,12 @@ public class Updater{
         mod = mods.locateMod("miner-tools");
         repo = mod.getRepo();
 
-        Log.info(repo);
-
         Http.get(ghApi + "/repos/" + repo + "/releases/latest", res -> {
             var json = Jval.read(res.getResultAsString());
             String version = json.getString("tag_name").substring(1);
 
             if(version.equals(mod.meta.version)) return;
+
             ui.showCustomConfirm("@miner-tools.updater.name",
             Core.bundle.format("miner-tools.updater.info", mod.meta.version, version),
             "@miner-tools.updater.load", "@ok", () -> {
