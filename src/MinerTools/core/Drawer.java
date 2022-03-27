@@ -239,8 +239,6 @@ public class Drawer{
 
             Draw.reset();
         }
-
-        UnitTypes.eclipse.weapons.addAll(UnitTypes.reign.weapons);
     }
 
     /**
