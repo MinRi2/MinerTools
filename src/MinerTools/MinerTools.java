@@ -1,8 +1,9 @@
 package MinerTools;
 
-import MinerTools.core.*;
+import MinerTools.graphics.*;
 import MinerTools.ui.*;
 import arc.*;
+import arc.input.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
@@ -42,6 +43,9 @@ public class MinerTools extends Mod{
     public void update(){
         if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
             tryUpdateConveyor();
+        }
+        if(desktop && input.alt() && input.keyTap(KeyCode.mouseLeft)){
+            tryPanToController();
         }
         mui.update();
     }

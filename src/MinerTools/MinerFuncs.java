@@ -10,12 +10,15 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.ai.types.*;
+import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
+import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
+import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
@@ -34,7 +37,7 @@ import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.consumers.*;
 
 import static MinerTools.MinerVars.*;
-import static arc.Core.input;
+import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MinerFuncs{
@@ -89,6 +92,15 @@ public class MinerFuncs{
                     }
                 }
             }
+        }
+    }
+
+    public static void tryPanToController(){
+        Unit unit = Units.closestOverlap(player.team(), input.mouseWorldX(), input.mouseWorldY(), 5f, u -> !u.isLocal());
+        if(unit != null && unit.controller() instanceof LogicAI ai && ai.controller != null){
+            ((DesktopInput)control.input).panning = true;
+            camera.position.set(ai.controller);
+            Fx.spawn.at(ai.controller);
         }
     }
 
@@ -309,9 +321,9 @@ public class MinerFuncs{
             }
             return false;
         }
-    }
 
-    public enum DropStatus{
-        PLAYER, LAST, AUTO
+        public enum DropStatus{
+            PLAYER, LAST, AUTO
+        }
     }
 }
