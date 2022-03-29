@@ -1,19 +1,19 @@
 package MinerTools;
 
-import MinerTools.core.*;
 import MinerTools.input.*;
 import MinerTools.io.*;
+import MinerTools.ui.*;
 import arc.KeyBinds.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
-import mindustry.ui.fragments.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
+
+import java.util.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -35,8 +35,19 @@ public class MinerVars{
 
         betterUiscaleSetting();
 
+        desktop = control.input instanceof DesktopInput;
+
+        visibleBlocks = content.blocks().select(Block::isVisible);
+        visibleUnits = content.units().select(u -> !u.isHidden());
+
+        for(Block b : content.blocks()){
+            if(b instanceof ItemBridge){
+                b.allowConfigInventory = true;
+            }
+        }
+
         // update controls
-        if(!mobile){
+        if(desktop){
             KeyBind[] bindings = Binding.values();
             KeyBind[] modBindings = ModBinding.values();
 
@@ -47,17 +58,6 @@ public class MinerVars{
             keybinds.setDefaults(newBindings);
             Reflect.invoke(keybinds, "load");
             Reflect.invoke(ui.controls, "setup");
-        }
-
-        desktop = control.input instanceof DesktopInput;
-
-        visibleBlocks = content.blocks().select(Block::isVisible);
-        visibleUnits = content.units().select(u -> !u.isHidden());
-
-        for(Block b : content.blocks()){
-            if(b instanceof ItemBridge){
-                b.allowConfigInventory = true;
-            }
         }
 
         mSettings.init();

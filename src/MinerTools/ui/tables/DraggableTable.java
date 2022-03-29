@@ -10,7 +10,7 @@ import arc.util.*;
 import static MinerTools.MinerVars.mSettings;
 
 /** Table that can be dragged */
-public class DraggableTable extends BaseTable{
+public class DraggableTable extends Table{
     public Element draggier;
     public boolean isDragging = false;
 

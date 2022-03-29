@@ -1,10 +1,10 @@
 package MinerTools.ui.tables.members;
 
-import MinerTools.ui.tables.*;
 import arc.scene.style.*;
+import arc.scene.ui.layout.*;
 import org.jetbrains.annotations.ApiStatus.*;
 
-public class MemberTable extends BaseTable{
+public class MemberTable extends Table{
     /* 仅电脑显示 */
     public boolean desktopOnly = false;
     /* 仅手机显示 */

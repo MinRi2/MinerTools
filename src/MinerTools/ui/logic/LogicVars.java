@@ -13,7 +13,7 @@ import static arc.Core.*;
 import static mindustry.Vars.ui;
 import static mindustry.ui.Styles.black6;
 
-public class LogicVars extends DraggableTable{
+public class LogicVars extends DraggableTable implements Addable{
     public static String split = ".";
 
     private LExecutor executor;
@@ -24,14 +24,6 @@ public class LogicVars extends DraggableTable{
     public LogicVars(){
         super(true);
 
-        ui.logic.shown(() -> {
-            executor = Reflect.get(ui.logic, "executor");
-            rebuild();
-            show();
-        });
-
-        ui.logic.hidden(this::remove);
-
         /* def position */
         setPosition(graphics.getWidth() / 4f, graphics.getHeight() / 2f);
 
@@ -39,6 +31,17 @@ public class LogicVars extends DraggableTable{
             toFront();
             pack();
         });
+    }
+
+    @Override
+    public void addUI(){
+        ui.logic.shown(() -> {
+            executor = Reflect.get(ui.logic, "executor");
+            rebuild();
+            show();
+        });
+
+        ui.logic.hidden(this::remove);
     }
 
     private void show(){

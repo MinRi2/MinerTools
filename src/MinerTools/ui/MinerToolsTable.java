@@ -12,10 +12,11 @@ import mindustry.content.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 
+import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class MinerToolsTable extends BaseTable{
+public class MinerToolsTable extends Table implements Addable{
     private final TeamsInfo teamInfo = new TeamsInfo();
     private boolean infoShown = true;
 
@@ -73,6 +74,7 @@ public class MinerToolsTable extends BaseTable{
             t.table(black3, buttons -> {
                 for(MemberTable member : members){
 
+                    if(!desktop && member.desktopOnly) continue;
                     if(!mobile && member.mobileOnly) continue;
 
                     buttons.button(member.icon, clearTogglePartiali, 35, () -> setMember(member))

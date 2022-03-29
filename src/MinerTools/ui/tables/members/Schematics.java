@@ -11,7 +11,7 @@ import mindustry.ui.dialogs.SchematicsDialog.*;
 
 import java.lang.reflect.*;
 
-import static MinerTools.core.MUI.panes;
+import static MinerTools.ui.MUI.panes;
 import static arc.graphics.Color.white;
 import static arc.util.Align.center;
 import static arc.util.Scaling.fit;

@@ -1,4 +1,4 @@
-package MinerTools.core;
+package MinerTools.graphics;
 
 import arc.*;
 import arc.func.*;

@@ -12,7 +12,7 @@ import static arc.Core.scene;
 import static mindustry.Vars.state;
 import static mindustry.ui.Styles.*;
 
-public class FloatTable extends DraggableTable{
+public class FloatTable extends DraggableTable implements Addable{
     private Table title;
     private Table cont;
 
@@ -92,21 +92,22 @@ public class FloatTable extends DraggableTable{
     @OverrideOnly
     protected void setupCont(Table cont){}
 
-    @Override
-    public void addUI(){
-        scene.add(this);
-    }
-
     @OverrideOnly
     protected void worldLoad(){}
 
+    @OverrideOnly
     protected void update(){
         if(state.isMenu()){
             remove();
         }
 
-        pack();
         keepInStage();
+    }
+
+    @Override
+    public void addUI(){
+        scene.add(this);
+        pack();
         invalidateHierarchy();
     }
 }

@@ -1,9 +1,8 @@
 package MinerTools.ui.tables.floats;
 
-import MinerTools.core.*;
+import MinerTools.ui.*;
 import arc.input.*;
 import arc.math.*;
-import arc.scene.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
@@ -11,17 +10,14 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.gen.*;
 
-import static MinerTools.MinerVars.*;
-import static MinerTools.core.MUI.*;
-import static MinerTools.ui.MStyles.*;
+import static MinerTools.MinerVars.desktop;
+import static MinerTools.ui.MUI.setClipboardText;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class ChatTable extends FloatTable{
     private static final String messageStart = ":[white] ";
-    public static final Seq<String> quickWords = Seq.with("Test", "gg", "Hello");
-    public static Table quickWordTable = new Table();
 
     private Interval timer = new Interval();
 
@@ -58,7 +54,7 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void setupCont(Table cont){
-        cont.add(pane).minWidth(350f).maxHeight(170f).scrollX(false);
+        cont.add(pane).grow().scrollX(false);
 
         cont.row();
 
@@ -86,35 +82,12 @@ public class ChatTable extends FloatTable{
             }
         }).growX();
 
-//        setupQuickWordTable();
-
         MUI.panes.add(pane);
     }
 
     @Override
     public void addUI(){
         super.addUI();
-    }
-
-    private void setupQuickWordTable(){
-        Table table = quickWordTable;
-
-        table.update(() -> {
-            Element result = scene.hit(input.mouseX(), input.mouseY(), true);
-            if(result == null || !result.isDescendantOf(table)){
-                table.remove();
-            }
-        });
-    }
-
-    private void showQuickTable(){
-        Table table = quickWordTable;
-
-        rebuildQuickWordTable();
-
-        table.setPosition(input.mouseX(), input.mouseY() + 10f, Align.top);
-
-        scene.add(table);
     }
 
     private void resetMessages(){
@@ -199,50 +172,6 @@ public class ChatTable extends FloatTable{
         messageTable.row();
     }
 
-    private void rebuildQuickWordTable(){
-        Table table = quickWordTable;
-
-        table.clear();
-
-        table.table(black5, t -> {
-            TextField field = t.field("", text -> {
-            }).growX().height(45f).get();
-            t.button(Icon.saveSmall, clearPartiali, () -> {
-                quickWords.add(field.getText());
-                rebuildQuickWordTable();
-            }).fillY();
-        }).fill();
-
-        table.row();
-
-        table.pane(nonePane, t -> {
-            Runnable[] rebuildQuickWords = new Runnable[1];
-            rebuildQuickWords[0] = () -> {
-                t.clear();
-
-                for(int i = 0; i < quickWords.size; i++){
-                    String quickWord = quickWords.get(i);
-
-                    int finalI = i;
-                    table.button(b -> {
-                        b.field(quickWord, noneField, text -> {
-                            quickWords.set(finalI, text);
-                            rebuildQuickWords[0].run();
-                        }).growX().left();
-                    }, chatb, () -> {
-                        Call.sendChatMessage(quickWord);
-                        resetMessages();
-                    }).minSize(250f, 45f);
-                    table.row();
-                }
-            };
-
-            rebuildQuickWords[0].run();
-        }).maxHeight(45f * 7);
-
-        table.pack();
-    }
-
     @Override
     protected void worldLoad(){
         messageTable.clear();
@@ -260,8 +189,5 @@ public class ChatTable extends FloatTable{
         if(timer.get(60f)){
             resetMessages();
         }
-//        if(input.alt() && input.keyTap(KeyCode.b)){
-//            showQuickTable();
-//        }
     }
 }

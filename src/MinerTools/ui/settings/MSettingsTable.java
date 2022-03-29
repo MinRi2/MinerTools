@@ -1,6 +1,6 @@
 package MinerTools.ui.settings;
 
-import MinerTools.core.*;
+import MinerTools.graphics.*;
 import MinerTools.ui.tables.*;
 import MinerTools.ui.utils.*;
 import arc.*;
@@ -22,7 +22,7 @@ import static arc.Core.bundle;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class MSettingsTable extends BaseTable{
+public class MSettingsTable extends Table implements Addable{
     public static Seq<MSettingTable> settingTables = new Seq<>();
 
     private MSettingTable show;
@@ -47,7 +47,7 @@ public class MSettingsTable extends BaseTable{
 
         menu.update(() -> {
             if(menu.find("miner-tools-settings") == null){
-                addUI();
+                this.add();
             }
         });
     }

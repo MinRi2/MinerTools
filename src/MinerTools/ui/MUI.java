@@ -1,8 +1,8 @@
-package MinerTools.core;
+package MinerTools.ui;
 
-import MinerTools.ui.*;
 import MinerTools.ui.logic.*;
 import MinerTools.ui.settings.*;
+import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.floats.*;
 import arc.*;
 import arc.math.*;
@@ -15,13 +15,14 @@ import arc.struct.*;
 import arc.util.*;
 import mindustry.ui.*;
 
-import static MinerTools.MinerVars.desktop;
 import static arc.Core.app;
 import static mindustry.Vars.*;
 
 public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
+
+    private Seq<Addable> addableTables = new Seq<>();
 
     // Settings
     public MSettingsTable minerSettings;
@@ -41,22 +42,20 @@ public class MUI{
     public void init(){
         MStyles.load();
 
-        minerSettings = new MSettingsTable();
-
-        minerToolsTable = new MinerToolsTable();
-
-        chat = new ChatTable();
-
-        if(desktop){
-            logicVars = new LogicVars();
-        }
+        addableTables.addAll(
+            minerSettings = new MSettingsTable(),
+            minerToolsTable = new MinerToolsTable(),
+            chat = new ChatTable(),
+            logicVars = new LogicVars()
+        );
 
         addUI();
     }
 
     public void addUI(){
-        minerToolsTable.addUI();
-        minerSettings.addUI();
+        for(Addable addableTable : addableTables){
+            addableTable.addUI();
+        }
     }
 
     public void update(){
