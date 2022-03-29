@@ -30,7 +30,7 @@ public class MinerTools extends Mod{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            Timer.schedule(PowerInfo::load, 2f);
+            Timer.schedule(PowerInfo::load, 1f);
 
             showBannedInfo();
         });

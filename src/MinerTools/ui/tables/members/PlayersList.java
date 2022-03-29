@@ -105,7 +105,7 @@ public class PlayersList extends MemberTable{
                         ui.showConfirm("@confirm", bundle.format("confirmvotekick", player.name), () -> {
                             Call.sendChatMessage("/votekick " + player.name);
                         });
-                    }).size(35);
+                    }).size(35).get();
                 });
 
                 t.row();

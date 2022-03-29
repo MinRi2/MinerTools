@@ -4,6 +4,7 @@ import MinerTools.*;
 import MinerTools.ui.Dialogs.*;
 import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
+import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -38,14 +39,21 @@ public class TeamsInfo extends Table{
     public static float fontScale = 0.75f;
     public static float imgSize = iconSmall * fontScale;
 
+    private static final Seq<TeamData> tmp = new Seq<>();
+
     private final DropSettingDialog dropSetting = new DropSettingDialog();
 
     private Table main;
 
+    private Seq<TeamData> lastTeams = new Seq<>();
     private Seq<TeamData> teams = new Seq<>();
     private final Interval timer = new Interval(2);
 
     public TeamsInfo(){
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            lastTeams.clear();
+        });
+
         rebuild();
     }
 
@@ -66,9 +74,21 @@ public class TeamsInfo extends Table{
         main.background(black3);
         main.update(() -> {
             if(timer.get(0, 60f * 3)){
-                teams.set(state.teams.getActive());
-                teams.sort(data -> -data.unitCount);
-                tableRebuild();
+                Seq<TeamData> teamData = state.teams.getActive();
+
+                tmp.clear();
+                tmp.set(teamData);
+
+                if(!lastTeams.equals(tmp)){
+                    lastTeams.set(tmp);
+
+                    teams.set(teamData);
+                    teams.sort(data -> -data.unitCount);
+
+                    tableRebuild();
+                }
+
+                tmp.clear();
             }
         });
 
@@ -150,31 +170,43 @@ public class TeamsInfo extends Table{
                     label.setFontScale(fontScale + 0.15f);
                     addTeamRuleInfoTooltip(label, team);
 
-                    teamTable.table(units -> units.update(() -> {
-                        units.clear();
+                    teamTable.table(units -> {
+                        Runnable rebuildUnits = () -> {
+                            units.clear();
 
-                        int i = 0;
-                        for(UnitType unit : content.units()){
-                            if(data.countType(unit) > 0){
-                                if(i++ % 5 == 0) units.row();
-                                units.image(unit.uiIcon).size(imgSize);
-                                units.label(() -> data.countType(unit) + "").left().padRight(3).minWidth(16).get().setFontScale(fontScale);
+                            int i = 0;
+                            for(UnitType unit : content.units()){
+                                if(data.countType(unit) > 0){
+                                    if(i++ % 5 == 0) units.row();
+                                    units.image(unit.uiIcon).size(imgSize);
+                                    units.label(() -> data.countType(unit) + "").left().padRight(3).minWidth(16).get().setFontScale(fontScale);
+                                }
                             }
-                        }
-                    })).padLeft(3).fill();
+                        };
+
+                        units.update(() -> {
+                            if(timer.get(0, 60 * 2)) rebuildUnits.run();
+                        });
+                    }).padLeft(3).fill();
 
                     teamTable.add().growX();
 
                     teamTable.table(powerBarTable -> {
-                        powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
+                        Runnable setupPowerBarTable = () -> {
+                            PowerInfo info = PowerInfo.getPowerInfo(team);
 
-                        Bar powerBar = new Bar(
-                        () -> (PowerInfo.getPowerInfo(team).getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(PowerInfo.getPowerInfo(team).getPowerBalance()),
-                        () -> team.color,
-                        () -> PowerInfo.getPowerInfo(team).getSatisfaction());
+                            powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
 
-                        powerBarTable.add(powerBar).width(100).fillY();
-                        addPowerBarTooltip(powerBarTable, team);
+                            Bar powerBar = new Bar(
+                            () -> (info.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(info.getPowerBalance()),
+                            () -> team.color,
+                            info::getSatisfaction);
+
+                            powerBarTable.add(powerBar).width(100).fillY();
+                            addPowerBarTooltip(powerBarTable, info);
+                        };
+
+                        Timer.schedule(setupPowerBarTable, 3);
                     }).pad(-1).right();
                 }).pad(4).growX().left();
 
@@ -222,76 +254,84 @@ public class TeamsInfo extends Table{
         }, mobile);
     }
 
-    private static void addPowerBarTooltip(Element powerBar, Team team){
+    private void addPowerBarTooltip(Element powerBar, PowerInfo info){
         ElementUtils.addTooltip(powerBar, table -> {
-            PowerInfo info = PowerInfo.getPowerInfo(team);
-
-            if(info == null) return;
-
             table.background(black6);
 
-            table.table(t -> {
-                t.add("Consumers").labelAlign(Align.center).growX();
+            table.update(() -> {
+                if(timer.get(0, 60f * 3)){
+                    rebuildPowerInfoTooltip(table, info);
+                }
+            });
 
-                t.row();
-
-                t.table(consumers -> {
-                    for(Entry<Block, ObjectSet<Building>> entry : info.consumers.entries()){
-                        var block = entry.key;
-                        var buildings = entry.value;
-
-                        if(buildings.isEmpty()) continue;
-
-                        consumers.table(consumer -> {
-                            consumer.table(tt -> {
-                                tt.image(block.uiIcon).size(iconLarge);
-                                tt.label(() -> "x" + buildings.size).left();
-                            }).left();
-
-                            consumer.add().width(-1f).growX();
-
-                            consumer.table(tt -> {
-                                tt.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.red).left();
-                                tt.label(() -> String.format("%.1f", info.getConsPower(block))).labelAlign(Align.right).color(Color.red);
-                            }).right();
-                        }).left().growX();
-
-                        consumers.row();
-                    }
-                }).fillX();
-            }).top().padLeft(5f).minWidth(220f);
-
-            table.table(t -> {
-                t.add("Producers").labelAlign(Align.center).growX();
-
-                t.row();
-
-                t.table(producers -> {
-                    for(Entry<Block, ObjectSet<Building>> entry : info.producers.entries()){
-                        var block = entry.key;
-                        var buildings = entry.value;
-
-                        if(buildings.isEmpty()) continue;
-
-                        producers.table(producer -> {
-                            producer.table(tt -> {
-                                tt.image(block.uiIcon).size(iconLarge);
-                                tt.label(() -> "x" + buildings.size).left();
-                            }).left();
-
-                            producer.add().width(-1f).growX();
-
-                            producer.table(tt -> {
-                                tt.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.green).left();
-
-                                tt.label(() -> String.format("%.1f", info.getProdPower(block))).labelAlign(Align.right).color(Color.green);
-                            }).right();
-                        }).left().growX();
-
-                        producers.row();
-                    }
-                }).fillX();
-            }).top().padLeft(5f).minWidth(220f);
+            rebuildPowerInfoTooltip(table, info);
         }, mobile);
+    }
+
+    private static void rebuildPowerInfoTooltip(Table table, PowerInfo info){
+        table.clear();
+
+        table.table(t -> {
+            t.add("Consumers").labelAlign(Align.center).growX();
+
+            t.row();
+
+            t.table(consumers -> {
+                for(Entry<Block, ObjectSet<Building>> entry : info.consumers.entries()){
+                    var block = entry.key;
+                    var buildings = entry.value;
+
+                    if(buildings.isEmpty()) continue;
+
+                    consumers.table(consumer -> {
+                        consumer.table(tt -> {
+                            tt.image(block.uiIcon).size(iconLarge);
+                            tt.label(() -> "x" + buildings.size).left();
+                        }).left();
+
+                        consumer.add().width(-1f).growX();
+
+                        consumer.table(tt -> {
+                            tt.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.red).left();
+                            tt.label(() -> String.format("%.1f", info.getConsPower(block))).labelAlign(Align.right).color(Color.red);
+                        }).right();
+                    }).left().growX();
+
+                    consumers.row();
+                }
+            }).fillX();
+        }).top().padLeft(5f).minWidth(220f);
+
+        table.table(t -> {
+            t.add("Producers").labelAlign(Align.center).growX();
+
+            t.row();
+
+            t.table(producers -> {
+                for(Entry<Block, ObjectSet<Building>> entry : info.producers.entries()){
+                    var block = entry.key;
+                    var buildings = entry.value;
+
+                    if(buildings.isEmpty()) continue;
+
+                    producers.table(producer -> {
+                        producer.table(tt -> {
+                            tt.image(block.uiIcon).size(iconLarge);
+                            tt.label(() -> "x" + buildings.size).left();
+                        }).left();
+
+                        producer.add().width(-1f).growX();
+
+                        producer.table(tt -> {
+                            tt.image(Icon.power).padLeft(5f).size(iconSmall).color(Color.green).left();
+
+                            tt.label(() -> String.format("%.1f", info.getProdPower(block))).labelAlign(Align.right).color(Color.green);
+                        }).right();
+                    }).left().growX();
+
+                    producers.row();
+                }
+            }).fillX();
+        }).top().padLeft(5f).minWidth(220f);
     }
 }

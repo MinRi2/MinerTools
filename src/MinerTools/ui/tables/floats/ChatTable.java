@@ -54,7 +54,7 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void setupCont(Table cont){
-        cont.add(pane).grow().scrollX(false);
+        cont.add(pane).grow().minWidth(350f).maxHeight(170f).scrollX(false);
 
         cont.row();
 
