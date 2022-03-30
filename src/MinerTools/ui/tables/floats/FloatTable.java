@@ -101,13 +101,13 @@ public class FloatTable extends DraggableTable implements Addable{
             remove();
         }
 
+        pack();
         keepInStage();
     }
 
     @Override
     public void addUI(){
         scene.add(this);
-        pack();
         invalidateHierarchy();
     }
 }
