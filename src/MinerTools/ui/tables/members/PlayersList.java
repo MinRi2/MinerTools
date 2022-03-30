@@ -19,10 +19,8 @@ import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class PlayersList extends MemberTable{
-    private static final Seq<Player> tmpSeq = new Seq<>();
-    private static final Interval timer = new Interval();
-
-    private final Seq<Player> lastPlayers = new Seq<>();
+    private int lastSize;
+    private final Seq<Player> players = new Seq<>();
 
     private Table playersTable = new Table(black3);
 
@@ -35,9 +33,9 @@ public class PlayersList extends MemberTable{
         MUI.panes.add(pane);
 
         update(() -> {
-            if(timer.get(60f * 3) && !lastPlayers.equals(Groups.player.copy(tmpSeq))){
-                lastPlayers.clear().set(tmpSeq);
-                tmpSeq.clear();
+            if(Groups.player.size() != lastSize){
+                lastSize = Groups.player.size();
+                Groups.player.copy(players.clear());
                 rebuild();
             }
         });
@@ -61,13 +59,13 @@ public class PlayersList extends MemberTable{
 
     private void rebuild(){
         playersTable.clear();
-        lastPlayers.sort(Structs.comps(Structs.comparing(Player::team), Structs.comparingBool(p -> !p.admin)));
+        players.sort(Structs.comps(Structs.comparing(Player::team), Structs.comparingBool(p -> !p.admin)));
 
         playersTable.table(t -> {
             /* players */
             t.label(() -> "[#" + player.team().color + "]" + MinerFuncs.countPlayer(player.team()) + "[] / " + Groups.player.size()).row();
 
-            for(Player player : lastPlayers){
+            for(Player player : players){
                 t.table(info -> {
                     info.table(image -> {
                         image.add(new Image(player.icon()).setScaling(Scaling.bounded)).grow();
@@ -101,11 +99,21 @@ public class PlayersList extends MemberTable{
                         camera.position.set(player);
                     }).size(35);
 
-                    info.button(Icon.hammer, clearPartiali, () -> {
-                        ui.showConfirm("@confirm", bundle.format("confirmvotekick", player.name), () -> {
-                            Call.sendChatMessage("/votekick " + player.name);
-                        });
-                    }).size(35).get();
+                    info.button(Icon.list, clearPartiali, () -> MUI.showTableAt(table -> {
+                        table.background(Tex.buttonOver);
+
+                        table.button(Icon.eyeSmall, clearPartiali, () -> {
+                            ui.showConfirm("@confirm", bundle.format("confirmvoteob", player.name), () -> {
+                                Call.sendChatMessage("/vote ob " + player.name);
+                            });
+                        }).grow().size(35f);
+
+                        table.button(Icon.hammerSmall, clearPartiali, () -> {
+                            ui.showConfirm("@confirm", bundle.format("confirmvotekick", player.name), () -> {
+                                Call.sendChatMessage("/votekick " + player.name);
+                            });
+                        }).grow().size(35f);
+                    })).size(35);
                 });
 
                 t.row();

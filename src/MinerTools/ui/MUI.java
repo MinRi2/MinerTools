@@ -7,10 +7,10 @@ import MinerTools.ui.tables.floats.*;
 import arc.*;
 import arc.func.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
-import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -18,6 +18,7 @@ import arc.util.*;
 import mindustry.ui.*;
 
 import static arc.Core.*;
+import static arc.util.Align.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.black6;
 
@@ -72,31 +73,27 @@ public class MUI{
         }
     }
 
-    public static void showTableAt(Element actor, Cons<Table> cons){
-        showTableAt(actor.x, actor.y, cons);
+    public static void showTableAt(Cons<Table> cons){
+        showTableAt(input.mouseX(), input.mouseY(), center, cons);
     }
 
-    public static void showTableAt(float x, float y, Cons<Table> cons){
-        showTableAt(x, y, cons, Element::hasMouse);
-    }
-
-    public static void showTableAt(float x, float y, Cons<Table> cons, Boolf<Table> hideBoolp){
-        showTableAt(x, y, Align.center, cons, hideBoolp);
+    public static void showTableAt(float x, float y, int align, Cons<Table> cons){
+        showTableAt(x, y, align, cons, table -> !table.hasMouse());
     }
 
     public static void showTableAt(float x, float y, int align, Cons<Table> cons, Boolf<Table> hideBoolp){
         Table table = new Table(black6);
-        table.setPosition(x, y, align);
-        cons.get(table);
+        scene.add(table);
 
+        cons.get(table);
         table.pack();
+
+        table.setPosition(x, y, align);
         table.keepInStage();
 
         table.update(() -> {
             if(hideBoolp.get(table)) table.remove();
         });
-
-        scene.add(table);
     }
 
     public static void showInfoToast(String info, float duration, int align){
