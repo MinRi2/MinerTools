@@ -73,7 +73,7 @@ public class TeamsInfo extends Table{
 
         main.background(black3);
         main.update(() -> {
-            if(timer.get(0, 60f * 3)){
+            if(timer.get(0, 60f)){
                 Seq<TeamData> teamData = state.teams.getActive();
 
                 tmp.clear();
@@ -84,6 +84,8 @@ public class TeamsInfo extends Table{
 
                     teams.set(teamData);
                     teams.sort(data -> -data.unitCount);
+
+                    Log.info("Teams: " + teams.toString(", ", data -> data.team.localized()));
 
                     tableRebuild();
                 }
@@ -161,57 +163,62 @@ public class TeamsInfo extends Table{
         main.clear();
 
         for(TeamData data : teams){
-            if(data.units.size > 0){
-                Team team = data.team;
+            Team team = data.team;
 
-                main.table(teamTable -> {
-                    Label label = teamTable.label(() -> (team == player.team() ? "[green]" + Iconc.players : "") + "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
-                    .padRight(3).minWidth(16).left().get();
-                    label.setFontScale(fontScale + 0.15f);
-                    addTeamRuleInfoTooltip(label, team);
+            main.table(teamTable -> {
+                Label label = teamTable.label(() -> (team == player.team() ? "[green]" + Iconc.players : "") + "[#" + team.color + "]" + team.localized() + "(" + countPlayer(team) + ")")
+                .padRight(3).minWidth(16).left().get();
+                label.setFontScale(fontScale + 0.15f);
+                addTeamRuleInfoTooltip(label, team);
 
-                    teamTable.table(units -> {
-                        Runnable rebuildUnits = () -> {
-                            units.clear();
+                teamTable.table(units -> {
+                    final int[] lastCap = {0};
+                    Runnable rebuildUnits = () -> {
+                        units.clear();
 
-                            int i = 0;
-                            for(UnitType unit : content.units()){
-                                if(data.countType(unit) > 0){
-                                    if(i++ % 5 == 0) units.row();
-                                    units.image(unit.uiIcon).size(imgSize);
-                                    units.label(() -> data.countType(unit) + "").left().padRight(3).minWidth(16).get().setFontScale(fontScale);
-                                }
+                        int i = 0;
+                        for(UnitType unit : content.units()){
+                            if(data.countType(unit) > 0){
+                                if(i++ % 5 == 0) units.row();
+                                units.image(unit.uiIcon).size(imgSize);
+                                units.label(() -> data.countType(unit) + "").left().padRight(3).minWidth(16).get().setFontScale(fontScale);
                             }
-                        };
+                        }
+                    };
 
-                        units.update(() -> {
-                            if(timer.get(0, 60 * 2)) rebuildUnits.run();
-                        });
-                    }).padLeft(3).fill();
+                    rebuildUnits.run();
 
-                    teamTable.add().growX();
+                    units.update(() -> {
+                        int cap = data.unitCount;
+                        if(lastCap[0] != cap){
+                            lastCap[0] = cap;
+                            rebuildUnits.run();
+                        }
+                    });
+                }).padLeft(3).fill();
 
-                    teamTable.table(powerBarTable -> {
-                        Runnable setupPowerBarTable = () -> {
-                            PowerInfo info = PowerInfo.getPowerInfo(team);
+                teamTable.add().growX();
 
-                            powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
+                teamTable.table(powerBarTable -> {
+                    Runnable setupPowerBarTable = () -> {
+                        PowerInfo info = PowerInfo.getPowerInfo(team);
 
-                            Bar powerBar = new Bar(
-                            () -> (info.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(info.getPowerBalance()),
-                            () -> team.color,
-                            info::getSatisfaction);
+                        powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
 
-                            powerBarTable.add(powerBar).width(100).fillY();
-                            addPowerBarTooltip(powerBarTable, info);
-                        };
+                        Bar powerBar = new Bar(
+                        () -> (info.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(info.getPowerBalance()),
+                        () -> team.color,
+                        info::getSatisfaction);
 
-                        Timer.schedule(setupPowerBarTable, 3);
-                    }).pad(-1).right();
-                }).pad(4).growX().left();
+                        powerBarTable.add(powerBar).width(100).fillY();
+                        addPowerBarTooltip(powerBarTable, info);
+                    };
 
-                main.row();
-            }
+                    Timer.schedule(setupPowerBarTable, 1);
+                }).pad(-1).right();
+            }).pad(4).growX().left();
+
+            main.row();
         }
     }
 
@@ -259,7 +266,7 @@ public class TeamsInfo extends Table{
             table.background(black6);
 
             table.update(() -> {
-                if(timer.get(0, 60f * 3)){
+                if(timer.get(0, 60f)){
                     rebuildPowerInfoTooltip(table, info);
                 }
             });
