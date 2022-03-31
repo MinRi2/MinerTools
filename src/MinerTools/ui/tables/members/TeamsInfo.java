@@ -85,8 +85,6 @@ public class TeamsInfo extends Table{
                     teams.set(teamData);
                     teams.sort(data -> -data.unitCount);
 
-                    Log.info("Teams: " + teams.toString(", ", data -> data.team.localized()));
-
                     tableRebuild();
                 }
 
