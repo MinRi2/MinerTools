@@ -60,7 +60,7 @@ public class Drawer{
                 data.buildings.getObjects(tmp);
                 for(Building building : tmp){
                     if(building instanceof TurretBuild turretBuild){
-                        if(mSettings.getBool("turretAlert")){
+                        if(!player.isNull() && mSettings.getBool("turretAlert")){
                             turretAlert(turretBuild);
                         }
 
@@ -74,7 +74,7 @@ public class Drawer{
 
                 var cores = player.team().cores();
                 for(Unit unit : data.units){
-                    if(mSettings.getBool("unitAlert")){
+                    if(!player.isNull() && mSettings.getBool("unitAlert")){
                         unitAlert(unit);
                     }
 
