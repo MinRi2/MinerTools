@@ -39,8 +39,6 @@ public class TeamsInfo extends Table{
     public static float fontScale = 0.75f;
     public static float imgSize = iconSmall * fontScale;
 
-    private static final Seq<TeamData> tmp = new Seq<>();
-
     private final DropSettingDialog dropSetting = new DropSettingDialog();
 
     private Table main;
@@ -76,19 +74,15 @@ public class TeamsInfo extends Table{
             if(timer.get(0, 60f)){
                 Seq<TeamData> teamData = state.teams.getActive();
 
-                tmp.clear();
-                tmp.set(teamData);
+                if(!lastTeams.equals(teamData)){
+                    lastTeams.clear().addAll(teamData);
 
-                if(!lastTeams.equals(tmp)){
-                    lastTeams.set(tmp);
-
-                    teams.set(teamData);
+                    // teams.set(teamData); 为什么会报错呢?
+                    teams.clear().addAll(teamData);
                     teams.sort(data -> -data.unitCount);
 
                     tableRebuild();
                 }
-
-                tmp.clear();
             }
         });
 
