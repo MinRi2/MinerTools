@@ -1,7 +1,6 @@
 package MinerTools.graphics;
 
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -10,7 +9,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
-import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
@@ -249,7 +247,7 @@ public class Drawer{
             ItemTurret block = (ItemTurret)turret.block;
             ItemEntry entry = (ItemEntry)turret.ammo.peek();
 
-            Item item = Reflect.get(entry, "item");
+            Item item = entry.item;
 
             Draw.z(Layer.turret + 0.1f);
 
