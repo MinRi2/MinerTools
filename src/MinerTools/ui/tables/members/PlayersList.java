@@ -27,7 +27,7 @@ public class PlayersList extends MemberTable{
     private Player target;
 
     public PlayersList(){
-        icon = Icon.players;
+        super(Icon.players);
 
         ScrollPane pane = pane(nonePane, playersTable).maxHeight(235).get();
         MUI.panes.add(pane);

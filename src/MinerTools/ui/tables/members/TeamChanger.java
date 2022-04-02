@@ -17,7 +17,7 @@ public class TeamChanger extends MemberTable{
     private int skipWave;
 
     public TeamChanger(){
-        icon = Icon.editor;
+        super(Icon.editor);
         rebuild();
     }
 

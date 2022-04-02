@@ -31,7 +31,7 @@ public class Schematics extends MemberTable{
 
 
     public Schematics(){
-        icon = Icon.paste;
+        super(Icon.paste);
 
         try{
             tagsField = SchematicsDialog.class.getDeclaredField("tags");
