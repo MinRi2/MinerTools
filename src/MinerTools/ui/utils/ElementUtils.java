@@ -33,10 +33,23 @@ public class ElementUtils{
      */
     public static Element addTooltip(Element element, Cons<Table> cons, int align, boolean allowMobile){
         var tip = new Tooltip(cons){
+            {
+                targetActor = element;
+
+                container.update(() -> {
+                    if(!targetActor.hasMouse()){
+                        hide();
+                    }
+                });
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Element toActor){}
+
             @Override
             protected void setContainerPosition(Element element, float x, float y){
-                this.targetActor = element;
                 Vec2 pos = element.localToStageCoordinates(Tmp.v1.set(0, 0));
+
                 container.pack();
                 container.setPosition(pos.x, pos.y, align);
                 container.setOrigin(0, element.getHeight());
