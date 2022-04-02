@@ -11,7 +11,6 @@ import mindustry.mod.*;
 
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
-import static MinerTools.Updater.checkUpdate;
 import static MinerTools.input.ModBinding.updateConveyor;
 import static arc.Core.input;
 import static mindustry.Vars.*;
@@ -22,7 +21,7 @@ public class MinerTools extends Mod{
         enableConsole = true;
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            checkUpdate();
+            Timer.schedule(Updater::checkUpdate, 3);
 
             MinerVars.init();
 
@@ -47,6 +46,7 @@ public class MinerTools extends Mod{
         if(desktop && input.alt() && input.keyTap(KeyCode.mouseLeft)){
             tryPanToController();
         }
+
         mui.update();
     }
 }

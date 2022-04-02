@@ -159,7 +159,7 @@ public class Drawer{
 
     private static boolean unitAlertValid(Unit unit){
         UnitType type = unit.type;
-        return (type.weapons.any()) && // in white list
+        return (type.hasWeapons()) && // has weapons
         (unit.team != player.team()) && // isEnemy
         (!state.rules.unitAmmo || unit.ammo > 0f) && // hasAmmo
         (player.unit().isFlying() ? type.targetAir : type.targetGround) && // can hit player

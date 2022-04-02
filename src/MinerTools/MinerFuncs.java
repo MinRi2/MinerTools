@@ -255,7 +255,11 @@ public class MinerFuncs{
             CoreBuild core = player.closestCore();
 
             if(building.block instanceof ItemTurret block){
-                for(Item item : DropSettingDialog.settings.get(block)){
+                Seq<Item> items = DropSettingDialog.settings.get(block);
+
+                if(items == null) return null;
+
+                for(Item item : items){
                     if(building.acceptItem(building, item) && core.items.has(item)){
                         return item;
                     }
