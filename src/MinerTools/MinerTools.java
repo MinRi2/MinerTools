@@ -1,5 +1,6 @@
 package MinerTools;
 
+import MinerTools.ai.*;
 import MinerTools.graphics.*;
 import MinerTools.ui.*;
 import arc.*;
@@ -48,5 +49,7 @@ public class MinerTools extends Mod{
         }
 
         mui.update();
+
+        BaseAI.updateController();
     }
 }

@@ -23,7 +23,7 @@ public class MinerToolsTable extends Table implements Addable{
     private final MemberManager memberManager = new MemberManager();
 
     private MemberTable shown;
-    private final Seq<MemberTable> members = Seq.with(new TeamChanger(), new PlayersList(), new Schematics());
+    private final Seq<MemberTable> members = Seq.with(new TeamChanger(), new PlayersList(), new Schematics(), new AITable());
 
     public MinerToolsTable(){
         rebuild();
@@ -69,7 +69,7 @@ public class MinerToolsTable extends Table implements Addable{
         row();
 
         table(t -> {
-            t.table(memberManager::setContainer).fillX().growY();
+            t.table(memberManager::setContainer).fillX().top();
 
             t.table(black3, buttons -> {
                 for(MemberTable member : members){
