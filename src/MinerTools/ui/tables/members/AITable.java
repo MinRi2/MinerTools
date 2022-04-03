@@ -4,6 +4,7 @@ import MinerTools.ai.*;
 import MinerTools.ai.types.*;
 import arc.*;
 import arc.scene.ui.layout.*;
+import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
@@ -20,7 +21,10 @@ public class AITable extends MemberTable{
         rebuild();
 
         /* 重构DisplayTable以适配ContentLoader */
-        Events.on(EventType.ContentInitEvent.class, e -> rebuildDisplayTable());
+        Events.on(EventType.ContentInitEvent.class, e -> {
+            /* 延时1s执行,等待MinerVars.allOres的初始化 */
+            Timer.schedule(this::rebuildDisplayTable, 1);
+        });
     }
 
     private void setTarget(PlayerAI ai){
