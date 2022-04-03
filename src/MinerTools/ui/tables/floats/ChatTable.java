@@ -121,10 +121,10 @@ public class ChatTable extends FloatTable{
     }
 
     private String catchSendMessage(String message){
-        // [coral][['PlayerColor'[white]'PlayerName'[coral]]:[white] 'Message'
+        // [coral][[[#FEEB2CFF]miner[coral]]:[white] a
         if(message.contains(messageStart)){
             int startIndex = message.indexOf(messageStart);
-            return message.substring(startIndex + 1);
+            return message.substring(startIndex + messageStart.length());
         }
         return "";
     }
