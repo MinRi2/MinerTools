@@ -247,7 +247,7 @@ public class Drawer{
             ItemTurret block = (ItemTurret)turret.block;
             ItemEntry entry = (ItemEntry)turret.ammo.peek();
 
-            Item item = entry.item;
+            Item item = Reflect.get(entry, "item");
 
             Draw.z(Layer.turret + 0.1f);
 
