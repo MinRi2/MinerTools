@@ -195,6 +195,10 @@ public class TeamsInfo extends Table{
                     Runnable setupPowerBarTable = () -> {
                         PowerInfo info = PowerInfo.getPowerInfo(team);
 
+                        if(info == null){
+                            return;
+                        }
+
                         powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
 
                         Bar powerBar = new Bar(
