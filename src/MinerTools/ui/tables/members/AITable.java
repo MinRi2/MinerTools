@@ -10,7 +10,7 @@ public class AITable extends MemberTable{
     private PlayerAI[] ais = new PlayerAI[]{new PlayerMinerAI()};
     private PlayerAI target;
 
-    private Table displayTable = new Table(Styles.flatDown);
+    private Table displayTable = new Table(Styles.black6);
 
     public AITable(){
         super(Icon.android);
@@ -38,9 +38,9 @@ public class AITable extends MemberTable{
                 buttons.button(ai.icon, Styles.clearTogglePartiali, () -> setTarget(ai))
                 .checked(b -> target == ai);
             }
-        }).row();
+        }).right().row();
 
-        add(displayTable).fillX();
+        add(displayTable).growX();
     }
 
     private void rebuildDisplayTable(){

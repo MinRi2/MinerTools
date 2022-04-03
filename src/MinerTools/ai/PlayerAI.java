@@ -3,27 +3,21 @@ package MinerTools.ai;
 import MinerTools.interfaces.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
-import mindustry.*;
-import mindustry.entities.units.*;
+
+import static mindustry.Vars.player;
 
 public class PlayerAI extends BaseAI implements Displayable{
     /** 用于{@link MinerTools.ui.tables.members.AITable} 标识AI种类, 不用时可为null */
     public Drawable icon;
 
-    public PlayerAI(AIController fallback, Drawable icon){
-        this.fallback = fallback;
+    public PlayerAI(Drawable icon){
         this.icon = icon;
     }
 
     protected void update(){
-        if(unit == null || unit != Vars.player.unit()){
-            unit(Vars.player.unit());
+        if(unit == null || unit != player.unit()){
+            unit(player.unit());
         }
-    }
-
-    @Override
-    public boolean useFallback(){
-        return true;
     }
 
     @Override
