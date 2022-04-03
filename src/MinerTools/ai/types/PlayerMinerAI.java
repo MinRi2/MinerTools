@@ -1,33 +1,23 @@
 package MinerTools.ai.types;
 
 import MinerTools.ai.*;
+import arc.*;
 import arc.graphics.*;
 import arc.scene.style.*;
 import arc.scene.ui.Button.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import mindustry.content.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
-import mindustry.world.blocks.environment.*;
 
+import static MinerTools.MinerVars.allOres;
 import static mindustry.Vars.*;
 import static mindustry.content.UnitTypes.mono;
 
 public class PlayerMinerAI extends PlayerAI{
-    public static Seq<Item> allOres = new Seq<>();
-
-    static {
-        content.blocks().each(b -> {
-            if(b instanceof Floor f && f.itemDrop != null && !allOres.contains(f.itemDrop)){
-                allOres.add(f.itemDrop);
-            }
-        });
-
-        allOres.sort(item -> item.id);
-    }
-
     private Seq<Item> mineOres = new Seq<>();
 
     public Item targetItem;
@@ -37,14 +27,20 @@ public class PlayerMinerAI extends PlayerAI{
     public PlayerMinerAI(){
         super(new TextureRegionDrawable(mono.uiIcon));
 
-        mineOres.add(Items.copper, Items.lead);
+        /* 适配ContentLoader */
+        Events.on(EventType.ContentInitEvent.class, e -> {
+            mineOres.clear();
+            mineOres.add(Items.copper, Items.lead);
+        });
     }
 
     @Override
     public void updateMovement(){
         Building core = unit.closestCore();
 
-        if(!(unit.canMine()) || core == null) return;
+        if(!(unit.canMine()) || core == null){
+            return;
+        }
 
         if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.miningRange)){
             unit.mineTile(null);
@@ -52,12 +48,12 @@ public class PlayerMinerAI extends PlayerAI{
 
         if(mining){
             if(timer.get(timerTarget2, 60 * 4) || targetItem == null){
-                targetItem = unit.type.mineItems.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
+                targetItem = mineOres.min(i -> indexer.hasOre(i) && unit.canMine(i), i -> core.items.get(i));
             }
 
             //core full of the target item, do nothing
             if(targetItem != null && core.acceptStack(targetItem, 1, unit) == 0){
-                unit.clearItem();
+                Call.dropItem(player.angleTo(player.x, player.y));
                 unit.mineTile = null;
                 return;
             }
@@ -95,7 +91,7 @@ public class PlayerMinerAI extends PlayerAI{
                     Call.transferItemTo(unit, unit.stack.item, unit.stack.amount, unit.x, unit.y, core);
                 }
 
-                unit.clearItem();
+                Call.dropItem(player.angleTo(player.x, player.y));
                 mining = true;
             }
 

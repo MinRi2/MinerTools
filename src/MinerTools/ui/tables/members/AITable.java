@@ -2,7 +2,9 @@ package MinerTools.ui.tables.members;
 
 import MinerTools.ai.*;
 import MinerTools.ai.types.*;
+import arc.*;
 import arc.scene.ui.layout.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 
@@ -16,6 +18,9 @@ public class AITable extends MemberTable{
         super(Icon.android);
 
         rebuild();
+
+        /* 重构DisplayTable以适配ContentLoader */
+        Events.on(EventType.ContentInitEvent.class, e -> rebuildDisplayTable());
     }
 
     private void setTarget(PlayerAI ai){

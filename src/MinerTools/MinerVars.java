@@ -13,8 +13,6 @@ import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 
-import java.util.*;
-
 import static arc.Core.*;
 import static mindustry.Vars.*;
 
@@ -24,8 +22,9 @@ public class MinerVars{
 
     public static boolean desktop;
 
-    public static Seq<UnitType> visibleUnits;
-    public static Seq<Block> visibleBlocks;
+    public static Seq<UnitType> visibleUnits = new Seq<>();
+    public static Seq<Block> visibleBlocks = new Seq<>();
+    public static Seq<Item> allOres = new Seq<>();
 
     public static boolean enableUpdateConveyor;
 
@@ -33,38 +32,48 @@ public class MinerVars{
         mSettings = new MinerToolsSettings();
         mui = new MUI();
 
-        betterUiscaleSetting();
+        initBetterUIScaleSetting();
 
         desktop = control.input instanceof DesktopInput;
 
-        visibleBlocks = content.blocks().select(Block::isVisible);
-        visibleUnits = content.units().select(u -> !u.isHidden());
-
-        for(Block b : content.blocks()){
-            if(b instanceof ItemBridge){
-                b.allowConfigInventory = true;
-            }
-        }
-
         // update controls
         if(desktop){
-            KeyBind[] bindings = Binding.values();
-            KeyBind[] modBindings = ModBinding.values();
-
-            KeyBind[] newBindings = new KeyBind[bindings.length + modBindings.length];
-            System.arraycopy(bindings, 0, newBindings, 0, bindings.length);
-            System.arraycopy(modBindings, 0, newBindings, bindings.length, modBindings.length);
-
-            keybinds.setDefaults(newBindings);
-            Reflect.invoke(keybinds, "load");
-            Reflect.invoke(ui.controls, "setup");
+            initBindings();
         }
 
         mSettings.init();
         mui.init();
     }
 
-    public static void betterUiscaleSetting(){
+    public static void initContent(){
+        visibleBlocks.clear();
+        visibleUnits.clear();
+        allOres.clear();
+
+        for(Block block : content.blocks()){
+            if(block.isVisible()){
+                visibleBlocks.add(block);
+            }
+
+            if(block.itemDrop != null && !allOres.contains(block.itemDrop)){
+                allOres.add(block.itemDrop);
+            }
+
+            if(block instanceof ItemBridge){
+                block.allowConfigInventory = true;
+            }
+        }
+
+        for(UnitType type : content.units()){
+            if(!type.isHidden()){
+                visibleUnits.add(type);
+            }
+        }
+
+        allOres.sort(item -> item.id);
+    }
+
+    public static void initBetterUIScaleSetting(){
         int[] lastUiScale = {settings.getInt("uiscale", 100)};
         int index = ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
 
@@ -81,5 +90,18 @@ public class MinerVars{
         ui.settings.graphics.rebuild();
 
         Scl.setProduct(settings.getInt("_uiscale", 100) / 100f);
+    }
+
+    public static void initBindings(){
+        KeyBind[] bindings = Reflect.get(keybinds, "definitions");
+        KeyBind[] modBindings = ModBinding.values();
+
+        KeyBind[] newBindings = new KeyBind[bindings.length + modBindings.length];
+        System.arraycopy(bindings, 0, newBindings, 0, bindings.length);
+        System.arraycopy(modBindings, 0, newBindings, bindings.length, modBindings.length);
+
+        keybinds.setDefaults(newBindings);
+        Reflect.invoke(keybinds, "load");
+        Reflect.invoke(ui.controls, "setup");
     }
 }
