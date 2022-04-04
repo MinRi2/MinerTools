@@ -47,7 +47,7 @@ public class MSettingsTable extends Table implements Addable{
 
         menu.update(() -> {
             if(menu.find("miner-tools-settings") == null){
-                this.add();
+                this.addUI();
             }
         });
     }
