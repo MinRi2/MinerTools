@@ -5,6 +5,8 @@ import MinerTools.ui.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
+import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.gen.*;
@@ -33,7 +35,7 @@ public class PlayerFollowAI extends PlayerAI{
     protected void update(){
         super.update();
 
-        if(follow != null && follow.dead()){
+        if(follow != null && follow.unit().isNull()){
             follow = null;
         }
     }
@@ -81,6 +83,8 @@ public class PlayerFollowAI extends PlayerAI{
 
         int index = 0;
         for(Player player : Groups.player){
+            if(player.team() != Vars.player.team()) continue;
+
             playerSelect.image().update(i -> i.setColor(player.team().color)).growY();
 
             playerSelect.button(b -> {
