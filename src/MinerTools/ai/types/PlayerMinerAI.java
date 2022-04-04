@@ -15,7 +15,6 @@ import mindustry.world.*;
 
 import static MinerTools.MinerVars.allOres;
 import static mindustry.Vars.*;
-import static mindustry.content.UnitTypes.mono;
 
 public class PlayerMinerAI extends PlayerAI{
     private Seq<Item> mineOres = new Seq<>();
@@ -25,7 +24,7 @@ public class PlayerMinerAI extends PlayerAI{
     public boolean mining;
 
     public PlayerMinerAI(){
-        super(new TextureRegionDrawable(mono.uiIcon));
+        super(new TextureRegionDrawable(UnitTypes.mono.uiIcon));
 
         /* 适配ContentLoader */
         Events.on(EventType.ContentInitEvent.class, e -> {
@@ -117,6 +116,6 @@ public class PlayerMinerAI extends PlayerAI{
                     }
                 }).fill().get();
             }
-        }).left();
+        }).right();
     }
 }

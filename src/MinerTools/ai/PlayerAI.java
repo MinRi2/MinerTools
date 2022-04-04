@@ -14,6 +14,15 @@ public class PlayerAI extends BaseAI implements Displayable{
         this.icon = icon;
     }
 
+    /* Needn't update weapons */
+    @Override
+    public void updateWeapons(){}
+
+
+    /* Needn't update target */
+    @Override
+    public void updateTargeting(){}
+
     protected void update(){
         if(unit == null || unit != player.unit()){
             unit(player.unit());

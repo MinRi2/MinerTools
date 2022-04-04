@@ -10,7 +10,7 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 
 public class AITable extends MemberTable{
-    private PlayerAI[] ais = new PlayerAI[]{new PlayerMinerAI()};
+    private PlayerAI[] ais = new PlayerAI[]{new PlayerMinerAI(), new PlayerFollowAI()};
     private PlayerAI target;
 
     private Table displayTable = new Table(Styles.black6);
@@ -44,7 +44,7 @@ public class AITable extends MemberTable{
             buttons.defaults().size(55f);
 
             for(PlayerAI ai : ais){
-                buttons.button(ai.icon, Styles.clearTogglePartiali, () -> setTarget(ai))
+                buttons.button(ai.icon, Styles.clearTogglePartiali, 50f, () -> setTarget(ai))
                 .checked(b -> target == ai);
             }
         }).right().row();
