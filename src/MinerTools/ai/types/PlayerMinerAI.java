@@ -28,8 +28,9 @@ public class PlayerMinerAI extends PlayerAI{
 
         /* 适配ContentLoader */
         Events.on(EventType.ContentInitEvent.class, e -> {
-            mineOres.clear();
-            mineOres.add(Items.copper, Items.lead);
+            for(int i = 0; i < mineOres.size; i++){
+                mineOres.set(i, content.item(i));
+            }
         });
     }
 
