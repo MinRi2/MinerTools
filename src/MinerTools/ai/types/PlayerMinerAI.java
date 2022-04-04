@@ -26,6 +26,9 @@ public class PlayerMinerAI extends PlayerAI{
     public PlayerMinerAI(){
         super(new TextureRegionDrawable(UnitTypes.mono.uiIcon));
 
+        /* 默认挖矿 */
+        mineOres.add(Items.copper, Items.lead);
+
         /* 适配ContentLoader */
         Events.on(EventType.ContentInitEvent.class, e -> {
             for(int i = 0; i < mineOres.size; i++){
