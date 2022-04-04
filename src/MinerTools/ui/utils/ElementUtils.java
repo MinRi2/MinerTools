@@ -67,7 +67,7 @@ public class ElementUtils{
         for(Element child : group.getChildren()){
             /* add some tooltips */
             if(child.name != null){
-                addTooltip(child, bundle.get(bundleName + child.name), allowMobile);
+                addTooltip(child, bundle.get(bundleName + "." + child.name), allowMobile);
             }
         }
     }
