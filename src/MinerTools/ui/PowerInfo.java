@@ -4,6 +4,7 @@ import MinerTools.*;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -30,8 +31,13 @@ public class PowerInfo{
     public Team team;
 
     public ObjectSet<PowerGraph> graphs = new ObjectSet<>();
+
+    public ObjectSet<Building> all = new ObjectSet<>();
     public ObjectMap<Block, ObjectSet<Building>> consumers = new ObjectMap<>();
     public ObjectMap<Block, ObjectSet<Building>> producers = new ObjectMap<>();
+
+    private boolean requireInitGraphs;
+    private final Interval timer = new Interval();
 
     public PowerInfo(Team team){
         this.team = team;
@@ -57,6 +63,10 @@ public class PowerInfo{
             addTile(event.tile);
         });
 
+        initBuildings();
+    }
+
+    private void initBuildings(){
         if(team.data().buildings != null){
             tmp.clear();
 
@@ -66,6 +76,16 @@ public class PowerInfo{
             }
 
             tmp.clear();
+        }
+    }
+
+    private void initGraphs(){
+        graphs.clear();
+
+        if(!all.isEmpty()){
+            for(Building building : all){
+                if(building.power != null) graphs.add(building.power.graph);
+            }
         }
     }
 
@@ -86,6 +106,10 @@ public class PowerInfo{
             return;
         }
 
+        all.remove(building);
+
+        requireInitGraphs = true;
+
         var consSet = consumers.get(building.block);
         if(consSet != null){
             consSet.remove(building);
@@ -102,7 +126,9 @@ public class PowerInfo{
             return;
         }
 
-        graphs.add(building.power.graph);
+        all.add(building);
+
+        requireInitGraphs = true;
 
         var consSet = consumers.get(building.block);
         var proSet = producers.get(building.block);
@@ -186,11 +212,21 @@ public class PowerInfo{
         return sum;
     }
 
+    public void update(){
+        if(timer.get(0, 10f) && requireInitGraphs){
+            initGraphs();
+            requireInitGraphs = false;
+        }
+
+        updateActive();
+    }
+
     public void updateActive(){
         for(PowerGraph graph : graphs){
             if(graph == null){
                 continue;
             }
+
             if(state.isPaused()) MinerUtils.setValue(lastFrameUpdatedField, graph, graphics.getFrameId());
             if(!(graphics.getFrameId() - MinerUtils.<Long>getValue(lastFrameUpdatedField, graph) < 2L)){
                 graphs.remove(graph);
@@ -212,7 +248,7 @@ public class PowerInfo{
 
     public static void updateAll(){
         for(PowerInfo powerInfo : teamsInfo){
-            powerInfo.updateActive();
+            powerInfo.update();
         }
     }
 }
