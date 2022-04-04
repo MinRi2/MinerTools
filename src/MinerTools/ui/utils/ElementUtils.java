@@ -1,7 +1,6 @@
 package MinerTools.ui.utils;
 
 import arc.func.*;
-import arc.input.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
@@ -9,6 +8,10 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.ui.*;
+
+import static arc.Core.bundle;
+import static mindustry.Vars.mobile;
+import static mindustry.ui.Styles.none;
 
 public class ElementUtils{
     public static Element addTooltip(Element element, String text, boolean allowMobile){
@@ -58,5 +61,14 @@ public class ElementUtils{
         tip.allowMobile = allowMobile;
         element.addListener(tip);
         return element;
+    }
+
+    public static void addIntroductionFor(Group group, String bundleName, boolean allowMobile){
+        for(Element child : group.getChildren()){
+            /* add some tooltips */
+            if(child.name != null){
+                addTooltip(child, bundle.get(bundleName + child.name), allowMobile);
+            }
+        }
     }
 }

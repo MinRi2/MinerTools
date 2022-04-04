@@ -27,6 +27,7 @@ import mindustry.world.*;
 import static MinerTools.MinerFuncs.*;
 import static MinerTools.MinerVars.*;
 import static MinerTools.input.ModBinding.*;
+import static MinerTools.ui.MStyles.rclearTransi;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
@@ -99,16 +100,16 @@ public class TeamsInfo extends Table{
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
-            ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), clearTransi, 25, MinerFuncs::rebuildBlocks)
-            .name("rebuildBlocks").height(35).growX().get();
+            ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), rclearTransi, 25, MinerFuncs::rebuildBlocks)
+            .name("rebuildBlocks").get();
 
             /* 结构尚未优化 慎用 */
-            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), clearTransi, 25, MinerFuncs::dropItems)
+            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), rclearTransi, 25, MinerFuncs::dropItems)
             .name("dropItems").get();
 
             dropButton.changed(() -> {
                 if(lastDropItem != null){
-                    dropButton.getStyle().imageUp = new TextureRegionDrawable(lastDropItem.uiIcon);
+                    dropButton.replaceImage(new Image(lastDropItem.uiIcon));
                 }
             });
 
@@ -120,21 +121,24 @@ public class TeamsInfo extends Table{
                 }
             });
 
-            buttons.button(Icon.trashSmall, clearTransi, () ->
-            ui.showConfirm(bundle.get("miner-tools.buttons.tooltips.quickVoteGameOver"), () -> {
-                Call.sendChatMessage("/vote gameover");
-                Call.sendChatMessage("1");
-            })).name("quickVoteGameOver");
+            buttons.button(Icon.list, rclearTransi, () -> MUI.showTableAt(table -> {
+                table.background(black6);
+                table.defaults().grow().size(90f, 50f);
 
-            for(Element child : buttons.getChildren()){
-                ImageButton imageButton = (ImageButton)child;
-                imageButton.getStyle().up = none;
+                table.button(Icon.eyeSmall, clearPartiali, () -> {
+                    Call.sendChatMessage("/ob");
+                    table.remove();
+                }).row();
 
-                /* add some tooltips */
-                if(child.name != null){
-                    ElementUtils.addTooltip(child, bundle.get("miner-tools.buttons.tooltips." + child.name), mobile);
-                }
-            }
+                table.button(Icon.trashSmall, clearPartiali, () -> {
+                    ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
+                        Call.sendChatMessage("/vote gameover");
+                        Call.sendChatMessage("1");
+                    });
+                }).row();
+            }));
+
+            ElementUtils.addIntroductionFor(buttons, "miner-tools.buttons.tooltips", true);
 
             if(desktop){
                 buttons.update(() -> {
