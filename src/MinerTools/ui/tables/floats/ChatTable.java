@@ -87,7 +87,8 @@ public class ChatTable extends FloatTable{
 
     @Override
     public void addUI(){
-        super.addUI();
+        /* mobile only */
+        if(mobile) super.addUI();
     }
 
     private void resetMessages(){
@@ -121,7 +122,7 @@ public class ChatTable extends FloatTable{
     }
 
     private String catchSendMessage(String message){
-        // [coral][[[#FEEB2CFF]miner[coral]]:[white] a
+        // [coral][[[#FEEB2CFF]miner[coral]]:[white] this is a test
         if(message.contains(messageStart)){
             int startIndex = message.indexOf(messageStart);
             return message.substring(startIndex + messageStart.length());
