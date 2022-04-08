@@ -57,18 +57,18 @@ public class MSettingsTable extends Table implements Addable{
 
         graphics.checkPref("enemyUnitIndicator", true);
         graphics.sliderPref("enemyUnitIndicatorRadius", 100, 25, 250, s -> {
-            Drawer.readDef();
+            Drawer.updateSettings();
             return s + "(Tile)";
         });
 
         graphics.checkPref("turretAlert", true);
         graphics.sliderPref("turretAlertRadius", 10, 5, 50, s -> {
-            Drawer.readDef();
+            Drawer.updateSettings();
             return s + "(Tile)";
         });
         graphics.checkPref("unitAlert", true);
         graphics.sliderPref("unitAlertRadius", 10, 5, 50, s -> {
-            Drawer.readDef();
+            Drawer.updateSettings();
             return s + "(Tile)";
         });
 

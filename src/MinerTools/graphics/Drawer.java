@@ -1,6 +1,7 @@
 package MinerTools.graphics;
 
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -29,6 +30,8 @@ import static arc.Core.input;
 import static mindustry.Vars.*;
 
 public class Drawer{
+    private static final Seq<Building> tmp = new Seq<>();
+
     public static float defEnemyRadius;
 
     /* Alert */
@@ -37,7 +40,7 @@ public class Drawer{
 
     private static float enemyRadius = defEnemyRadius;
 
-    private static final Seq<Building> tmp = new Seq<>();
+//    private static boolean drawBuildings, drawUnits;
 
     public static void setEvents(){
         readDef();
@@ -49,40 +52,11 @@ public class Drawer{
                 drawSelect(select);
             }
 
-            Seq<TeamData> activeTeams = state.teams.getActive();
-            for(TeamData data : activeTeams){
-                if(data.buildings == null){
-                    continue;
-                }
+            drawEntity();
 
-                tmp.clear();
-
-                data.buildings.getObjects(tmp);
-                for(Building building : tmp){
-                    if(building instanceof TurretBuild turretBuild){
-                        if(!player.unit().isNull() && mSettings.getBool("turretAlert")){
-                            turretAlert(turretBuild);
-                        }
-
-                        if(mSettings.getBool("itemTurretAmmoShow") && building instanceof ItemTurretBuild itemTurretBuild){
-                            itemTurretAmmo(itemTurretBuild);
-                        }
-                    }
-                }
-
-                tmp.clear();
-
-                var cores = player.team().cores();
-                for(Unit unit : data.units){
-                    if(!player.unit().isNull() && mSettings.getBool("unitAlert")){
-                        unitAlert(unit);
-                    }
-
-                    if(mSettings.getBool("enemyUnitIndicator") && cores.any()){
-                        enemyIndicator(unit, cores);
-                    }
-                }
-            }
+            spawner.eachGroundSpawn((sx, sy) -> {
+                Lines.circle(sx, sy, 5f);
+            });
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
@@ -94,10 +68,14 @@ public class Drawer{
         });
     }
 
-    public static void readDef(){
+    private static void readDef(){
         defEnemyRadius = mSettings.getInt("enemyUnitIndicatorRadius") * tilesize;
         turretAlertRadius = mSettings.getInt("turretAlertRadius") * tilesize;
         unitAlertRadius = mSettings.getInt("unitAlertRadius") * tilesize;
+    }
+
+    public static void updateSettings(){
+        readDef();
     }
 
     public static float drawText(String text, float scl, float dx, float dy, Color color, int halign){
@@ -120,6 +98,43 @@ public class Drawer{
         Pools.free(layout);
 
         return height;
+    }
+
+    public static void drawEntity(){
+        Seq<TeamData> activeTeams = state.teams.getActive();
+        for(TeamData data : activeTeams){
+            /* Draw Buildings */
+            if(data.buildings != null){
+                tmp.clear();
+
+                data.buildings.getObjects(tmp);
+                for(Building building : tmp){
+                    if(building instanceof TurretBuild turretBuild){
+                        if(!player.unit().isNull() && mSettings.getBool("turretAlert")){
+                            turretAlert(turretBuild);
+                        }
+
+                        if(mSettings.getBool("itemTurretAmmoShow") && building instanceof ItemTurretBuild itemTurretBuild){
+                            itemTurretAmmo(itemTurretBuild);
+                        }
+                    }
+                }
+
+                tmp.clear();
+            }
+
+            /* Draw Units */
+            var cores = player.team().cores();
+            for(Unit unit : data.units){
+                if(!player.unit().isNull() && mSettings.getBool("unitAlert")){
+                    unitAlert(unit);
+                }
+
+                if(mSettings.getBool("enemyUnitIndicator") && cores.any()){
+                    enemyIndicator(unit, cores);
+                }
+            }
+        }
     }
 
     public static void drawSelect(Building building){
