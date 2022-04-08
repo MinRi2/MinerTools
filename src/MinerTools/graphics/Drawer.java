@@ -53,10 +53,6 @@ public class Drawer{
             }
 
             drawEntity();
-
-            spawner.eachGroundSpawn((sx, sy) -> {
-                Lines.circle(sx, sy, 5f);
-            });
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
