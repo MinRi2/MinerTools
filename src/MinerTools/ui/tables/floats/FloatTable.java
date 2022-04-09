@@ -9,7 +9,7 @@ import org.jetbrains.annotations.ApiStatus.*;
 
 import static MinerTools.ui.MStyles.floatb;
 import static arc.Core.scene;
-import static mindustry.Vars.state;
+import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class FloatTable extends DraggableTable implements Addable{
@@ -34,6 +34,8 @@ public class FloatTable extends DraggableTable implements Addable{
         });
 
         update(this::update);
+
+        visibility = () -> !state.isMenu() && ui.hudfrag.shown && !ui.minimapfrag.shown();
     }
 
     /**
@@ -97,10 +99,6 @@ public class FloatTable extends DraggableTable implements Addable{
 
     @OverrideOnly
     protected void update(){
-        if(state.isMenu()){
-            remove();
-        }
-
         pack();
         keepInStage();
     }
