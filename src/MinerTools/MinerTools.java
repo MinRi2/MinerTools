@@ -30,7 +30,7 @@ public class MinerTools extends Mod{
 
             MinerVars.init();
 
-            Drawer.setEvents();
+            Drawer.init();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {

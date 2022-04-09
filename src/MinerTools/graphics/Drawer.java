@@ -1,7 +1,10 @@
 package MinerTools.graphics;
 
+import MinerTools.graphics.draw.*;
+import MinerTools.graphics.draw.build.*;
+import MinerTools.graphics.draw.unit.*;
+import MinerTools.interfaces.*;
 import arc.*;
-import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -21,9 +24,7 @@ import mindustry.ui.*;
 import mindustry.world.blocks.ConstructBlock.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
-import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
-import mindustry.world.meta.*;
 
 import static MinerTools.MinerVars.mSettings;
 import static arc.Core.input;
@@ -32,18 +33,19 @@ import static mindustry.Vars.*;
 public class Drawer{
     private static final Seq<Building> tmp = new Seq<>();
 
-    public static float defEnemyRadius;
+    private static final Seq<BuildDrawer> buildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
+    private static final Seq<UnitDrawer> unitDrawers = Seq.with(new UnitAlert(), new EnemyIndicator());
 
-    /* Alert */
-    public static float unitAlertRadius;
-    public static float turretAlertRadius;
+    private static final Seq<Drawable> drawers = new Seq<>();
 
-    private static float enemyRadius = defEnemyRadius;
+    private static boolean drawBuilding = true, drawUnit = true;
 
-//    private static boolean drawBuildings, drawUnits;
+    public static void init(){
+        drawers.addAll(buildDrawers).addAll(unitDrawers);
 
-    public static void setEvents(){
-        readDef();
+        updateEnable();
+
+        readSettings();
 
         Events.run(Trigger.draw, () -> {
             Vec2 v = input.mouseWorld();
@@ -54,24 +56,21 @@ public class Drawer{
 
             drawEntity();
         });
-
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            if(state.rules.polygonCoreProtection){
-                enemyRadius = defEnemyRadius;
-            }else{
-                enemyRadius = Math.max(state.rules.enemyCoreBuildRadius, defEnemyRadius);
-            }
-        });
-    }
-
-    private static void readDef(){
-        defEnemyRadius = mSettings.getInt("enemyUnitIndicatorRadius") * tilesize;
-        turretAlertRadius = mSettings.getInt("turretAlertRadius") * tilesize;
-        unitAlertRadius = mSettings.getInt("unitAlertRadius") * tilesize;
     }
 
     public static void updateSettings(){
-        readDef();
+        readSettings();
+    }
+
+    public static void updateEnable(){
+        drawBuilding = buildDrawers.contains(Drawable::enabled);
+        drawUnit = unitDrawers.contains(Drawable::enabled);
+    }
+
+    public static void readSettings(){
+        for(var drawer : drawers){
+            drawer.readSetting();
+        }
     }
 
     public static float drawText(String text, float scl, float dx, float dy, Color color, int halign){
@@ -99,43 +98,49 @@ public class Drawer{
     public static void drawEntity(){
         Seq<TeamData> activeTeams = state.teams.getActive();
         for(TeamData data : activeTeams){
-            /* Draw Buildings */
-            if(data.buildings != null){
-                tmp.clear();
-
-                data.buildings.getObjects(tmp);
-                for(Building building : tmp){
-                    if(building instanceof TurretBuild turretBuild){
-                        if(!player.unit().isNull() && mSettings.getBool("turretAlert")){
-                            turretAlert(turretBuild);
-                        }
-
-                        if(mSettings.getBool("itemTurretAmmoShow") && building instanceof ItemTurretBuild itemTurretBuild){
-                            itemTurretAmmo(itemTurretBuild);
-                        }
-                    }
-                }
-
-                tmp.clear();
-            }
-
-            /* Draw Units */
-            var cores = player.team().cores();
-            for(Unit unit : data.units){
-                if(!player.unit().isNull() && mSettings.getBool("unitAlert")){
-                    unitAlert(unit);
-                }
-
-                if(mSettings.getBool("enemyUnitIndicator") && cores.any()){
-                    enemyIndicator(unit, cores);
-                }
-            }
+            if(drawBuilding) drawBuilding(data);
+            if(drawUnit) drawUnit(data);
         }
     }
 
     public static void drawSelect(Building building){
         if(building instanceof ConstructBuild c){
             constructInfo(c);
+        }
+    }
+
+    /* Draw Buildings */
+    private static void drawBuilding(TeamData data){
+        if(data.buildings != null){
+            for(var drawer : unitDrawers){
+                drawer.init();
+            }
+
+            tmp.clear();
+            data.buildings.getObjects(tmp);
+
+            for(Building building : tmp){
+                for(var drawer : buildDrawers){
+                    if(drawer.enabled() && drawer.isValid()) drawer.tryDraw(building);
+                }
+            }
+
+            tmp.clear();
+        }
+    }
+
+    /* Draw Units */
+    private static void drawUnit(TeamData data){
+        var cores = player.team().cores();
+
+        for(var drawer : unitDrawers){
+            drawer.init();
+        }
+
+        for(Unit unit : data.units){
+            for(var drawer : unitDrawers){
+                if(drawer.enabled() && drawer.isValid()) drawer.tryDraw(unit);
+            }
         }
     }
 
@@ -165,113 +170,6 @@ public class Drawer{
                 scl, dx, dy, hasItem ? Pal.accent : Pal.remove, Align.left);
                 nextPad ++;
             }
-        }
-    }
-
-    private static boolean unitAlertValid(Unit unit){
-        UnitType type = unit.type;
-        return (type.hasWeapons()) && // has weapons
-        (unit.team != player.team()) && // isEnemy
-        (!state.rules.unitAmmo || unit.ammo > 0f) && // hasAmmo
-        (player.unit().isFlying() ? type.targetAir : type.targetGround) && // can hit player
-        (unit.within(player, unitAlertRadius + type.maxRange)); // within player
-    };
-
-    private static boolean turretAlertValid(TurretBuild turretBuild){
-        Turret block = (Turret)turretBuild.block;
-        return (turretBuild.team != player.team()) && // isEnemy
-        (turretBuild.cons.status() == BlockStatus.active && turretBuild.hasAmmo()) && // hasAmmo
-        (player.unit().isFlying() ? block.targetAir : block.targetGround) && // can hit player
-        (turretBuild.within(player, turretAlertRadius + block.range)); // within player
-    };
-
-    /**
-     * 敌方单位警戒
-     */
-    public static void unitAlert(Unit unit){
-        if(unitAlertValid(unit)){
-            Draw.z(Layer.flyingUnit + 0.1f);
-
-            Lines.stroke(1.2f, unit.team.color);
-            Lines.dashCircle(unit.x, unit.y, unit.range());
-
-            float dst = unit.dst(player);
-            if(dst > unit.range()){
-                Tmp.v1.set(unit).sub(player).setLength(dst - unit.range());
-                Draw.rect(unit.type.fullIcon, player.x + Tmp.v1.x, player.y + Tmp.v1.y, 10f + unit.hitSize / 3f, 10f + unit.hitSize / 3f, Tmp.v1.angle() - 90f);
-            }
-
-            Draw.reset();
-        }
-    }
-
-    /**
-     * 敌方单位指示器
-     */
-    public static void enemyIndicator(Unit unit, Seq<CoreBuild> cores){
-        if(unit.team == player.team()) return;
-
-        final float[] length = {0f};
-
-        var wCores = cores.select(c -> c.within(unit, enemyRadius));
-        if(wCores.isEmpty()) return;
-
-        CoreBuild core = wCores.min(c -> length[0] = unit.dst(c));
-
-        Draw.z(Layer.flyingUnit + 0.1f);
-
-        float indicatorLength = Mathf.lerp(20f, 55f, length[0] / enemyRadius);
-
-        Tmp.v1.set(unit).sub(player).setLength(indicatorLength);
-
-        Draw.color(unit.team.color);
-        Draw.rect(unit.type.fullIcon, player.x + Tmp.v1.x, player.y + Tmp.v1.y, 10f, 10f, Tmp.v1.angle() - 90f);
-
-        Draw.reset();
-    }
-
-    /**
-     * 敌方炮塔警戒
-     */
-    public static void turretAlert(TurretBuild turret){
-        if(turretAlertValid(turret)){
-            Draw.z(Layer.turret + 0.1f);
-
-            Lines.stroke(1.2f, turret.team.color);
-            Lines.dashCircle(turret.x, turret.y, turret.range());
-
-            float dst = turret.dst(player);
-            if(dst > turret.range()){
-                Tmp.v1.set(turret).sub(player).setLength(dst - turret.range());
-                Draw.rect(turret.block.fullIcon, player.x + Tmp.v1.x, player.y + Tmp.v1.y, 10f + turret.block.size * 3f, 10f + turret.block.size * 3f, Tmp.v1.angle() - 90f);
-            }
-
-            Draw.reset();
-        }
-    }
-
-    /**
-     * 炮塔子弹显示
-     */
-    public static void itemTurretAmmo(ItemTurretBuild turret){
-        if(!turret.ammo.isEmpty()){
-            ItemTurret block = (ItemTurret)turret.block;
-            ItemEntry entry = (ItemEntry)turret.ammo.peek();
-
-            Item item = Reflect.get(entry, "item");
-
-            Draw.z(Layer.turret + 0.1f);
-
-            float size = Math.max(6f, block.size * tilesize / 2f);
-            float x = turret.x + block.size * tilesize / 3f;
-            float y = turret.y + block.size * tilesize / 3f;
-
-            float s = Mathf.lerp(6f, size, Math.min(1f, (float)entry.amount / block.maxAmmo));
-            Draw.rect(item.uiIcon, x, y, s, s);
-            Draw.alpha(0.75f);
-            Draw.rect(item.uiIcon, x, y, size, size);
-
-            Draw.reset();
         }
     }
 }

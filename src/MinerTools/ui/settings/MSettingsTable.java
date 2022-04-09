@@ -55,24 +55,24 @@ public class MSettingsTable extends Table implements Addable{
     public void addSettings(){
         MSettingTable graphics = new MSettingTable(Icon.image);
 
-        graphics.checkPref("enemyUnitIndicator", true);
+        graphics.checkPref("enemyUnitIndicator", true, b -> Drawer.updateEnable());
         graphics.sliderPref("enemyUnitIndicatorRadius", 100, 25, 250, s -> {
             Drawer.updateSettings();
             return s + "(Tile)";
         });
 
-        graphics.checkPref("turretAlert", true);
+        graphics.checkPref("turretAlert", true, b -> Drawer.updateEnable());
         graphics.sliderPref("turretAlertRadius", 10, 5, 50, s -> {
             Drawer.updateSettings();
             return s + "(Tile)";
         });
-        graphics.checkPref("unitAlert", true);
+        graphics.checkPref("unitAlert", true, b -> Drawer.updateEnable());
         graphics.sliderPref("unitAlertRadius", 10, 5, 50, s -> {
             Drawer.updateSettings();
             return s + "(Tile)";
         });
 
-        graphics.checkPref("itemTurretAmmoShow", true);
+        graphics.checkPref("itemTurretAmmoShow", true, b -> Drawer.updateEnable());
     }
 
     private void setup(){
