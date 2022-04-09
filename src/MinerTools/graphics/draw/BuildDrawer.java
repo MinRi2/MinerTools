@@ -1,7 +1,6 @@
 package MinerTools.graphics.draw;
 
 import MinerTools.interfaces.*;
-import arc.util.*;
 import mindustry.gen.*;
 
 import java.lang.reflect.*;
@@ -17,7 +16,7 @@ public abstract class BuildDrawer<T extends Building> implements Drawable<T>{
         Type[] types = type.getActualTypeArguments();
         this.clazz = (Class)types[0];
 
-        Log.info("Get ActualTypeClass: " + this.clazz);
+//        Log.info("Get ActualTypeClass: " + this.clazz);
     }
 
     @Override
