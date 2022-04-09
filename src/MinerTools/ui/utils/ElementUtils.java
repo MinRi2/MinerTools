@@ -10,8 +10,6 @@ import arc.util.*;
 import mindustry.ui.*;
 
 import static arc.Core.bundle;
-import static mindustry.Vars.mobile;
-import static mindustry.ui.Styles.none;
 
 public class ElementUtils{
     public static Element addTooltip(Element element, String text, boolean allowMobile){
@@ -70,5 +68,38 @@ public class ElementUtils{
                 addTooltip(child, bundle.get(bundleName + "." + child.name), allowMobile);
             }
         }
+    }
+
+    /**
+     * hit但是无视是否可点击
+     */
+    public static Element hitUnTouchable(Group group, float x, float y){
+        Vec2 point = Tmp.v1;
+        Element[] childrenArray = group.getChildren().items;
+        for(int i = group.getChildren().size - 1; i >= 0; i--){
+            Element child = childrenArray[i];
+            if(!child.visible) continue;
+
+            child.parentToLocalCoordinates(point.set(x, y));
+
+            Element hit;
+
+            if(child instanceof Group g){
+                hit = hitUnTouchable(g, point.x, point.y);
+            }else{
+                hit = hitUnTouchable(child, point.x, point.y);
+            }
+
+            if(hit != null) return hit;
+        }
+        return null;
+    }
+
+
+    /**
+     * hit但是无视是否可点击
+     */
+    public static Element hitUnTouchable(Element e, float x, float y){
+        return x >= e.translation.x && x < e.getWidth() + e.translation.x && y >= e.translation.y && y < e.getHeight() + e.translation.y ? e : null;
     }
 }

@@ -175,12 +175,12 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void worldLoad(){
-        messageTable.clear();
+//        messageTable.clear();
         history.clear();
         historyIndex = -1;
 
         resetMessages();
-        scrollToBottom();
+        Timer.schedule(this::scrollToBottom, 1f);
     }
 
     @Override

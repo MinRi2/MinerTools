@@ -17,7 +17,7 @@ import static MinerTools.MinerVars.allOres;
 import static mindustry.Vars.*;
 
 public class PlayerMinerAI extends PlayerAI{
-    private Seq<Item> mineOres = new Seq<>();
+    private Seq<Item> mineOres = Seq.with(Items.copper, Items.lead);
 
     public Item targetItem;
     public Tile ore;
@@ -25,9 +25,6 @@ public class PlayerMinerAI extends PlayerAI{
 
     public PlayerMinerAI(){
         super(new TextureRegionDrawable(UnitTypes.mono.uiIcon));
-
-        /* 默认挖矿 */
-        mineOres.add(Items.copper, Items.lead);
 
         /* 适配ContentLoader */
         Events.on(EventType.ContentInitEvent.class, e -> {

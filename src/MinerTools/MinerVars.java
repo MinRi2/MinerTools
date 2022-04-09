@@ -34,7 +34,7 @@ public class MinerVars{
 
         initBetterUIScaleSetting();
 
-        desktop = control.input instanceof DesktopInput;
+        desktop = app.isDesktop();
 
         // update controls
         if(desktop){
