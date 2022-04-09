@@ -142,9 +142,12 @@ public class TeamsInfo extends Table{
 
             if(desktop){
                 buttons.update(() -> {
+                    if(scene.getKeyboardFocus() != null) return;
+
                     if(input.keyDown(buildBlocks)){
                         MinerFuncs.rebuildBlocks();
                     }
+
                     if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
                         dropButton.fireClick();
                     }
