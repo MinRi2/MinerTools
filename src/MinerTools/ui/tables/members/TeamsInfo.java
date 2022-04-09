@@ -18,6 +18,7 @@ import arc.struct.ObjectMap.*;
 import arc.util.*;
 import mindustry.core.*;
 import mindustry.game.*;
+import mindustry.game.Rules.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.type.*;
@@ -237,6 +238,9 @@ public class TeamsInfo extends Table{
     }
 
     private static void addTeamRuleInfoTooltip(Element e, Team team){
+        TeamRule teamRules = team.rules();
+        Rules rules = state.rules;
+
         ElementUtils.addTooltip(e, t -> {
             t.background(black6);
 
@@ -250,18 +254,22 @@ public class TeamsInfo extends Table{
                 base.row();
 
                 base.image(duo.uiIcon).size(iconMed);
-                base.add("" + team.rules().blockDamageMultiplier).center();
-                base.add("" + team.rules().blockHealthMultiplier).center();
-                base.add("" + team.rules().buildSpeedMultiplier).center();
+                addTeamRuleInfo(base, teamRules.blockDamageMultiplier, rules.blockDamageMultiplier);
+                addTeamRuleInfo(base, teamRules.blockHealthMultiplier, rules.blockHealthMultiplier);
+                addTeamRuleInfo(base, teamRules.buildSpeedMultiplier, rules.buildSpeedMultiplier);
 
                 base.row();
 
                 base.image(flare.uiIcon).size(iconMed);
-                base.add("" + team.rules().unitDamageMultiplier).center();
+                addTeamRuleInfo(base, teamRules.unitDamageMultiplier, rules.unitDamageMultiplier);
                 base.add().center();
-                base.add("" + team.rules().unitBuildSpeedMultiplier).center();
+                addTeamRuleInfo(base, teamRules.unitBuildSpeedMultiplier, rules.unitBuildSpeedMultiplier);
             });
-        }, mobile);
+        }, true);
+    }
+
+    private static void addTeamRuleInfo(Table table, float teamRule, float rule){
+        table.add("" + String.format("%.1f", teamRule * rule) + "[gray]" + "/" + String.format("%.1f", teamRule) + "").center();
     }
 
     private void addPowerBarTooltip(Element powerBar, PowerInfo info){
