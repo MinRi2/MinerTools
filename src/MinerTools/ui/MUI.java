@@ -1,13 +1,14 @@
 package MinerTools.ui;
 
+import MinerTools.*;
 import MinerTools.ui.logic.*;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.floats.*;
+import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
 import arc.math.*;
-import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.actions.*;
 import arc.scene.event.*;
@@ -18,8 +19,8 @@ import arc.util.*;
 import mindustry.ui.*;
 
 import static arc.Core.*;
-import static arc.util.Align.*;
-import static mindustry.Vars.*;
+import static arc.util.Align.center;
+import static mindustry.Vars.state;
 import static mindustry.ui.Styles.black6;
 
 public class MUI{
@@ -54,6 +55,18 @@ public class MUI{
         );
 
         addUI();
+
+        if(MinerVars.desktop){
+            scene.root.clicked(() -> {
+                if(input.ctrl()){
+                    Element hit = ElementUtils.hitUnTouchable(scene.root, input.mouseX(), input.mouseY());
+
+                    if(hit instanceof Label label){
+                        setClipboardText(label.getText().toString());
+                    }
+                }
+            });
+        }
     }
 
     public void addUI(){
