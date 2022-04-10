@@ -33,8 +33,11 @@ import static mindustry.Vars.*;
 public class Drawer{
     private static final Seq<Building> tmp = new Seq<>();
 
-    private static final Seq<BuildDrawer> buildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
+    private static final Seq<BuildDrawer<? extends Building>> buildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
     private static final Seq<UnitDrawer> unitDrawers = Seq.with(new UnitAlert(), new EnemyIndicator());
+
+    private static Seq<BuildDrawer<? extends Building>> enableBuildDrawers;
+    private static Seq<UnitDrawer> enableUnitDrawers;
 
     private static final Seq<Drawable> drawers = new Seq<>();
 
@@ -63,8 +66,11 @@ public class Drawer{
     }
 
     public static void updateEnable(){
-        drawBuilding = buildDrawers.contains(Drawable::enabled);
-        drawUnit = unitDrawers.contains(Drawable::enabled);
+        enableBuildDrawers = buildDrawers.select(Drawable::enabled);
+        enableUnitDrawers = unitDrawers.select(Drawable::enabled);
+
+        drawBuilding = buildDrawers.any();
+        drawUnit = enableUnitDrawers.any();
     }
 
     public static void readSettings(){
@@ -112,16 +118,16 @@ public class Drawer{
     /* Draw Buildings */
     private static void drawBuilding(TeamData data){
         if(data.buildings != null){
-            for(var drawer : unitDrawers){
-                drawer.init();
+            for(var drawer : enableBuildDrawers){
+                if(drawer.isValid()) drawer.init();
             }
 
             tmp.clear();
             data.buildings.getObjects(tmp);
 
             for(Building building : tmp){
-                for(var drawer : buildDrawers){
-                    if(drawer.enabled() && drawer.isValid()) drawer.tryDraw(building);
+                for(var drawer : enableBuildDrawers){
+                    if(drawer.isValid()) drawer.tryDraw(building);
                 }
             }
 
@@ -133,13 +139,13 @@ public class Drawer{
     private static void drawUnit(TeamData data){
         var cores = player.team().cores();
 
-        for(var drawer : unitDrawers){
-            drawer.init();
+        for(var drawer : enableUnitDrawers){
+            if(drawer.isValid()) drawer.init();
         }
 
         for(Unit unit : data.units){
-            for(var drawer : unitDrawers){
-                if(drawer.enabled() && drawer.isValid()) drawer.tryDraw(unit);
+            for(var drawer : enableUnitDrawers){
+                if(drawer.isValid()) drawer.tryDraw(unit);
             }
         }
     }
