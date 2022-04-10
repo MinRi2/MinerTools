@@ -49,10 +49,12 @@ public class TurretAmmoDisplay extends BuildDrawer<ItemTurretBuild>{
         float x = turret.x + block.size * tilesize / 3f;
         float y = turret.y + block.size * tilesize / 3f;
 
-        float s = Mathf.lerp(6f, size, Math.min(1f, (float)entry.amount / block.maxAmmo));
-        Draw.rect(item.uiIcon, x, y, s, s);
-        Draw.alpha(0.75f);
+        float s = Mathf.lerp(3f, size, Math.min(1f, (float)entry.amount / block.maxAmmo));
+
+        Draw.alpha(0.45f);
         Draw.rect(item.uiIcon, x, y, size, size);
+        Draw.alpha(1f);
+        Draw.rect(item.uiIcon, x, y, s, s);
 
         Draw.reset();
     }

@@ -112,12 +112,12 @@ public class MinerFuncs{
         if(!units.isEmpty()){
             Seq<UnitType> seq;
 
-            if(units.size < visibleUnits.size / 2){
+            if(units.size < content.units().size / 2){
                 t.add("[red]Banned [accent]Units:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
                 seq = units;
             }else{
                 t.add("[green]UnBanned [accent]Units:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-                seq = visibleUnits.select(u -> !units.contains(u));
+                seq = content.units().select(u -> !units.contains(u));
             }
 
             for(UnlockableContent c : seq){
@@ -130,12 +130,12 @@ public class MinerFuncs{
         if(!blocks.isEmpty()){
             Seq<Block> seq;
 
-            if(blocks.size < visibleBlocks.size / 2){
+            if(blocks.size < content.blocks().size / 2){
                 t.add("[red]Banned [accent]Blocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
                 seq = blocks;
             }else{
                 t.add("[green]UnBanned [accent]Blocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-                seq = visibleBlocks.select(b -> !blocks.contains(b));
+                seq = content.blocks().select(b -> !blocks.contains(b));
             }
 
             for(UnlockableContent c : seq){
