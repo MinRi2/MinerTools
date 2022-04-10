@@ -137,8 +137,6 @@ public class Drawer{
 
     /* Draw Units */
     private static void drawUnit(TeamData data){
-        var cores = player.team().cores();
-
         for(var drawer : enableUnitDrawers){
             if(drawer.isValid()) drawer.init();
         }
