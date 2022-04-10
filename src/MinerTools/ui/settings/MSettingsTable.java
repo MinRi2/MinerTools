@@ -53,26 +53,34 @@ public class MSettingsTable extends Table implements Addable{
     }
 
     public void addSettings(){
-        MSettingTable graphics = new MSettingTable(Icon.image);
+        MSettingTable game = new MSettingTable(Icon.list){{
+        }};
+        
+        MSettingTable graphics = new MSettingTable(Icon.image){
+            {
+                drawerCheck("enemyUnitIndicator", true);
+                drawerRadiusSlider("enemyUnitIndicatorRadius", 100, 25, 250);
 
-        graphics.checkPref("enemyUnitIndicator", true, b -> Drawer.updateEnable());
-        graphics.sliderPref("enemyUnitIndicatorRadius", 100, 25, 250, s -> {
-            Drawer.updateSettings();
-            return s + "(Tile)";
-        });
+                drawerCheck("turretAlert", true);
+                drawerRadiusSlider("turretAlertRadius", 10, 5, 50);
 
-        graphics.checkPref("turretAlert", true, b -> Drawer.updateEnable());
-        graphics.sliderPref("turretAlertRadius", 10, 5, 50, s -> {
-            Drawer.updateSettings();
-            return s + "(Tile)";
-        });
-        graphics.checkPref("unitAlert", true, b -> Drawer.updateEnable());
-        graphics.sliderPref("unitAlertRadius", 10, 5, 50, s -> {
-            Drawer.updateSettings();
-            return s + "(Tile)";
-        });
+                drawerCheck("unitAlert", true);
+                drawerRadiusSlider("unitAlertRadius", 10, 5, 50);
 
-        graphics.checkPref("itemTurretAmmoShow", true, b -> Drawer.updateEnable());
+                drawerCheck("itemTurretAmmoShow", true);
+            }
+
+            public void drawerCheck(String name, boolean def){
+                checkPref(name, def, b -> Drawer.updateEnable());
+            }
+
+            public void drawerRadiusSlider(String name, int def, int min, int max){
+                sliderPref(name, def, min, max, s -> {
+                    Drawer.updateSettings();
+                    return s + "(Tile)";
+                });
+            }
+        };
     }
 
     private void setup(){
