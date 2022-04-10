@@ -48,6 +48,7 @@ public class MinerTools extends Mod{
         if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
             tryUpdateConveyor();
         }
+
         if(desktop && input.alt() && input.keyTap(KeyCode.mouseLeft)){
             tryPanToController();
         }

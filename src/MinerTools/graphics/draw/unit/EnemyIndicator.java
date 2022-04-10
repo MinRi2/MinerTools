@@ -68,13 +68,13 @@ public class EnemyIndicator extends UnitDrawer{
 
         CoreBuild core = wCores.min(c -> length[0] = unit.dst(c));
 
-        Draw.z(Layer.flyingUnit + 0.1f);
+        Draw.z(Layer.overlayUI);
 
         float indicatorLength = Mathf.lerp(20f, 55f, length[0] / enemyRadius);
 
         Tmp.v1.set(unit).sub(player).setLength(indicatorLength);
 
-        Draw.color(unit.team.color);
+        Draw.color(unit.team().color);
         Draw.rect(unit.type.fullIcon, player.x + Tmp.v1.x, player.y + Tmp.v1.y, 10f, 10f, Tmp.v1.angle() - 90f);
 
         Draw.reset();

@@ -43,7 +43,7 @@ public class UnitAlert extends UnitDrawer{
 
     @Override
     public void draw(Unit unit){
-        Draw.z(Layer.flyingUnit + 0.1f);
+        Draw.z(Layer.overlayUI);
 
         Lines.stroke(1.2f, unit.team.color);
         Lines.dashCircle(unit.x, unit.y, unit.range());

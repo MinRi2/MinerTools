@@ -40,7 +40,7 @@ public class TurretAlert extends BuildDrawer<TurretBuild>{
 
     @Override
     public void draw(TurretBuild turret){
-        Draw.z(Layer.turret + 0.1f);
+        Draw.z(Layer.overlayUI);
 
         Lines.stroke(1.2f, turret.team.color);
         Lines.dashCircle(turret.x, turret.y, turret.range());
