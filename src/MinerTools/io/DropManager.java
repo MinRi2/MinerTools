@@ -1,11 +1,9 @@
 package MinerTools.io;
 
-import MinerTools.*;
 import arc.files.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
-import arc.util.Log.*;
 import arc.util.io.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -44,8 +42,6 @@ public class DropManager{
             for(int i = 0; i < mapSize; i++){
                 int turretID = reads.i();
                 ItemTurret turret = (ItemTurret)content.block(turretID);
-
-                Log.info("MinerTools.DropManager read " + turret.emoji());
 
                 int size = reads.i();
                 Seq<Item> seq = new Seq();
