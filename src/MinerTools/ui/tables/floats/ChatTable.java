@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.floats;
 
 import MinerTools.ui.*;
+import arc.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.ui.*;
@@ -8,6 +9,7 @@ import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 
 import static MinerTools.MinerVars.desktop;
@@ -21,6 +23,7 @@ public class ChatTable extends FloatTable{
 
     private Interval timer = new Interval();
 
+    private Seq<String> messages = new Seq<>();
     private Seq<String> history = new Seq<>();
 
     private int historyIndex;
@@ -38,6 +41,21 @@ public class ChatTable extends FloatTable{
 
     public ChatTable(){
         super("chat");
+
+        Events.on(EventType.WorldLoadEvent.class, e -> {
+            // messageTable.clear();
+            history.clear();
+            historyIndex = -1;
+
+            resetMessages();
+            Timer.schedule(this::scrollToBottom, 1f);
+        });
+    }
+
+    @Override
+    public void addUI(){
+        /* mobile only */
+        if(mobile) super.addUI();
     }
 
     @Override
@@ -86,9 +104,8 @@ public class ChatTable extends FloatTable{
     }
 
     @Override
-    public void addUI(){
-        /* mobile only */
-        if(mobile) super.addUI();
+    protected void setupButtons(Table buttons){
+//        buttons.button()
     }
 
     private void resetMessages(){
@@ -100,6 +117,7 @@ public class ChatTable extends FloatTable{
         if(lastMessageSize != messageSize){
             int n = messageSize - lastMessageSize;
             for(int i = 0; i < n; i++){
+                this.messages.add(messages.get(i));
                 addMessage(messages.get(i));
             }
 
@@ -121,40 +139,6 @@ public class ChatTable extends FloatTable{
         }
     }
 
-    private String catchSendMessage(String message){
-        // [coral][[[#FEEB2CFF]miner[coral]]:[white] this is a test
-        if(message.contains(messageStart)){
-            int startIndex = message.indexOf(messageStart);
-            return message.substring(startIndex + messageStart.length());
-        }
-        return "";
-    }
-
-    private void historyShiftUp(){
-        historyShift(1);
-    }
-
-    private void historyShiftDown(){
-        historyShift(-1);
-    }
-
-    private void historyShift(int shift){
-        historyIndex = Mathf.clamp(historyIndex + shift, -1, history.size - 1);
-        if(historyIndex < 0){
-            textField.setText("");
-            return;
-        }
-        textField.setText(history.get(historyIndex));
-    }
-
-    private void scrollToBottom(){
-        pane.setScrollY(Float.MAX_VALUE);
-    }
-
-    private void toggleCopyMode(){
-        copyMode = !copyMode;
-    }
-
     private void addMessage(String msg){
         Label label = messageTable.labelWrap(msg).growX().left().get();
 
@@ -173,14 +157,13 @@ public class ChatTable extends FloatTable{
         messageTable.row();
     }
 
-    @Override
-    protected void worldLoad(){
-//        messageTable.clear();
-        history.clear();
-        historyIndex = -1;
-
-        resetMessages();
-        Timer.schedule(this::scrollToBottom, 1f);
+    private String catchSendMessage(String message){
+        // [coral][[[#FEEB2CFF]miner[coral]]:[white] this is a test
+        if(message.contains(messageStart)){
+            int startIndex = message.indexOf(messageStart);
+            return message.substring(startIndex + messageStart.length());
+        }
+        return "";
     }
 
     @Override
@@ -190,5 +173,30 @@ public class ChatTable extends FloatTable{
         if(timer.get(60f)){
             resetMessages();
         }
+    }
+
+    private void historyShift(int shift){
+        historyIndex = Mathf.clamp(historyIndex + shift, -1, history.size - 1);
+        if(historyIndex < 0){
+            textField.setText("");
+            return;
+        }
+        textField.setText(history.get(historyIndex));
+    }
+
+    private void historyShiftUp(){
+        historyShift(1);
+    }
+
+    private void historyShiftDown(){
+        historyShift(-1);
+    }
+
+    private void scrollToBottom(){
+        pane.setScrollY(Float.MAX_VALUE);
+    }
+
+    private void toggleCopyMode(){
+        copyMode = !copyMode;
     }
 }
