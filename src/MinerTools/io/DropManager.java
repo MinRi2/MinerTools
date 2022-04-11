@@ -20,7 +20,7 @@ public class DropManager{
         root.mkdirs();
     }
 
-    public static void loadSetting(ObjectMap<ItemTurret, Seq<Item>> map){
+    public static void loadSetting(ObjectMap<Integer, Seq<Item>> map){
         Fi settingf = root.child(settingName);
         Fi backupf = root.child(settingName + ".backup");
         if(!settingf.exists()){
@@ -34,14 +34,13 @@ public class DropManager{
         readFi(settingf, map);
     }
 
-    public static void readFi(Fi fi, ObjectMap<ItemTurret, Seq<Item>> map){
+    public static void readFi(Fi fi, ObjectMap<Integer, Seq<Item>> map){
         Reads reads = null;
         try{
             reads = fi.reads();
             int mapSize = reads.i();
             for(int i = 0; i < mapSize; i++){
                 int turretID = reads.i();
-                ItemTurret turret = (ItemTurret)content.block(turretID);
 
                 int size = reads.i();
                 Seq<Item> seq = new Seq();
@@ -50,7 +49,7 @@ public class DropManager{
                     seq.add(content.item(id));
                 }
 
-                map.put(turret, seq);
+                map.put(turretID, seq);
             }
         }catch(Exception e){
             ui.showException(e);
@@ -59,7 +58,7 @@ public class DropManager{
         }
     }
 
-    public static void save(ObjectMap<ItemTurret, Seq<Item>> map){
+    public static void save(ObjectMap<Integer, Seq<Item>> map){
         // backup
         Fi settingf = root.child(settingName);
         if(settingf.exists()) {
@@ -68,8 +67,8 @@ public class DropManager{
         // save
         Writes writes = settingf.writes();
         writes.i(map.size);
-        for(Entry<ItemTurret, Seq<Item>> entry : map.entries()){
-            writes.i(entry.key.id);
+        for(Entry<Integer, Seq<Item>> entry : map.entries()){
+            writes.i(entry.key);
 
             writes.i(entry.value.size);
             for(Item item : entry.value){
@@ -80,10 +79,10 @@ public class DropManager{
     }
 
     public static void saveDefault(){
-        ObjectMap<ItemTurret, Seq<Item>> objectMap = new ObjectMap<>();
+        ObjectMap<Integer, Seq<Item>> objectMap = new ObjectMap<>();
         for(Block block : content.blocks()){
             if(block instanceof ItemTurret itemTurret){
-                objectMap.put(itemTurret, itemTurret.ammoTypes.keys().toSeq());
+                objectMap.put((int)itemTurret.id, itemTurret.ammoTypes.keys().toSeq());
             }
         }
         save(objectMap);

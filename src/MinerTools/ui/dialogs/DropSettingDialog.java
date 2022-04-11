@@ -4,6 +4,7 @@ import MinerTools.io.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -11,7 +12,7 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.blocks.defense.turrets.*;
 
 public class DropSettingDialog extends BaseDialog{
-    public static ObjectMap<ItemTurret, Seq<Item>> settings = new ObjectMap<>();
+    public static ObjectMap<Integer, Seq<Item>> settings = new ObjectMap<>();
 
     public DropSettingDialog(){
         super("Setting", Styles.defaultDialog);
@@ -34,8 +35,8 @@ public class DropSettingDialog extends BaseDialog{
         cont.clear();
 
         Table table = new Table();
-        for(Entry<ItemTurret, Seq<Item>> entry : settings){
-            ItemTurret turret = entry.key;
+        for(Entry<Integer, Seq<Item>> entry : settings){
+            ItemTurret turret = (ItemTurret)Vars.content.block(entry.key);
             Seq<Item> items = entry.value;
 
             table.table(Tex.buttonOver, t -> {
@@ -85,5 +86,9 @@ public class DropSettingDialog extends BaseDialog{
                 }).width(24).fillY().padLeft(5);
             }).pad(3).growX();
         }
+    }
+
+    public static Seq<Item> get(Integer integer){
+        return settings.get(integer);
     }
 }
