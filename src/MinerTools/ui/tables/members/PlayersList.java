@@ -8,6 +8,7 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -19,6 +20,8 @@ import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class PlayersList extends MemberTable{
+    public static float buttonSize = 45f;
+
     private int lastSize;
     private final Seq<Player> players = new Seq<>();
 
@@ -29,7 +32,7 @@ public class PlayersList extends MemberTable{
     public PlayersList(){
         super(Icon.players);
 
-        ScrollPane pane = pane(nonePane, playersTable).maxHeight(235).get();
+        ScrollPane pane = pane(nonePane, playersTable).maxHeight(buttonSize * (mobile ? 5 : 8)).get();
         MUI.panes.add(pane);
 
         update(() -> {
@@ -63,41 +66,23 @@ public class PlayersList extends MemberTable{
 
         playersTable.table(t -> {
             /* players */
-            t.label(() -> "[#" + player.team().color + "]" + MinerFuncs.countPlayer(player.team()) + "[] / " + Groups.player.size()).row();
+            t.label(() -> "[#" + player.team().color + "]" + MinerFuncs.countPlayer(player.team()) + "[white] / " + Groups.player.size()).row();
 
             for(Player player : players){
                 t.table(info -> {
-                    info.table(image -> {
-                        image.add(new Image(player.icon()).setScaling(Scaling.bounded)).grow();
-                    }).size(35);
+                    info.image(player::icon).size(buttonSize)
+                    .get().clicked(() -> panToPlayer(player));
 
-                    info.labelWrap("[#" + player.color.toString().toUpperCase() + "]" + player.name).width(140).pad(10);
+                    info.labelWrap(player.coloredName()).width(200).pad(7)
+                    .get().clicked(() -> MUI.setClipboardText(player.coloredName()));
+
                     info.add().width(-1f).grow();
 
-                    info.button(Icon.copy, clearPartiali, () -> {
-                        app.setClipboardText(player.name);
-                    }).size(35);
-
-                    info.button(Icon.lockOpen, clearTogglePartiali, () -> {
-                        if(target == player){
-                            target = null;
-                        }else{
-                            target = player;
-                            if(control.input instanceof DesktopInput input){
-                                input.panning = true;
-                            }
-                        }
-                    }).size(35).checked(b -> {
+                    info.button(Icon.lockOpen, clearTogglePartiali, () -> setTarget(player))
+                    .size(buttonSize).checked(b -> {
                         b.getStyle().imageUp = target == player ? Icon.lock : Icon.lockOpen;
                         return target == player;
                     });
-
-                    info.button(Icon.units, clearPartiali, () -> {
-                        if(control.input instanceof DesktopInput input){
-                            input.panning = true;
-                        }
-                        camera.position.set(player);
-                    }).size(35);
 
                     info.button(Icon.list, clearPartiali, () -> MUI.showTableAt(table -> {
                         table.background(Tex.buttonOver);
@@ -106,14 +91,14 @@ public class PlayersList extends MemberTable{
                             ui.showConfirm("@confirm", bundle.format("confirmvoteob", player.name), () -> {
                                 Call.sendChatMessage("/vote ob " + player.name);
                             });
-                        }).grow().size(35f);
+                        }).grow().size(buttonSize);
 
                         table.button(Icon.hammerSmall, clearPartiali, () -> {
                             ui.showConfirm("@confirm", bundle.format("confirmvotekick", player.name), () -> {
                                 Call.sendChatMessage("/votekick " + player.name);
                             });
-                        }).grow().size(35f);
-                    })).size(35);
+                        }).grow().size(buttonSize);
+                    })).size(buttonSize);
                 });
 
                 t.row();
@@ -121,5 +106,24 @@ public class PlayersList extends MemberTable{
                 t.row();
             }
         });
+    }
+
+    private void panToPlayer(Player player){
+        if(control.input instanceof DesktopInput input){
+            input.panning = true;
+        }
+
+        camera.position.set(player);
+    }
+
+    private void setTarget(Player player){
+        if(target == player){
+            target = null;
+        }else{
+            target = player;
+            if(control.input instanceof DesktopInput input){
+                input.panning = true;
+            }
+        }
     }
 }
