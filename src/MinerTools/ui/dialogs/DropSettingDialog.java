@@ -1,4 +1,4 @@
-package MinerTools.ui.Dialogs;
+package MinerTools.ui.dialogs;
 
 import MinerTools.io.*;
 import arc.scene.ui.layout.*;

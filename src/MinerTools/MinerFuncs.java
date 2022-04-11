@@ -1,6 +1,6 @@
 package MinerTools;
 
-import MinerTools.ui.Dialogs.*;
+import MinerTools.ui.dialogs.*;
 import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -36,7 +36,6 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.consumers.*;
 
-import static MinerTools.MinerVars.*;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 

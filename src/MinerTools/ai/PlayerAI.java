@@ -19,7 +19,6 @@ public class PlayerAI extends BaseAI implements Displayable{
     @Override
     public void updateWeapons(){}
 
-
     /* Needn't update target */
     @Override
     public void updateTargeting(){}

@@ -1,7 +1,7 @@
 package MinerTools.ui.tables.members;
 
 import MinerTools.*;
-import MinerTools.ui.Dialogs.*;
+import MinerTools.ui.dialogs.*;
 import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
 import arc.*;

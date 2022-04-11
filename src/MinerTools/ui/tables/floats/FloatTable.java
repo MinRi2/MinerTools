@@ -30,12 +30,17 @@ public class FloatTable extends DraggableTable implements Addable{
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
             addUI();
-            worldLoad();
         });
 
         update(this::update);
 
         visibility = () -> !state.isMenu() && ui.hudfrag.shown && !ui.minimapfrag.shown();
+    }
+
+    @Override
+    public void addUI(){
+        scene.add(this);
+        invalidateHierarchy();
     }
 
     /**
@@ -59,6 +64,9 @@ public class FloatTable extends DraggableTable implements Addable{
         invalidateHierarchy();
     }
 
+    @OverrideOnly
+    protected void setupCont(Table cont){}
+
     private void setupTitle(){
         title.clearChildren();
 
@@ -66,6 +74,8 @@ public class FloatTable extends DraggableTable implements Addable{
 
         title.table(buttons -> {
             buttons.defaults().width(35f).growY().right();
+
+            setupButtons(buttons);
 
             buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked)
             .checked(b -> {
@@ -75,10 +85,16 @@ public class FloatTable extends DraggableTable implements Addable{
 
             buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont)
             .update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
-
-            buttons.button("x", floatb, () -> {
-            });
         }).growY().right();
+    }
+
+    @OverrideOnly
+    protected void setupButtons(Table buttons){}
+
+    @OverrideOnly
+    protected void update(){
+        pack();
+        keepInStage();
     }
 
     private void toggleCont(){
@@ -89,23 +105,5 @@ public class FloatTable extends DraggableTable implements Addable{
         }else{
             y += cont.getPrefHeight();
         }
-    }
-
-    @OverrideOnly
-    protected void setupCont(Table cont){}
-
-    @OverrideOnly
-    protected void worldLoad(){}
-
-    @OverrideOnly
-    protected void update(){
-        pack();
-        keepInStage();
-    }
-
-    @Override
-    public void addUI(){
-        scene.add(this);
-        invalidateHierarchy();
     }
 }

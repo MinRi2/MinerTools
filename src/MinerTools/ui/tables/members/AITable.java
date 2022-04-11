@@ -5,7 +5,9 @@ import MinerTools.ai.types.*;
 import arc.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 

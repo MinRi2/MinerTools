@@ -23,7 +23,7 @@ import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
 public class MSettingsTable extends Table implements Addable{
-    public static Seq<MSettingTable> settingTables = new Seq<>();
+    public Seq<MSettingTable> settingTables = new Seq<>();
 
     private MSettingTable show;
     private Table settingTableCont = new Table();
@@ -55,7 +55,7 @@ public class MSettingsTable extends Table implements Addable{
     public void addSettings(){
         MSettingTable game = new MSettingTable(Icon.list){{
         }};
-        
+
         MSettingTable graphics = new MSettingTable(Icon.image){
             {
                 drawerCheck("enemyUnitIndicator", true);
@@ -109,7 +109,7 @@ public class MSettingsTable extends Table implements Addable{
         add(settingTableCont).growX();
     }
 
-    public static class MSettingTable extends Table{
+    public class MSettingTable extends Table{
         public Drawable icon;
         public Seq<MSetting> settings = new Seq<>();
 
