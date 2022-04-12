@@ -165,7 +165,7 @@ public class MinerToolsSettings{
     private void save(){
         if(!loaded) return;
 
-        Log.info("MinerToolsSettings: Saving");
+//        Log.info("MinerToolsSettings: Saving");
         settings.copyTo(backup);
 
         var writes = settings.writes();
