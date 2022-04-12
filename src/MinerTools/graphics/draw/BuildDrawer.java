@@ -15,8 +15,6 @@ public abstract class BuildDrawer<T extends Building> implements Drawable<T>{
         ParameterizedType type = (ParameterizedType)clazz.getGenericSuperclass();
         Type[] types = type.getActualTypeArguments();
         this.clazz = (Class)types[0];
-
-//        Log.info("Get ActualTypeClass: " + this.clazz);
     }
 
     @Override
