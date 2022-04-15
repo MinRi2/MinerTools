@@ -41,14 +41,14 @@ public class Drawer{
 
     private static final Seq<Drawable> drawers = new Seq<>();
 
-    private static boolean drawBuilding = true, drawUnit = true;
+    private static boolean drawBuilding, drawUnit;
 
     public static void init(){
         drawers.addAll(buildDrawers).addAll(unitDrawers);
 
         updateEnable();
 
-        readSettings();
+        updateSettings();
 
         Events.run(Trigger.draw, () -> {
             Vec2 v = input.mouseWorld();
@@ -65,18 +65,18 @@ public class Drawer{
         readSettings();
     }
 
+    public static void readSettings(){
+        for(var drawer : drawers){
+            drawer.readSetting();
+        }
+    }
+
     public static void updateEnable(){
         enableBuildDrawers = buildDrawers.select(Drawable::enabled);
         enableUnitDrawers = unitDrawers.select(Drawable::enabled);
 
         drawBuilding = buildDrawers.any();
         drawUnit = enableUnitDrawers.any();
-    }
-
-    public static void readSettings(){
-        for(var drawer : drawers){
-            drawer.readSetting();
-        }
     }
 
     public static float drawText(String text, float scl, float dx, float dy, Color color, int halign){

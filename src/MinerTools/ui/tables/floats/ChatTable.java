@@ -21,10 +21,10 @@ import static mindustry.ui.Styles.*;
 public class ChatTable extends FloatTable{
     private static final String messageStart = ":[white] ";
 
-    private Interval timer = new Interval();
+    private final Interval timer = new Interval();
 
-    private Seq<String> messages = new Seq<>();
-    private Seq<String> history = new Seq<>();
+    private final Seq<String> messages = new Seq<>();
+    private final Seq<String> history = new Seq<>();
 
     private int historyIndex;
     /* For mobile */
