@@ -51,7 +51,7 @@ public class MinerVars{
         allOres.clear();
 
         for(Block block : content.blocks()){
-            if(!block.buildVisibility.visible()){
+            if(block.buildVisibility.visible()){
                 visibleBlocks.add(block);
             }
 
