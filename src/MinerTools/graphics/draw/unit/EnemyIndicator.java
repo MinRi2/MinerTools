@@ -25,18 +25,21 @@ public class EnemyIndicator extends UnitDrawer{
     private Seq<CoreBuild> cores;
 
     public EnemyIndicator(){
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            if(state.rules.polygonCoreProtection){
-                enemyRadius = defEnemyRadius;
-            }else{
-                enemyRadius = Math.max(state.rules.enemyCoreBuildRadius, defEnemyRadius);
-            }
-        });
+        Events.on(EventType.WorldLoadEvent.class, e -> resetEnemyRadius());
+    }
+
+    private void resetEnemyRadius(){
+        if(state.rules.polygonCoreProtection){
+            enemyRadius = defEnemyRadius;
+        }else{
+            enemyRadius = Math.max(state.rules.enemyCoreBuildRadius, defEnemyRadius);
+        }
     }
 
     @Override
     public void readSetting(){
         defEnemyRadius = mSettings.getInt("enemyUnitIndicatorRadius") * tilesize;
+        resetEnemyRadius();
     }
 
     @Override
