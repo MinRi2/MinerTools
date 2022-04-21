@@ -25,7 +25,7 @@ public class TeamChanger extends MemberTable{
         table(black3, skipTable -> {
             skipTable.table(t -> {
                 t.button(play, 36, () -> {
-                    for(int i = 0; i < skipWave; i ++){
+                    for(int i = 0; i < skipWave; i++){
                         logic.skipWave();
                     }
                 });
@@ -41,18 +41,18 @@ public class TeamChanger extends MemberTable{
             int i = 0;
             for(Team team : Team.baseTeams){
                 ImageButton button = t.button(whiteui, clearTogglePartiali, 48, () -> {
-                    if (net.client()){
+                    if(net.client()){
                         if(player.admin){
                             sendChatMessage("/team " + team.id);
                         }
-                    }else {
+                    }else{
                         player.team(team);
                     }
                 }).size(48).pad(3f).checked(b -> player.team() == team).get();
 
                 button.getStyle().imageUpColor = team.color;
 
-                if(++ i % 3 == 0) t.row();
+                if(++i % 3 == 0) t.row();
             }
         }).grow();
     }
