@@ -8,12 +8,14 @@ import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.struct.ObjectIntMap.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 
@@ -21,7 +23,7 @@ import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 
 public class CoreItemsDisplay extends Table implements Addable{
-    public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f;
+    public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
     private static final Interval timer = new Interval();
 
     private Table itemsInfoTable = new Table();
@@ -32,9 +34,16 @@ public class CoreItemsDisplay extends Table implements Addable{
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
 
-    private Table planInfoTable = new Table(Styles.black6);
-    private ItemSeq planItems = new ItemSeq();
+    private Table planInfoTable = new Table();
+
     private int lastTotal;
+    private ItemSeq planItems = new ItemSeq();
+    private ObjectIntMap<Block> planBlockCounter = new ObjectIntMap<>(){
+        @Override
+        public void put(Block key, int value){
+            super.put(key, get(key) + value);
+        }
+    };
 
     private CoreBuild core;
 
@@ -116,14 +125,17 @@ public class CoreItemsDisplay extends Table implements Addable{
 
     private void updatePlanItems(){
         planItems.clear();
+        planBlockCounter.clear();
 
         float buildCostMultiplier = state.rules.buildCostMultiplier;
         float breakMultiplier = -1 * buildCostMultiplier * state.rules.deconstructRefundMultiplier;
 
         control.input.allRequests().each(plan -> {
-            if(plan.block instanceof CoreBlock) return;
+            if(plan.block instanceof CoreBlock || plan.block.requirements.length == 0) return;
 
-            float mul = plan.breaking ? (breakMultiplier * plan.progress) : (buildCostMultiplier * (1 - plan.progress));
+            planBlockCounter.put(plan.block, 1);
+
+            float mul = plan.breaking ? (breakMultiplier * (1 - plan.progress)) : (buildCostMultiplier * (1 - plan.progress));
 
             for(ItemStack stack : plan.block.requirements){
                 int planAmount = (int)(mul * stack.amount);
@@ -154,7 +166,7 @@ public class CoreItemsDisplay extends Table implements Addable{
 
                 itemsInfoTable.stack(new Table(t -> t.image(item.uiIcon).size(iconSize)), label);
 
-                itemsInfoTable.label(() -> "" + UI.formatAmount(core.items.get(item))).padRight(3).minWidth(52f).left();
+                itemsInfoTable.label(() -> "" + UI.formatAmount(core.items.get(item))).padRight(3f).minWidth(labelMinWidth).left();
 
                 if(++i % 5 == 0){
                     itemsInfoTable.row();
@@ -167,7 +179,7 @@ public class CoreItemsDisplay extends Table implements Addable{
                 itemsInfoTable.image(unit.uiIcon).size(iconSize).padRight(3);
 
                 //TODO leaks garbage
-                itemsInfoTable.label(() -> "" + Vars.player.team().data().countType(unit)).padRight(3).minWidth(52f).left();
+                itemsInfoTable.label(() -> "" + Vars.player.team().data().countType(unit)).padRight(3f).minWidth(labelMinWidth).left();
 
                 if(++i % 5 == 0){
                     itemsInfoTable.row();
@@ -179,7 +191,7 @@ public class CoreItemsDisplay extends Table implements Addable{
     private void rebuildPlanItems(){
         planInfoTable.clear();
 
-        if(lastTotal == 0){
+        if(planItems.total == 0){
             planInfoTable.background(null);
             return;
         }else{
@@ -196,12 +208,28 @@ public class CoreItemsDisplay extends Table implements Addable{
                 continue;
             }
 
-            planInfoTable.image(item.uiIcon).size(iconSize);
+            planInfoTable.image(item.uiIcon).size(iconSize).padRight(3f);
 
             String planColor = (planAmount > 0 ? "[scarlet]" : "[green]");
             String amountColor = (coreAmount < planAmount / 2 ? "[scarlet]" : coreAmount < planAmount ? "[stat]" : "[green]");
 
-            planInfoTable.add(amountColor + UI.formatAmount(coreAmount) + "[white]/" + planColor + UI.formatAmount(Math.abs(planAmount)), fontScale).growX();
+            planInfoTable.add(amountColor + UI.formatAmount(coreAmount) + "[white]/" + planColor + UI.formatAmount(Math.abs(planAmount)), fontScale)
+            .padRight(3f).minWidth(labelMinWidth).growX();
+
+            if(++i % 5 == 0){
+                planInfoTable.row();
+            }
+        }
+
+        planInfoTable.row();
+
+        i = 0;
+        for(Entry<Block> entry : planBlockCounter.entries()){
+            Block block = entry.key;
+            int count = entry.value;
+
+            planInfoTable.image(block.uiIcon).size(iconSize).padRight(3f);
+            planInfoTable.add("" + count, fontScale).padRight(3f).minWidth(labelMinWidth).growX();
 
             if(++i % 5 == 0){
                 planInfoTable.row();
