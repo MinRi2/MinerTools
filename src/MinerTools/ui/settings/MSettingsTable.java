@@ -12,6 +12,8 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
@@ -28,6 +30,8 @@ public class MSettingsTable extends Table implements Addable{
     private MSettingTable show;
     private Table settingTableCont = new Table();
 
+    public MSettingTable game, graphics, ui;
+
     public MSettingsTable(){
         addSettings();
 
@@ -36,8 +40,8 @@ public class MSettingsTable extends Table implements Addable{
 
     @Override
     public void addUI(){
-        Table menu = Reflect.get(ui.settings, "menu");
-        Table prefs = Reflect.get(ui.settings, "prefs");
+        Table menu = Reflect.get(Vars.ui.settings, "menu");
+        Table prefs = Reflect.get(Vars.ui.settings, "prefs");
 
         menu.row();
         menu.button("MinerTools", Styles.cleart, () -> {
@@ -53,10 +57,10 @@ public class MSettingsTable extends Table implements Addable{
     }
 
     public void addSettings(){
-        MSettingTable game = new MSettingTable(Icon.list){{
+        game = new MSettingTable(Icon.list){{
         }};
 
-        MSettingTable graphics = new MSettingTable(Icon.image){
+        graphics = new MSettingTable(Icon.image){
             {
                 drawerCheck("enemyUnitIndicator", true);
                 drawerRadiusSlider("enemyUnitIndicatorRadius", 100, 25, 250);
@@ -81,6 +85,8 @@ public class MSettingsTable extends Table implements Addable{
                 });
             }
         };
+
+        ui = new MSettingTable(Icon.chat);
     }
 
     private void setup(){
