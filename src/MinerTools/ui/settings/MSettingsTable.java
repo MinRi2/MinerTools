@@ -216,7 +216,7 @@ public class MSettingsTable extends Table implements Addable{
             }
 
             public MCheckSetting change(){
-                changed.get(!box.isChecked());
+                changed.get(MinerVars.settings.getBool(name));
                 return this;
             }
         }

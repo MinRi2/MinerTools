@@ -23,6 +23,7 @@ import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 
 public class CoreItemsDisplay extends Table implements OverrideUI{
+    public static int windowSize = 6;
     public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
     private static final Interval timer = new Interval();
 
@@ -64,6 +65,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
     private void addSettings(){
         MinerVars.ui.minerSettings.ui.checkPref("overrideCoreItemsDisplay", true, b -> {
+            Log.info("CoreItems: " + b);
             if(b){
                 doOverride();
             }else{
@@ -76,7 +78,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         override = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
         
         for(int i = 0; i < means.length; i++){
-            means[i] = new WindowedMean(6);
+            means[i] = new WindowedMean(windowSize);
         }
 
         // Setup ui
