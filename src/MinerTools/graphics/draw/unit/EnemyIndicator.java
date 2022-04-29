@@ -5,6 +5,7 @@ import MinerTools.graphics.draw.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
+import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.game.*;
@@ -22,9 +23,12 @@ public class EnemyIndicator extends UnitDrawer{
 
     private float enemyRadius = defEnemyRadius;
 
+    private Vec2 cameraPos;
     private Seq<CoreBuild> cores;
 
     public EnemyIndicator(){
+        cameraPos = Core.camera.position;
+
         Events.on(EventType.WorldLoadEvent.class, e -> resetEnemyRadius());
     }
 
@@ -64,21 +68,19 @@ public class EnemyIndicator extends UnitDrawer{
 
     @Override
     public void draw(Unit unit){
-        final float[] length = {0f};
-
         var wCores = cores.select(c -> c.within(unit, enemyRadius));
         if(wCores.isEmpty()) return;
 
-        CoreBuild core = wCores.min(c -> length[0] = unit.dst(c));
+        CoreBuild core = wCores.min(c -> unit.dst(c));
 
         Draw.z(Layer.overlayUI);
 
-        float indicatorLength = Mathf.lerp(20f, 55f, length[0] / enemyRadius);
+        float indicatorLength = Mathf.lerp(20f, 55f, unit.dst(core) / enemyRadius);
 
-        Tmp.v1.set(unit).sub(player).setLength(indicatorLength);
+        Tmp.v1.set(unit).sub(cameraPos).setLength(indicatorLength);
 
         Draw.color(unit.team().color);
-        Draw.rect(unit.type.fullIcon, player.x + Tmp.v1.x, player.y + Tmp.v1.y, 10f, 10f, Tmp.v1.angle() - 90f);
+        Draw.rect(unit.type.fullIcon, cameraPos.x + Tmp.v1.x, cameraPos.y + Tmp.v1.y, 10f, 10f, Tmp.v1.angle() - 90f);
 
         Draw.reset();
     }
