@@ -14,16 +14,17 @@ import static mindustry.gen.Tex.*;
 import static mindustry.ui.Styles.*;
 
 public class MStyles{
-    public static TextureRegionDrawable whiteuiRegion, transAccentDrawable;
+    public static TextureRegionDrawable whiteuiRegion, transAccentDrawable, clearFlatOver;
 
     public static ButtonStyle clearToggleAccentb, logicVarTogglet, chatb;
     public static ImageButtonStyle rclearTransi;
-    public static TextButtonStyle floatb;
+    public static TextButtonStyle clearPartial2t, clearToggleTransAccentt;
     public static TextFieldStyle noneField;
 
     public static void load(){
         whiteuiRegion = (TextureRegionDrawable)Tex.whiteui;
         transAccentDrawable = (TextureRegionDrawable)(whiteuiRegion.tint(Tmp.c1.set(Pal.accent).a(0.55f)));
+        clearFlatOver = (TextureRegionDrawable)whiteuiRegion.tint(Color.lightGray.cpy().a(0.45f));
 
         clearToggleAccentb = new ButtonStyle(){{
            checked = transAccentDrawable;
@@ -45,10 +46,17 @@ public class MStyles{
             up = none;
         }};
 
-        floatb = new TextButtonStyle(defaultt){{
+        clearPartial2t = new TextButtonStyle(defaultt){{
             up = none;
             over = flatOver;
             down = flatDown;
+        }};
+
+        clearToggleTransAccentt = new TextButtonStyle(defaultt){{
+            up = none;
+            over = flatOver;
+            down = transAccentDrawable;
+            checked = transAccentDrawable;
         }};
 
         noneField = new TextFieldStyle(defaultField){{

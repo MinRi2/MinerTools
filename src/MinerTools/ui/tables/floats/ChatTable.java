@@ -3,15 +3,21 @@ package MinerTools.ui.tables.floats;
 import MinerTools.ui.*;
 import MinerTools.ui.settings.MSettingsTable.*;
 import arc.*;
+import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
 import arc.scene.ui.*;
 import arc.scene.ui.TextField.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.Timer;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.ui.dialogs.*;
+
+import java.text.*;
+import java.util.*;
 
 import static MinerTools.MinerVars.desktop;
 import static MinerTools.ui.MUI.setClipboardText;
@@ -24,13 +30,15 @@ public class ChatTable extends FloatTable{
 
     private final Interval timer = new Interval();
 
-    private final Seq<String> messages = new Seq<>();
+    private final Seq<MessageStack> messageStacks = new Seq<>();
+    private final Seq<String> selectMessages = new Seq<>();
     private final Seq<String> history = new Seq<>();
 
     private int historyIndex;
     /* For mobile */
     private boolean copyMode;
 
+    private Dialog messageDialog;
     private Table messageTable;
     private ScrollPane pane;
     private TextField textField;
@@ -46,16 +54,20 @@ public class ChatTable extends FloatTable{
         Events.on(EventType.WorldLoadEvent.class, e -> {
             history.clear();
             historyIndex = -1;
+            messageStacks.add(new MessageStack());
 
             resetMessages();
             Timer.schedule(this::scrollToBottom, 1f);
         });
+
+        Timer.schedule(() -> messageStacks.add(new MessageStack()), 0f, 60f);
     }
 
     @Override
     protected void init(){
         super.init();
 
+        messageDialog = new BaseDialog("Messages");
         messageTable = new Table(black3);
         pane = new ScrollPane(messageTable, nonePane);
 
@@ -99,12 +111,72 @@ public class ChatTable extends FloatTable{
             }
         }).growX();
 
+        setupDialog();
+
         MUI.panes.add(pane);
     }
 
     @Override
     protected void setupButtons(Table buttons){
-//        buttons.button()
+        buttons.button(Icon.chatSmall, clearPartiali, () -> {
+            rebuildDialog();
+            messageDialog.show();
+        });
+    }
+
+    private void setupDialog(){
+        messageDialog.addCloseButton();
+    }
+
+    private void rebuildDialog(){
+        Table cont = messageDialog.cont;
+        cont.clearChildren();
+
+        cont.pane(nonePane, table -> {
+            for(MessageStack messageStack : messageStacks){
+                if(!messageStack.hasMessage()){
+                    continue;
+                }
+
+                table.add(messageStack.getTime()).growX().color(Color.gray).padTop(7f);
+
+                table.row();
+
+                table.table(MStyles.clearFlatOver, messages -> {
+                    for(String msg : messageStack.messages){
+                        messages.button(msg, MStyles.clearToggleTransAccentt, () -> addSelectMessage(msg))
+                        .checked(b -> selectMessages.contains(msg, true)).growX().left().padTop(2f)
+                        .get().getLabel().setAlignment(Align.left);
+
+                        messages.row();
+                    }
+                }).fillX().padTop(5f);
+
+                table.row();
+            }
+        }).minWidth(graphics.getWidth() / 2.4f).fillY().scrollX(false);
+
+        cont.table(t -> {
+            t.table(buttons -> {
+                buttons.defaults().minWidth(115f).growX().top();
+
+                buttons.button("Clear", Icon.refreshSmall, MStyles.clearPartial2t, 45, selectMessages::clear);
+                buttons.button("Copy", Icon.copySmall, MStyles.clearPartial2t, 45, () -> MUI.setClipboardText(selectMessages.toString("\n")));
+            }).top();
+
+            t.row();
+
+            t.table(MStyles.clearFlatOver, s -> {}).update(selectsTable -> {
+                selectsTable.clearChildren();
+
+                if(selectMessages.isEmpty()) return;
+
+                for(String msg : selectMessages){
+                    selectsTable.labelWrap(msg).growX().left();
+                    selectsTable.row();
+                }
+            }).grow();
+        }).width(graphics.getWidth() / 4.5f).fillY();
     }
 
     private void resetMessages(){
@@ -114,9 +186,15 @@ public class ChatTable extends FloatTable{
         lastIsBottomEdge = pane.isBottomEdge();
 
         if(lastMessageSize != messageSize){
+            if(messageStacks.isEmpty()){
+                return;
+            }
+
+            MessageStack stack = messageStacks.peek();
+
             int n = messageSize - lastMessageSize;
             for(int i = 0; i < n; i++){
-                this.messages.add(messages.get(i));
+                stack.addMessage(messages.get(i));
                 addMessage(messages.get(i));
             }
 
@@ -165,6 +243,14 @@ public class ChatTable extends FloatTable{
         return "";
     }
 
+    private void addSelectMessage(String message){
+        if(selectMessages.contains(message, true)){
+            selectMessages.remove(message);
+        }else{
+            selectMessages.add(message);
+        }
+    }
+
     @Override
     protected void update(){
         super.update();
@@ -197,5 +283,25 @@ public class ChatTable extends FloatTable{
 
     private void toggleCopyMode(){
         copyMode = !copyMode;
+    }
+
+    public static class MessageStack{
+        public static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+        private Date date = new Date();
+        public Seq<String> messages = new Seq<>();
+
+        public int addMessage(String msg){
+            messages.add(msg);
+            return messages.size;
+        }
+
+        public boolean hasMessage(){
+            return messages.any();
+        }
+
+        public String getTime(){
+            return format.format(date);
+        }
     }
 }

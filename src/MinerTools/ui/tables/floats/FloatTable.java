@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.floats;
 
 import MinerTools.*;
+import MinerTools.ui.*;
 import MinerTools.ui.settings.MSettingsTable.*;
 import MinerTools.ui.tables.*;
 import arc.*;
@@ -97,7 +98,7 @@ public class FloatTable extends DraggableTable implements Addable{
 
             buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont).update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
 
-            buttons.button("x", clearPartialt, () -> {
+            buttons.button("x", MStyles.clearPartial2t, () -> {
                 MinerVars.settings.put("floats." + name + ".shown", false);
                 remove();
             }).size(35f);
