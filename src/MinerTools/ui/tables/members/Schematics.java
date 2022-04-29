@@ -97,7 +97,9 @@ public class Schematics extends MemberTable{
                         }).growX().margin(1).pad(4).maxWidth(Scl.scl(imageSize - 8)).padBottom(0);
                     })).size(imageSize);
                 }, () -> {
-                    Vars.control.input.useSchematic(schematic);
+                    if(Vars.state.rules.schematicsAllowed){
+                        Vars.control.input.useSchematic(schematic);
+                    }
                 });
 
                 if(++i % 3 == 0) schematicsTable.row();
