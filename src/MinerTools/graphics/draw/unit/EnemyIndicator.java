@@ -63,7 +63,7 @@ public class EnemyIndicator extends UnitDrawer{
 
     @Override
     public boolean isValid(Unit unit){
-        return unit.team != player.team();
+        return unit.team != player.team() && unit.hasWeapons();
     }
 
     @Override
