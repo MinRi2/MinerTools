@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.build;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
@@ -8,7 +9,6 @@ import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 import mindustry.world.meta.*;
 
-import static MinerTools.MinerVars.mSettings;
 import static mindustry.Vars.*;
 
 public class TurretAlert extends BuildDrawer<TurretBuild>{
@@ -16,12 +16,12 @@ public class TurretAlert extends BuildDrawer<TurretBuild>{
 
     @Override
     public void readSetting(){
-        turretAlertRadius = mSettings.getInt("turretAlertRadius") * tilesize;
+        turretAlertRadius = MinerVars.settings.getInt("turretAlertRadius") * tilesize;
     }
 
     @Override
     public boolean enabled(){
-        return mSettings.getBool("turretAlert");
+        return MinerVars.settings.getBool("turretAlert");
     }
 
     @Override

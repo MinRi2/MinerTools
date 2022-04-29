@@ -1,13 +1,12 @@
 package MinerTools.ui.tables;
 
+import MinerTools.*;
 import arc.input.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-
-import static MinerTools.MinerVars.mSettings;
 
 /** Table that can be dragged */
 public class DraggableTable extends Table{
@@ -37,8 +36,8 @@ public class DraggableTable extends Table{
 
     public void setLastPos(){
         if(name != null && !name.equals("")){
-            float x = mSettings.getFloat("ui." + name + ".pos" + ".x");
-            float y = mSettings.getFloat("ui." + name + ".pos" + ".y");
+            float x = MinerVars.settings.getFloat("ui." + name + ".pos" + ".x");
+            float y = MinerVars.settings.getFloat("ui." + name + ".pos" + ".y");
             setPosition(x, y);
             keepInStage();
         }
@@ -54,11 +53,11 @@ public class DraggableTable extends Table{
     }
 
     public boolean isLocked(){
-        return mSettings.getBool("ui." + name + ".pos" + ".locked");
+        return MinerVars.settings.getBool("ui." + name + ".pos" + ".locked");
     }
 
     public void toggleLocked(){
-        mSettings.put("ui." + name + ".pos" + ".locked", !isLocked());
+        MinerVars.settings.put("ui." + name + ".pos" + ".locked", !isLocked());
     }
 
     public void addListener(){
@@ -94,8 +93,8 @@ public class DraggableTable extends Table{
                 target.keepInStage();
 
                 if(target.savePos){
-                    mSettings.put("ui." + target.name + ".pos" + ".x", target.x);
-                    mSettings.put("ui." + target.name + ".pos" + ".y", target.y);
+                    MinerVars.settings.put("ui." + target.name + ".pos" + ".x", target.x);
+                    MinerVars.settings.put("ui." + target.name + ".pos" + ".y", target.y);
                 }
             }
         }

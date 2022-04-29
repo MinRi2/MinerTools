@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.unit;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.util.*;
@@ -7,7 +8,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 
-import static MinerTools.MinerVars.mSettings;
+import static MinerTools.MinerVars.settings;
 import static mindustry.Vars.*;
 
 /**
@@ -18,12 +19,12 @@ public class UnitAlert extends UnitDrawer{
 
     @Override
     public void readSetting(){
-        unitAlertRadius = mSettings.getInt("unitAlertRadius") * tilesize;
+        unitAlertRadius = MinerVars.settings.getInt("unitAlertRadius") * tilesize;
     }
 
     @Override
     public boolean enabled(){
-        return mSettings.getBool("unitAlert");
+        return settings.getBool("unitAlert");
     }
 
     @Override

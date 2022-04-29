@@ -7,14 +7,12 @@ import MinerTools.interfaces.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import arc.util.pooling.*;
 import mindustry.core.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
@@ -22,11 +20,7 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.blocks.ConstructBlock.*;
-import mindustry.world.blocks.defense.turrets.*;
-import mindustry.world.blocks.defense.turrets.ItemTurret.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
 
-import static MinerTools.MinerVars.mSettings;
 import static arc.Core.input;
 import static mindustry.Vars.*;
 

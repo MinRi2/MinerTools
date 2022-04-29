@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.unit;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.*;
 import arc.graphics.g2d.*;
@@ -11,7 +12,6 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 
-import static MinerTools.MinerVars.mSettings;
 import static mindustry.Vars.*;
 
 /**
@@ -38,13 +38,13 @@ public class EnemyIndicator extends UnitDrawer{
 
     @Override
     public void readSetting(){
-        defEnemyRadius = mSettings.getInt("enemyUnitIndicatorRadius") * tilesize;
+        defEnemyRadius = MinerVars.settings.getInt("enemyUnitIndicatorRadius") * tilesize;
         resetEnemyRadius();
     }
 
     @Override
     public boolean enabled(){
-        return mSettings.getBool("enemyUnitIndicator");
+        return MinerVars.settings.getBool("enemyUnitIndicator");
     }
 
     @Override

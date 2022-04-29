@@ -3,11 +3,12 @@ package MinerTools;
 import MinerTools.input.*;
 import MinerTools.io.*;
 import MinerTools.ui.*;
+import arc.*;
 import arc.KeyBinds.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.input.*;
+import mindustry.*;
 import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
@@ -17,8 +18,8 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 
 public class MinerVars{
-    public static MinerToolsSettings mSettings;
-    public static MUI mui;
+    public static MinerToolsSettings settings;
+    public static MUI ui;
 
     public static boolean desktop;
 
@@ -29,8 +30,8 @@ public class MinerVars{
     public static boolean enableUpdateConveyor;
 
     public static void init(){
-        mSettings = new MinerToolsSettings();
-        mui = new MUI();
+        settings = new MinerToolsSettings();
+        ui = new MUI();
 
         initBetterUIScaleSetting();
 
@@ -41,8 +42,8 @@ public class MinerVars{
             initBindings();
         }
 
-        mSettings.init();
-        mui.init();
+        settings.init();
+        ui.init();
     }
 
     public static void initContent(){
@@ -74,22 +75,22 @@ public class MinerVars{
     }
 
     public static void initBetterUIScaleSetting(){
-        int[] lastUiScale = {settings.getInt("uiscale", 100)};
-        int index = ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
+        int[] lastUiScale = {Core.settings.getInt("uiscale", 100)};
+        int index = Vars.ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
 
-        settings.put("uiscale", settings.getInt("_uiscale", 100));
+        Core.settings.put("uiscale", Core.settings.getInt("_uiscale", 100));
 
         if(index != -1){
-            ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
+            Vars.ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
                 //if the user changed their UI scale, but then put it back, don't consider it 'changed'
-                settings.put("uiscalechanged", s != lastUiScale[0]);
-                settings.put("_uiscale", s);
+                Core.settings.put("uiscalechanged", s != lastUiScale[0]);
+                Core.settings.put("_uiscale", s);
                 return s + "%";
             }));
         }
-        ui.settings.graphics.rebuild();
+        Vars.ui.settings.graphics.rebuild();
 
-        Scl.setProduct(settings.getInt("_uiscale", 100) / 100f);
+        Scl.setProduct(Core.settings.getInt("_uiscale", 100) / 100f);
     }
 
     public static void initBindings(){
@@ -102,6 +103,6 @@ public class MinerVars{
 
         keybinds.setDefaults(newBindings);
         Reflect.invoke(keybinds, "load");
-        Reflect.invoke(ui.controls, "setup");
+        Reflect.invoke(Vars.ui.controls, "setup");
     }
 }

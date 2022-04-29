@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.floats;
 
 import MinerTools.ui.*;
+import MinerTools.ui.settings.MSettingsTable.*;
 import arc.*;
 import arc.input.*;
 import arc.math.*;
@@ -43,19 +44,12 @@ public class ChatTable extends FloatTable{
         super("chat");
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            // messageTable.clear();
             history.clear();
             historyIndex = -1;
 
             resetMessages();
             Timer.schedule(this::scrollToBottom, 1f);
         });
-    }
-
-    @Override
-    public void addUI(){
-        /* mobile only */
-        if(mobile) super.addUI();
     }
 
     @Override
@@ -68,6 +62,11 @@ public class ChatTable extends FloatTable{
         fstyle = new TextFieldStyle(areaField){{
             background = black6;
         }};
+    }
+
+    @Override
+    protected void initSettings(MSettingTable uiSettings){
+        super.initSettings(uiSettings);
     }
 
     @Override

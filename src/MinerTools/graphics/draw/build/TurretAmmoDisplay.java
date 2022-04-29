@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.build;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -9,7 +10,6 @@ import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 
-import static MinerTools.MinerVars.mSettings;
 import static mindustry.Vars.tilesize;
 
 
@@ -23,7 +23,7 @@ public class TurretAmmoDisplay extends BuildDrawer<ItemTurretBuild>{
 
     @Override
     public boolean enabled(){
-        return mSettings.getBool("itemTurretAmmoShow");
+        return MinerVars.settings.getBool("itemTurretAmmoShow");
     }
 
     @Override

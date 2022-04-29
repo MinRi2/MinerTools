@@ -1,9 +1,9 @@
 package MinerTools.ui.override;
 
-import MinerTools.ui.tables.*;
+import MinerTools.*;
+import MinerTools.interfaces.*;
 import arc.*;
 import arc.math.*;
-import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -22,9 +22,12 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 
-public class CoreItemsDisplay extends Table implements Addable{
+public class CoreItemsDisplay extends Table implements OverrideUI{
     public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
     private static final Interval timer = new Interval();
+
+    /* For override */
+    private Table override;
 
     private Table itemsInfoTable = new Table();
 
@@ -49,6 +52,7 @@ public class CoreItemsDisplay extends Table implements Addable{
 
     public CoreItemsDisplay(){
         init();
+        addSettings();
 
         Events.on(ResetEvent.class, e -> resetUsed());
 
@@ -58,18 +62,19 @@ public class CoreItemsDisplay extends Table implements Addable{
         touchable = Touchable.disabled;
     }
 
-    @Override
-    public void addUI(){
-        Element e = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
-
-        if(e.parent instanceof Collapser collapser){
-            collapser.setTable(this);
-
-            collapser.setCollapsed(() -> !(Core.settings.getBool("coreitems") && ui.hudfrag.shown));
-        }
+    private void addSettings(){
+        MinerVars.ui.minerSettings.ui.checkPref("overrideCoreItemsDisplay", true, b -> {
+            if(b){
+                doOverride();
+            }else{
+                resetOverride();
+            }
+        }).change();
     }
 
     private void init(){
+        override = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
+        
         for(int i = 0; i < means.length; i++){
             means[i] = new WindowedMean(6);
         }
@@ -234,6 +239,21 @@ public class CoreItemsDisplay extends Table implements Addable{
             if(++i % 5 == 0){
                 planInfoTable.row();
             }
+        }
+    }
+
+    @Override
+    public void doOverride(){
+        if(override.parent instanceof Collapser c){
+            c.setTable(this);
+            c.setCollapsed(() -> !(Core.settings.getBool("coreitems") && ui.hudfrag.shown));
+        }
+    }
+
+    @Override
+    public void resetOverride(){
+        if(parent instanceof Collapser c){
+            c.setTable(override);
         }
     }
 }

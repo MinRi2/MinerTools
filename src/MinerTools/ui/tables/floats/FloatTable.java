@@ -1,13 +1,13 @@
 package MinerTools.ui.tables.floats;
 
+import MinerTools.*;
+import MinerTools.ui.settings.MSettingsTable.*;
 import MinerTools.ui.tables.*;
 import arc.*;
 import arc.scene.ui.layout.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import org.jetbrains.annotations.ApiStatus.*;
 
-import static MinerTools.ui.MStyles.floatb;
 import static arc.Core.scene;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
@@ -28,10 +28,6 @@ public class FloatTable extends DraggableTable implements Addable{
 
         setup();
 
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-            addUI();
-        });
-
         update(this::update);
 
         visibility = () -> !state.isMenu() && ui.hudfrag.shown && !ui.minimapfrag.shown();
@@ -49,6 +45,22 @@ public class FloatTable extends DraggableTable implements Addable{
     protected void init(){
         title = new Table(black6);
         cont = new Table();
+
+        initSettings();
+    }
+
+    protected void initSettings(){
+        initSettings(MinerVars.ui.minerSettings.ui);
+    }
+
+    protected void initSettings(MSettingTable uiSettings){
+        uiSettings.checkPref("floats." + name + ".shown", true, b -> {
+            if(b){
+                addUI();
+            }else{
+                remove();
+            }
+        }).change();
     }
 
     private void setup(){
@@ -65,7 +77,8 @@ public class FloatTable extends DraggableTable implements Addable{
     }
 
     @OverrideOnly
-    protected void setupCont(Table cont){}
+    protected void setupCont(Table cont){
+    }
 
     private void setupTitle(){
         title.clearChildren();
@@ -77,19 +90,23 @@ public class FloatTable extends DraggableTable implements Addable{
 
             setupButtons(buttons);
 
-            buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked)
-            .checked(b -> {
+            buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked).checked(b -> {
                 b.getStyle().imageUp = (isLocked() ? Icon.lockSmall : Icon.lockOpenSmall);
                 return isLocked();
             });
 
-            buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont)
-            .update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
+            buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont).update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
+
+            buttons.button("x", clearPartialt, () -> {
+                MinerVars.settings.put("floats." + name + ".shown", false);
+                remove();
+            }).size(35f);
         }).growY().right();
     }
 
     @OverrideOnly
-    protected void setupButtons(Table buttons){}
+    protected void setupButtons(Table buttons){
+    }
 
     @OverrideOnly
     protected void update(){

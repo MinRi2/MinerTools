@@ -16,6 +16,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.game.Rules.*;
@@ -132,7 +133,7 @@ public class TeamsInfo extends Table{
                 }).row();
 
                 table.button(Icon.trashSmall, clearPartiali, () -> {
-                    ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
+                    Vars.ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
                         Call.sendChatMessage("/vote gameover");
                         Call.sendChatMessage("1");
                     });
@@ -207,7 +208,7 @@ public class TeamsInfo extends Table{
                             return;
                         }
 
-                        powerBarTable.image(ui.getIcon(Category.power.name())).color(team.color);
+                        powerBarTable.image(Vars.ui.getIcon(Category.power.name())).color(team.color);
 
                         Bar powerBar = new Bar(
                         () -> (info.getPowerBalance() >= 0 ? "+" : "") + UI.formatAmount(info.getPowerBalance()),

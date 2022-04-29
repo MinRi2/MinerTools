@@ -53,7 +53,7 @@ public class MinerTools extends Mod{
             tryPanToController();
         }
 
-        mui.update();
+        MinerVars.ui.update();
 
         BaseAI.updateController();
     }

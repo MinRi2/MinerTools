@@ -1,5 +1,6 @@
 package MinerTools.ui.settings;
 
+import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.ui.tables.*;
 import MinerTools.ui.utils.*;
@@ -13,16 +14,13 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 
-import static MinerTools.MinerVars.mSettings;
 import static arc.Core.bundle;
-import static mindustry.Vars.*;
-import static mindustry.ui.Styles.*;
+import static mindustry.ui.Styles.clearToggleTransi;
 
 public class MSettingsTable extends Table implements Addable{
     public Seq<MSettingTable> settingTables = new Seq<>();
@@ -90,29 +88,31 @@ public class MSettingsTable extends Table implements Addable{
     }
 
     private void setup(){
-        add("MinerToolsSettings").center().row();
-        image().color(Pal.accent).growX();
+        table(t -> {
+            t.add("MinerToolsSettings").center().row();
+            t.image().color(Pal.accent).minWidth(550f).growX();
+
+            t.row();
+
+            t.table(buttons -> {
+                for(MSettingTable settingTable : settingTables){
+                    buttons.button(settingTable.icon, clearToggleTransi, () -> {
+                        settingTableCont.clear();
+
+                        if(show != settingTable){
+                            show = settingTable;
+                            settingTableCont.add(settingTable).left();
+                        }else{
+                            show = null;
+                        }
+                    }).grow().checked(b -> show == settingTable);
+                }
+            }).minWidth(70f * settingTables.size).padTop(5f).padBottom(5f);
+        }).top();
 
         row();
 
-        table(buttons -> {
-            for(MSettingTable settingTable : settingTables){
-                buttons.button(settingTable.icon, clearToggleTransi, () -> {
-                    settingTableCont.clear();
-
-                    if(show != settingTable){
-                        show = settingTable;
-                        settingTableCont.add(settingTable).left();
-                    }else{
-                        show = null;
-                    }
-                }).grow().checked(b -> show == settingTable);
-            }
-        }).minWidth(70f * settingTables.size);
-
-        row();
-
-        add(settingTableCont).growX();
+        add(settingTableCont).top();
     }
 
     public class MSettingTable extends Table{
@@ -166,23 +166,25 @@ public class MSettingsTable extends Table implements Addable{
             public MSetting(String name, Object def){
                 this(name);
 
-                mSettings.put(name, def, true, true);
+                MinerVars.settings.put(name, def, true, true);
             }
 
             public abstract void add(Table table);
 
             protected void addDesc(Element element){
-                if(!describe.equals("???miner-tools.setting." + name + ".describe???")){
+                if(!describe.startsWith("???") && !describe.endsWith("???")){
                     ElementUtils.addTooltip(element, describe, Align.topLeft, true);
                 }
             }
 
             protected void putSetting(Object value){
-                mSettings.put(name, value, false, true);
+                MinerVars.settings.put(name, value, false, true);
             }
         }
 
         public static class MCheckSetting extends MSetting{
+            private CheckBox box;
+
             boolean def;
             Boolc changed;
 
@@ -194,9 +196,9 @@ public class MSettingsTable extends Table implements Addable{
 
             @Override
             public void add(Table table){
-                CheckBox box = new CheckBox(title);
+                box = new CheckBox(title);
 
-                box.update(() -> box.setChecked(mSettings.getBool(name)));
+                box.update(() -> box.setChecked(MinerVars.settings.getBool(name)));
 
                 box.changed(() -> {
                     putSetting(box.isChecked());
@@ -211,6 +213,11 @@ public class MSettingsTable extends Table implements Addable{
 
                 table.add(box).left().padTop(3f);
                 table.row();
+            }
+
+            public MCheckSetting change(){
+                changed.get(box.isChecked());
+                return this;
             }
         }
 
@@ -231,7 +238,7 @@ public class MSettingsTable extends Table implements Addable{
             public void add(Table table){
                 Slider slider = new Slider(min, max, step, false);
 
-                slider.setValue(mSettings.getInt(name));
+                slider.setValue(MinerVars.settings.getInt(name));
 
                 Label value = new Label("", Styles.outlineLabel);
                 Table content = new Table();

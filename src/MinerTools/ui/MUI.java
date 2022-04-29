@@ -1,6 +1,7 @@
 package MinerTools.ui;
 
 import MinerTools.*;
+import MinerTools.interfaces.*;
 import MinerTools.ui.logic.*;
 import MinerTools.ui.override.CoreItemsDisplay;
 import MinerTools.ui.settings.*;
@@ -29,6 +30,8 @@ public class MUI{
     public static Seq<ScrollPane> panes = new Seq<>();
 
     private Seq<Addable> addableTables = new Seq<>();
+    private Seq<FloatTable> floats = new Seq<>();
+    private Seq<OverrideUI> overrides = new Seq<>();
 
     // Override
     public CoreItemsDisplay coreItemsDisplay;
@@ -52,11 +55,17 @@ public class MUI{
         MStyles.load();
 
         addableTables.addAll(
-        coreItemsDisplay = new CoreItemsDisplay(),
         minerSettings = new MSettingsTable(),
         minerToolsTable = new MinerToolsTable(),
-        chat = new ChatTable(),
         logicVars = new LogicVars()
+        );
+
+        floats.addAll(
+        chat = new ChatTable()
+        );
+
+        overrides.addAll(
+        coreItemsDisplay = new CoreItemsDisplay()
         );
 
         addUI();
