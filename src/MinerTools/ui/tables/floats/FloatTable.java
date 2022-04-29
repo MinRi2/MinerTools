@@ -5,7 +5,6 @@ import MinerTools.ui.settings.MSettingsTable.*;
 import MinerTools.ui.tables.*;
 import arc.*;
 import arc.scene.ui.layout.*;
-import arc.util.*;
 import mindustry.gen.*;
 import org.jetbrains.annotations.ApiStatus.*;
 
@@ -56,7 +55,6 @@ public class FloatTable extends DraggableTable implements Addable{
 
     protected void initSettings(MSettingTable uiSettings){
         uiSettings.checkPref("floats." + name + ".shown", true, b -> {
-            Log.info("Chat: " + b);
             if(b){
                 addUI();
             }else{

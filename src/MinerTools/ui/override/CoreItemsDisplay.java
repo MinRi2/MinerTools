@@ -65,7 +65,6 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
     private void addSettings(){
         MinerVars.ui.minerSettings.ui.checkPref("overrideCoreItemsDisplay", true, b -> {
-            Log.info("CoreItems: " + b);
             if(b){
                 doOverride();
             }else{
