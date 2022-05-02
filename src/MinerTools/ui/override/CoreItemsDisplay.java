@@ -15,6 +15,7 @@ import mindustry.core.*;
 import mindustry.game.EventType.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
 import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
@@ -59,8 +60,6 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
         add(itemsInfoTable).row();
         add(planInfoTable).fillX().padTop(2f);
-
-        touchable = Touchable.disabled;
     }
 
     private void addSettings(){
@@ -71,10 +70,18 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
                 resetOverride();
             }
         }).change();
+
+        /* Add coreItems setting for mobile */
+        if(mobile){
+            var settings = ui.settings.graphics.getSettings();
+            settings.insert(settings.indexOf(s -> s.name.equals("minimap")), new CheckSetting("coreitems", true, null));
+            ui.settings.graphics.rebuild();
+        }
     }
 
     private void init(){
         override = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
+        override.parent.touchable = Touchable.disabled;
         
         for(int i = 0; i < means.length; i++){
             means[i] = new WindowedMean(windowSize);
