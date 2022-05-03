@@ -2,7 +2,6 @@ package MinerTools.ui;
 
 import MinerTools.*;
 import MinerTools.interfaces.*;
-import MinerTools.ui.logic.*;
 import MinerTools.ui.override.CoreItemsDisplay;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
@@ -29,9 +28,9 @@ public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
 
-    private Seq<Addable> addableTables = new Seq<>();
-    private Seq<FloatTable> floats = new Seq<>();
-    private Seq<OverrideUI> overrides = new Seq<>();
+    private final Seq<Addable> addableTables = new Seq<>();
+    private final Seq<FloatTable> floats = new Seq<>();
+    private final Seq<OverrideUI> overrides = new Seq<>();
 
     // Override
     public CoreItemsDisplay coreItemsDisplay;
@@ -43,7 +42,6 @@ public class MUI{
     public MinerToolsTable minerToolsTable;
 
     // DraggableTable
-    public LogicVars logicVars;
 
     // FloatTable
     public ChatTable chat;
@@ -56,8 +54,7 @@ public class MUI{
 
         addableTables.addAll(
         minerSettings = new MSettingsTable(),
-        minerToolsTable = new MinerToolsTable(),
-        logicVars = new LogicVars()
+        minerToolsTable = new MinerToolsTable()
         );
 
         floats.addAll(
