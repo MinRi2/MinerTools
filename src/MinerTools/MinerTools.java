@@ -26,7 +26,7 @@ public class MinerTools extends Mod{
         });
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            Timer.schedule(Updater::checkUpdate, 3);
+            Timer.schedule(Updater::checkUpdate, 8);
 
             MinerVars.init();
 
