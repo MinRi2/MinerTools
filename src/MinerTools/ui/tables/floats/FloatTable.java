@@ -2,7 +2,7 @@ package MinerTools.ui.tables.floats;
 
 import MinerTools.*;
 import MinerTools.ui.*;
-import MinerTools.ui.settings.MSettingsTable.*;
+import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
 import arc.*;
 import arc.scene.ui.layout.*;
@@ -47,14 +47,14 @@ public class FloatTable extends DraggableTable implements Addable{
         title = new Table(black6);
         cont = new Table();
 
-        initSettings();
+        addSettings();
     }
 
-    protected void initSettings(){
-        initSettings(MinerVars.ui.minerSettings.ui);
+    protected void addSettings(){
+        addSettings(MinerVars.ui.minerSettings.ui.addCategorySetting(name));
     }
 
-    protected void initSettings(MSettingTable uiSettings){
+    protected void addSettings(MSettingTable uiSettings){
         uiSettings.checkPref("floats." + name + ".shown", true, b -> {
             if(b){
                 addUI();

@@ -1,7 +1,7 @@
 package MinerTools.ui.tables.floats;
 
 import MinerTools.ui.*;
-import MinerTools.ui.settings.MSettingsTable.*;
+import MinerTools.ui.settings.*;
 import arc.*;
 import arc.graphics.*;
 import arc.input.*;
@@ -77,8 +77,8 @@ public class ChatTable extends FloatTable{
     }
 
     @Override
-    protected void initSettings(MSettingTable uiSettings){
-        super.initSettings(uiSettings);
+    protected void addSettings(MSettingTable uiSettings){
+        super.addSettings(uiSettings);
     }
 
     @Override

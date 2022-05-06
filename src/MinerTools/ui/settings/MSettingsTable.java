@@ -1,15 +1,7 @@
 package MinerTools.ui.settings;
 
-import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.ui.tables.*;
-import MinerTools.ui.utils.*;
-import arc.*;
-import arc.func.*;
-import arc.scene.*;
-import arc.scene.event.*;
-import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
@@ -17,18 +9,17 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.*;
 
-import static arc.Core.bundle;
 import static mindustry.ui.Styles.clearToggleTransi;
 
 public class MSettingsTable extends Table implements Addable{
     public Seq<MSettingTable> settingTables = new Seq<>();
 
     private MSettingTable show;
-    private Table settingTableCont = new Table();
+    private final Table settingTableCont = new Table();
 
-    public MSettingTable game, graphics, ui;
+    public MSettingTable game, graphics;
+    public CategoriesSettingTable ui;
 
     public MSettingsTable(){
         addSettings();
@@ -84,7 +75,9 @@ public class MSettingsTable extends Table implements Addable{
             }
         };
 
-        ui = new MSettingTable(Icon.chat);
+        ui = new CategoriesSettingTable(Icon.chat);
+
+        settingTables.addAll(game, graphics, ui);
     }
 
     private void setup(){
@@ -113,150 +106,5 @@ public class MSettingsTable extends Table implements Addable{
         row();
 
         add(settingTableCont).top();
-    }
-
-    public class MSettingTable extends Table{
-        public Drawable icon;
-        public Seq<MSetting> settings = new Seq<>();
-
-        public MSettingTable(Drawable icon){
-            this.icon = icon;
-            settingTables.add(this);
-        }
-
-        public MCheckSetting checkPref(String name, boolean def){
-            return checkPref(name, def, null);
-        }
-
-        public MCheckSetting checkPref(String name, boolean def, Boolc changed){
-            MCheckSetting setting;
-            settings.add(setting = new MCheckSetting(name, def, changed));
-            rebuild();
-            return setting;
-        }
-
-        public MSliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
-            return sliderPref(name, def, min, max, 1, s);
-        }
-
-        public MSliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
-            MSliderSetting setting;
-            settings.add(setting = new MSliderSetting(name, def, min, max, step, s));
-            rebuild();
-            return setting;
-        }
-
-        private void rebuild(){
-            clearChildren();
-
-            for(MSetting setting : settings){
-                setting.add(this);
-            }
-        }
-
-        public static abstract class MSetting{
-            String name, title, describe;
-
-            public MSetting(String name){
-                this.name = name;
-                title = bundle.get("miner-tools.setting." + name + ".name");
-                describe = bundle.get("miner-tools.setting." + name + ".describe");
-            }
-
-            public MSetting(String name, Object def){
-                this(name);
-
-                MinerVars.settings.put(name, def, true, true);
-            }
-
-            public abstract void add(Table table);
-
-            protected void addDesc(Element element){
-                if(!describe.startsWith("???") && !describe.endsWith("???")){
-                    ElementUtils.addTooltip(element, describe, Align.topLeft, true);
-                }
-            }
-
-            protected void putSetting(Object value){
-                MinerVars.settings.put(name, value, false, true);
-            }
-        }
-
-        public static class MCheckSetting extends MSetting{
-            private CheckBox box;
-
-            boolean def;
-            Boolc changed;
-
-            public MCheckSetting(String name, boolean def, Boolc changed){
-                super(name, def);
-                this.def = def;
-                this.changed = changed;
-            }
-
-            @Override
-            public void add(Table table){
-                box = new CheckBox(title);
-
-                box.update(() -> box.setChecked(MinerVars.settings.getBool(name)));
-
-                box.changed(() -> {
-                    putSetting(box.isChecked());
-
-                    if(changed != null){
-                        changed.get(box.isChecked());
-                    }
-                });
-
-                box.left();
-                addDesc(box);
-
-                table.add(box).left().padTop(3f);
-                table.row();
-            }
-
-            public MCheckSetting change(){
-                changed.get(MinerVars.settings.getBool(name));
-                return this;
-            }
-        }
-
-        public static class MSliderSetting extends MSetting{
-            int def, min, max, step;
-            StringProcessor sp;
-
-            public MSliderSetting(String name, int def, int min, int max, int step, StringProcessor s){
-                super(name, def);
-                this.def = def;
-                this.min = min;
-                this.max = max;
-                this.step = step;
-                this.sp = s;
-            }
-
-            @Override
-            public void add(Table table){
-                Slider slider = new Slider(min, max, step, false);
-
-                slider.setValue(MinerVars.settings.getInt(name));
-
-                Label value = new Label("", Styles.outlineLabel);
-                Table content = new Table();
-                content.add(title, Styles.outlineLabel).left().growX().wrap();
-                content.add(value).padLeft(10f).right();
-                content.margin(3f, 33f, 3f, 33f);
-                content.touchable = Touchable.disabled;
-
-                slider.changed(() -> {
-                    putSetting((int)slider.getValue());
-                    value.setText(sp.get((int)slider.getValue()));
-                });
-
-                slider.change();
-
-                addDesc(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
-                table.row();
-            }
-        }
     }
 }

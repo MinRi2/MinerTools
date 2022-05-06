@@ -2,6 +2,7 @@ package MinerTools.ui.override;
 
 import MinerTools.*;
 import MinerTools.interfaces.*;
+import MinerTools.ui.settings.*;
 import arc.*;
 import arc.math.*;
 import arc.scene.event.*;
@@ -63,7 +64,11 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     }
 
     private void addSettings(){
-        MinerVars.ui.minerSettings.ui.checkPref("overrideCoreItemsDisplay", true, b -> {
+        addSettings(MinerVars.ui.minerSettings.ui.addCategorySetting("overrideCoreItemsDisplay"));
+    }
+
+    private void addSettings(MSettingTable setting){
+        setting.checkPref("overrideCoreItemsDisplay", true, b -> {
             if(b){
                 doOverride();
             }else{
