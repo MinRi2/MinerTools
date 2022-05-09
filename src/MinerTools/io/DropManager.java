@@ -3,24 +3,25 @@ package MinerTools.io;
 import arc.files.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
-import arc.util.*;
 import arc.util.io.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.defense.turrets.*;
 
+import java.io.*;
+
 import static mindustry.Vars.*;
 
 public class DropManager{
     private static Fi root;
-    private static String settingName = "dropSettings";
+    private static final String settingName = "dropSettings";
 
     public static void init(){
         root = modDirectory.child("MinerTools");
         root.mkdirs();
     }
 
-    public static void loadSetting(ObjectMap<Integer, Seq<Item>> map){
+    public static void loadSetting(ObjectMap<String, Seq<Item>> map){
         Fi settingf = root.child(settingName);
         Fi backupf = root.child(settingName + ".backup");
         if(!settingf.exists()){
@@ -34,41 +35,38 @@ public class DropManager{
         readFi(settingf, map);
     }
 
-    public static void readFi(Fi fi, ObjectMap<Integer, Seq<Item>> map){
-        Reads reads = null;
-        try{
-            reads = fi.reads();
-            int mapSize = reads.i();
+    public static void readFi(Fi fi, ObjectMap<String, Seq<Item>> map){
+        try(DataInputStream reads = new DataInputStream(fi.read(Streams.defaultBufferSize))){
+            int mapSize = reads.readInt();
             for(int i = 0; i < mapSize; i++){
-                int turretID = reads.i();
+                String turretName = reads.readUTF();
 
-                int size = reads.i();
-                Seq<Item> seq = new Seq();
+                int size = reads.readInt();
+                Seq<Item> seq = new Seq<>();
                 for(int j = 0; j < size; j++){
-                    int id = reads.i();
+                    int id = reads.readInt();
                     seq.add(content.item(id));
                 }
 
-                map.put(turretID, seq);
+                map.put(turretName, seq);
             }
         }catch(Exception e){
+            fi.delete();
             ui.showException(e);
-        }finally{
-            if(reads != null) reads.close();
         }
     }
 
-    public static void save(ObjectMap<Integer, Seq<Item>> map){
+    public static void save(ObjectMap<String, Seq<Item>> map){
         // backup
-        Fi settingf = root.child(settingName);
-        if(settingf.exists()) {
-            settingf.moveTo(root.child(settingName + ".backup"));
+        Fi settingFi = root.child(settingName);
+        if(settingFi.exists()) {
+            settingFi.moveTo(root.child(settingName + ".backup"));
         }
         // save
-        Writes writes = settingf.writes();
+        Writes writes = settingFi.writes();
         writes.i(map.size);
-        for(Entry<Integer, Seq<Item>> entry : map.entries()){
-            writes.i(entry.key);
+        for(Entry<String, Seq<Item>> entry : map.entries()){
+            writes.str(entry.key);
 
             writes.i(entry.value.size);
             for(Item item : entry.value){
@@ -79,10 +77,10 @@ public class DropManager{
     }
 
     public static void saveDefault(){
-        ObjectMap<Integer, Seq<Item>> objectMap = new ObjectMap<>();
+        ObjectMap<String, Seq<Item>> objectMap = new ObjectMap<>();
         for(Block block : content.blocks()){
             if(block instanceof ItemTurret itemTurret){
-                objectMap.put((int)itemTurret.id, itemTurret.ammoTypes.keys().toSeq());
+                objectMap.put(itemTurret.name, itemTurret.ammoTypes.keys().toSeq());
             }
         }
         save(objectMap);

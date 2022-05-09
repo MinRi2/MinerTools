@@ -12,7 +12,7 @@ import mindustry.ui.dialogs.*;
 import mindustry.world.blocks.defense.turrets.*;
 
 public class DropSettingDialog extends BaseDialog{
-    public static ObjectMap<Integer, Seq<Item>> settings = new ObjectMap<>();
+    public static ObjectMap<String, Seq<Item>> settings = new ObjectMap<>();
 
     public DropSettingDialog(){
         super("Setting", Styles.defaultDialog);
@@ -35,7 +35,7 @@ public class DropSettingDialog extends BaseDialog{
         cont.clear();
 
         Table table = new Table();
-        for(Entry<Integer, Seq<Item>> entry : settings){
+        for(Entry<String, Seq<Item>> entry : settings){
             ItemTurret turret = (ItemTurret)Vars.content.block(entry.key);
             Seq<Item> items = entry.value;
 
@@ -88,7 +88,7 @@ public class DropSettingDialog extends BaseDialog{
         }
     }
 
-    public static Seq<Item> get(Integer integer){
-        return settings.get(integer);
+    public static Seq<Item> get(String name){
+        return settings.get(name);
     }
 }
