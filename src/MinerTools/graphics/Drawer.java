@@ -25,8 +25,6 @@ import static arc.Core.input;
 import static mindustry.Vars.*;
 
 public class Drawer{
-    private static final Seq<Building> tmp = new Seq<>();
-
     private static final Seq<BuildDrawer<? extends Building>> buildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
     private static final Seq<UnitDrawer> unitDrawers = Seq.with(new UnitAlert(), new EnemyIndicator());
 
@@ -116,16 +114,11 @@ public class Drawer{
                 if(drawer.isValid()) drawer.init();
             }
 
-            tmp.clear();
-            data.buildings.getObjects(tmp);
-
-            for(Building building : tmp){
+            for(Building building : data.buildings){
                 for(var drawer : enableBuildDrawers){
                     if(drawer.isValid()) drawer.tryDraw(building);
                 }
             }
-
-            tmp.clear();
         }
     }
 

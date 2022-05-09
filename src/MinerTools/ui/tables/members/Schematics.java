@@ -51,9 +51,9 @@ public class Schematics extends MemberTable{
         }catch(Exception e){
             ui.showException(e);
         }
-        ScrollPane pane = pane(nonePane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
+        ScrollPane pane = pane(noBarPane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
 
-        ScrollPane pane2 = pane(nonePane, tagsTable -> {
+        ScrollPane pane2 = pane(noBarPane, tagsTable -> {
             for(String tag : tags){
                 tagsTable.button(tag, togglet, () -> {
                     if(selectedTags.contains(tag)) selectedTags.remove(tag);

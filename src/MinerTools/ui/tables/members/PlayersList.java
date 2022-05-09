@@ -8,8 +8,6 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
-import mindustry.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
@@ -32,7 +30,7 @@ public class PlayersList extends MemberTable{
     public PlayersList(){
         super(Icon.players);
 
-        ScrollPane pane = pane(nonePane, playersTable).maxHeight(buttonSize * (mobile ? 5 : 8)).get();
+        ScrollPane pane = pane(noBarPane, playersTable).maxHeight(buttonSize * (mobile ? 5 : 8)).get();
         MUI.panes.add(pane);
 
         update(() -> {
@@ -43,7 +41,7 @@ public class PlayersList extends MemberTable{
             }
         });
 
-        Events.on(EventType.WorldLoadEvent.class, e -> target = null);
+        Events.on(WorldLoadEvent.class, e -> target = null);
 
         Events.run(Trigger.update, () -> {
             if(control.input instanceof DesktopInput input && !input.panning){
@@ -78,22 +76,22 @@ public class PlayersList extends MemberTable{
 
                     info.add().width(-1f).grow();
 
-                    info.button(Icon.lockOpen, clearTogglePartiali, () -> setTarget(player))
+                    info.button(Icon.lockOpen, clearNoneTogglei, () -> setTarget(player))
                     .size(buttonSize).checked(b -> {
                         b.getStyle().imageUp = target == player ? Icon.lock : Icon.lockOpen;
                         return target == player;
                     });
 
-                    info.button(Icon.list, clearPartiali, () -> MUI.showTableAt(table -> {
+                    info.button(Icon.list, clearNonei, () -> MUI.showTableAt(table -> {
                         table.background(Tex.buttonOver);
 
-                        table.button(Icon.eyeSmall, clearPartiali, () -> {
+                        table.button(Icon.eyeSmall, clearNonei, () -> {
                             ui.showConfirm("@confirm", bundle.format("confirmvoteob", player.name), () -> {
                                 Call.sendChatMessage("/vote ob " + player.name);
                             });
                         }).grow().size(buttonSize);
 
-                        table.button(Icon.hammerSmall, clearPartiali, () -> {
+                        table.button(Icon.hammerSmall, clearNonei, () -> {
                             ui.showConfirm("@confirm", bundle.format("confirmvotekick", player.name), () -> {
                                 Call.sendChatMessage("/votekick " + player.name);
                             });

@@ -91,12 +91,12 @@ public class FloatTable extends DraggableTable implements Addable{
 
             setupButtons(buttons);
 
-            buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearTogglePartiali, this::toggleLocked).checked(b -> {
+            buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearNoneTogglei, this::toggleLocked).checked(b -> {
                 b.getStyle().imageUp = (isLocked() ? Icon.lockSmall : Icon.lockOpenSmall);
                 return isLocked();
             });
 
-            buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearPartiali, this::toggleCont).update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
+            buttons.button(showCont ? Icon.upSmall : Icon.downSmall, clearNonei, this::toggleCont).update(b -> b.getStyle().imageUp = (showCont ? Icon.upSmall : Icon.downSmall));
 
             buttons.button("x", MStyles.clearPartial2t, () -> {
                 MinerVars.settings.put("floats." + name + ".shown", false);

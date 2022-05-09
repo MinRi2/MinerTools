@@ -1,8 +1,8 @@
 package MinerTools.ui.tables.members;
 
 import MinerTools.*;
-import MinerTools.ui.dialogs.*;
 import MinerTools.ui.*;
+import MinerTools.ui.dialogs.*;
 import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
@@ -13,8 +13,8 @@ import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
-import arc.struct.*;
 import arc.struct.ObjectMap.*;
+import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
@@ -69,7 +69,7 @@ public class TeamsInfo extends Table{
 
         addDivide();
 
-        ScrollPane pane = pane(nonePane, p -> main = p).fillX().left().maxHeight(135).scrollX(false).get();
+        ScrollPane pane = pane(noBarPane, p -> main = p).fillX().left().maxHeight(135).scrollX(false).get();
         MUI.panes.add(pane);
 
         main.background(black3);
@@ -96,9 +96,9 @@ public class TeamsInfo extends Table{
             buttons.defaults().height(35).growX();
 
             if(mobile){
-                buttons.button(Icon.hammer, emptytogglei, () -> control.input.isBuilding = !control.input.isBuilding)
+                buttons.button(Icon.hammer, emptyTogglei, () -> control.input.isBuilding = !control.input.isBuilding)
                 .name("stopBuilding").checked(b -> control.input.isBuilding);
-                buttons.button(Icon.distribution, emptytogglei, () -> enableUpdateConveyor = !enableUpdateConveyor)
+                buttons.button(Icon.distribution, emptyTogglei, () -> enableUpdateConveyor = !enableUpdateConveyor)
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
@@ -127,12 +127,12 @@ public class TeamsInfo extends Table{
                 table.background(black6);
                 table.defaults().grow().size(90f, 50f);
 
-                table.button(Icon.eyeSmall, clearPartiali, () -> {
+                table.button(Icon.eyeSmall, clearNonei, () -> {
                     Call.sendChatMessage("/ob");
                     table.remove();
                 }).row();
 
-                table.button(Icon.trashSmall, clearPartiali, () -> {
+                table.button(Icon.trashSmall, clearNonei, () -> {
                     Vars.ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
                         Call.sendChatMessage("/vote gameover");
                         Call.sendChatMessage("1");
@@ -147,7 +147,7 @@ public class TeamsInfo extends Table{
                     if(scene.getKeyboardFocus() != null) return;
 
                     if(input.keyDown(buildBlocks)){
-                        MinerFuncs.rebuildBlocks();
+                        rebuildBlocks();
                     }
 
                     if(timer.get(1, dropHeat) && input.keyDown(dropItem)){

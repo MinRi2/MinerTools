@@ -1,7 +1,6 @@
 package MinerTools;
 
 import MinerTools.ui.dialogs.*;
-import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.actions.*;
@@ -108,7 +107,7 @@ public class MinerFuncs{
         Table t = new Table(Styles.black3);
         t.touchable = Touchable.disabled;
 
-        Seq<UnitType> units = state.rules.bannedUnits.asArray();
+        Seq<UnitType> units = state.rules.bannedUnits.toSeq();
         if(!units.isEmpty()){
             Seq<UnitType> seq;
 
@@ -126,7 +125,7 @@ public class MinerFuncs{
             t.row();
         }
 
-        Seq<Block> blocks = state.rules.bannedBlocks.asArray();
+        Seq<Block> blocks = state.rules.bannedBlocks.toSeq();
         if(!blocks.isEmpty()){
             Seq<Block> seq;
 
@@ -144,11 +143,11 @@ public class MinerFuncs{
             t.row();
         }
 
-        t.margin(8f).update(() -> t.setPosition(Core.graphics.getWidth()/2f, Core.graphics.getHeight()/2f, Align.center));
+        t.margin(8f).update(() -> t.setPosition(graphics.getWidth()/2f, graphics.getHeight()/2f, Align.center));
         t.actions(Actions.fadeOut(8.5f, Interp.pow4In), Actions.remove());
         t.pack();
         t.act(0.1f);
-        Core.scene.add(t);
+        scene.add(t);
     }
 
     public static void rebuildBlocks(){
@@ -293,8 +292,8 @@ public class MinerFuncs{
                 int currentPlan = factoryBuild.currentPlan;
                 if(currentPlan == -1) return null;
                 return block.plans.get(currentPlan).requirements;
-            }else if(building.block.consumes.has(ConsumeType.item)){
-                Consume consume = building.block.consumes.get(ConsumeType.item);
+            }else{
+                Consume consume = building.block.findConsumer(cons -> cons instanceof ConsumeItems);
 
                 if(consume instanceof ConsumeItems consumeItems){
                     return consumeItems.items;
