@@ -154,7 +154,7 @@ public class MinerFuncs{
         if(!player.unit().canBuild()) return;
 
         int i = 0;
-        for(BlockPlan block : player.team().data().blocks){
+        for(BlockPlan block : player.team().data().plans){
             if(Mathf.len(block.x - player.tileX(), block.y - player.tileY()) >= buildingRange) continue;
             if(++i > 511) break;
             player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, content.block(block.block), block.config));
