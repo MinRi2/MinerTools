@@ -127,7 +127,7 @@ public class PowerInfo{
         var consSet = consumers.get(building.block);
         var proSet = producers.get(building.block);
 
-        ConsumePower consumePower = building.block.findConsumer(cons -> cons instanceof ConsumePower);
+        ConsumePower consumePower = building.block.consPower;
 
         if(consumePower == null){
             return;
@@ -199,7 +199,7 @@ public class PowerInfo{
     public float getConsPower(Block block){
         float sum = 0f;
         for(Building building : consumers.get(block)){
-            ConsumePower consumePower = building.block.findConsumer(cons -> cons instanceof ConsumePower);
+            ConsumePower consumePower = building.block.consPower;
 
             if(consumePower == null){
                 continue;

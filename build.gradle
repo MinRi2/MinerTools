@@ -31,7 +31,7 @@ allprojects{
 dependencies{
     implementation 'org.jetbrains:annotations:23.0.0'
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    implementation 'com.github.Anuken.MindustryJitpack:core:2f8b009dbb'
+    compileOnly 'com.github.Anuken.MindustryJitpack:core:2f8b009dbb'
 //    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 }
