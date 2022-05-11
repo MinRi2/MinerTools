@@ -10,7 +10,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
-import static mindustry.ui.Styles.clearToggleTransi;
+import static mindustry.ui.Styles.clearNoneTogglei;
 
 public class MSettingsTable extends Table implements Addable{
     public Seq<MSettingTable> settingTables = new Seq<>();
@@ -89,7 +89,7 @@ public class MSettingsTable extends Table implements Addable{
 
             t.table(buttons -> {
                 for(MSettingTable settingTable : settingTables){
-                    buttons.button(settingTable.icon, clearToggleTransi, () -> {
+                    buttons.button(settingTable.icon, clearNoneTogglei, () -> {
                         settingTableCont.clear();
 
                         if(show != settingTable){

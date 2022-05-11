@@ -1,7 +1,6 @@
 package MinerTools;
 
 import MinerTools.ui.dialogs.*;
-import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.actions.*;
@@ -108,7 +107,7 @@ public class MinerFuncs{
         Table t = new Table(Styles.black3);
         t.touchable = Touchable.disabled;
 
-        Seq<UnitType> units = state.rules.bannedUnits.asArray();
+        Seq<UnitType> units = state.rules.bannedUnits.toSeq();
         if(!units.isEmpty()){
             Seq<UnitType> seq;
 
@@ -126,7 +125,7 @@ public class MinerFuncs{
             t.row();
         }
 
-        Seq<Block> blocks = state.rules.bannedBlocks.asArray();
+        Seq<Block> blocks = state.rules.bannedBlocks.toSeq();
         if(!blocks.isEmpty()){
             Seq<Block> seq;
 
@@ -144,18 +143,18 @@ public class MinerFuncs{
             t.row();
         }
 
-        t.margin(8f).update(() -> t.setPosition(Core.graphics.getWidth()/2f, Core.graphics.getHeight()/2f, Align.center));
+        t.margin(8f).update(() -> t.setPosition(graphics.getWidth()/2f, graphics.getHeight()/2f, Align.center));
         t.actions(Actions.fadeOut(8.5f, Interp.pow4In), Actions.remove());
         t.pack();
         t.act(0.1f);
-        Core.scene.add(t);
+        scene.add(t);
     }
 
     public static void rebuildBlocks(){
         if(!player.unit().canBuild()) return;
 
         int i = 0;
-        for(BlockPlan block : player.team().data().blocks){
+        for(BlockPlan block : player.team().data().plans){
             if(Mathf.len(block.x - player.tileX(), block.y - player.tileY()) >= buildingRange) continue;
             if(++i > 511) break;
             player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, content.block(block.block), block.config));
@@ -168,7 +167,7 @@ public class MinerFuncs{
         CoreBuild core = player.closestCore();
         if(core == null && !player.unit().hasItem()) return;
 
-        boolean autoDrop = player.dst(core) <= itemTransferRange && core.items != null;
+        boolean autoDrop = player.dst(core) <= itemTransferRange && core != null && core.items != null;
 
         indexer.eachBlock(player.team(), player.x, player.y, itemTransferRange,
         building -> !blackDropBuild.contains(clazz -> clazz.isAssignableFrom(building.block.getClass())), building -> {
@@ -187,14 +186,14 @@ public class MinerFuncs{
         }
     }
 
-    private static void tryDropItem(Item item, int amount, boolean removed){
+    private static void tryDropItem(Item item, int amount){
         for(DropBuilding db : dropBuildings){
             Building build = db.building;
             if(build.acceptStack(item, amount, player.unit()) > 0){
                 Call.transferInventory(player, build);
 
                 if(!player.unit().hasItem()) break;
-                if(removed) dropBuildings.remove(db);
+                dropBuildings.remove(db);
             }
         }
 
@@ -255,7 +254,7 @@ public class MinerFuncs{
             CoreBuild core = player.closestCore();
 
             if(building.block instanceof ItemTurret block){
-                Seq<Item> items = DropSettingDialog.get((int)block.id);
+                Seq<Item> items = DropSettingDialog.get(block.name);
 
                 if(items == null) return null;
 
@@ -293,8 +292,8 @@ public class MinerFuncs{
                 int currentPlan = factoryBuild.currentPlan;
                 if(currentPlan == -1) return null;
                 return block.plans.get(currentPlan).requirements;
-            }else if(building.block.consumes.has(ConsumeType.item)){
-                Consume consume = building.block.consumes.get(ConsumeType.item);
+            }else{
+                Consume consume = building.block.findConsumer(cons -> cons instanceof ConsumeItems);
 
                 if(consume instanceof ConsumeItems consumeItems){
                     return consumeItems.items;
@@ -307,12 +306,12 @@ public class MinerFuncs{
         public static boolean drop(DropBuilding dropBuilding){
             switch(dropBuilding.status){
                 case PLAYER -> {
-                    tryDropItem(player.unit().item(), player.unit().stack.amount, true);
+                    tryDropItem(player.unit().item(), player.unit().stack.amount);
                     return true;
                 }
                 case LAST -> {
                     requestItem(lastDropItem);
-                    tryDropItem(lastDropItem, player.unit().stack.amount, true);
+                    tryDropItem(lastDropItem, player.unit().stack.amount);
                     return true;
                 }
                 case AUTO -> {
@@ -320,7 +319,7 @@ public class MinerFuncs{
                     if(dropItem == null) return false;
 
                     requestItem(dropItem);
-                    tryDropItem(dropItem, player.unit().stack.amount, true);
+                    tryDropItem(dropItem, player.unit().stack.amount);
                     return true;
                 }
             }

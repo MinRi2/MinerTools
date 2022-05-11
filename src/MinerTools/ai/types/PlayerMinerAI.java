@@ -42,7 +42,7 @@ public class PlayerMinerAI extends PlayerAI{
             return;
         }
 
-        if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.miningRange)){
+        if(unit.mineTile != null && !unit.mineTile.within(unit, unit.type.mineRange)){
             unit.mineTile(null);
         }
 
@@ -67,9 +67,9 @@ public class PlayerMinerAI extends PlayerAI{
                 }
 
                 if(ore != null){
-                    moveTo(ore, unit.type.miningRange / 2f, 20f);
+                    moveTo(ore, unit.type.mineRange / 2f, 20f);
 
-                    if(ore.block() == Blocks.air && unit.within(ore, unit.type.miningRange)){
+                    if(ore.block() == Blocks.air && unit.within(ore, unit.type.mineRange)){
                         unit.mineTile = ore;
                     }
 

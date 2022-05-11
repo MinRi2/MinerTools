@@ -33,7 +33,7 @@ public class TurretAlert extends BuildDrawer<TurretBuild>{
     public boolean isValid(TurretBuild turret){
         Turret block = (Turret)turret.block;
         return (turret.team != player.team()) && // isEnemy
-        (turret.cons.status() == BlockStatus.active && turret.hasAmmo()) && // hasAmmo
+        (turret.status() == BlockStatus.active && turret.hasAmmo()) && // hasAmmo
         (player.unit().isFlying() ? block.targetAir : block.targetGround) && // can hit player
         (turret.within(player, turretAlertRadius + block.range)); // within player
     }

@@ -58,7 +58,7 @@ public class MinerToolsTable extends Table implements Addable{
         table(t -> {
             t.collapser(teamInfo, true, () -> infoShown).right();
 
-            ImageButtonStyle style = new ImageButtonStyle(clearTogglePartiali){{
+            ImageButtonStyle style = new ImageButtonStyle(clearNoneTogglei){{
                 up = black3;
             }};
 
@@ -77,13 +77,13 @@ public class MinerToolsTable extends Table implements Addable{
                     if(!desktop && member.desktopOnly) continue;
                     if(!mobile && member.mobileOnly) continue;
 
-                    buttons.button(member.icon, clearTogglePartiali, 35, () -> setMember(member))
+                    buttons.button(member.icon, clearTogglei, 35, () -> setMember(member))
                     .checked(b -> shown == member).growY();
 
                     buttons.row();
                 }
 
-                buttons.button(Icon.none, clearTogglePartiali, 35, () -> setMember(null))
+                buttons.button(Icon.none, clearNoneTogglei, 35, () -> setMember(null))
                 .checked(b -> shown == null).growY();
             }).fillX().growY();
         }).right();

@@ -5,9 +5,7 @@ import MinerTools.ai.types.*;
 import arc.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.game.*;
-import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.ui.*;
 
@@ -46,7 +44,7 @@ public class AITable extends MemberTable{
             buttons.defaults().size(55f);
 
             for(PlayerAI ai : ais){
-                buttons.button(ai.icon, Styles.clearTogglePartiali, 50f, () -> setTarget(ai))
+                buttons.button(ai.icon, Styles.clearNoneTogglei, 50f, () -> setTarget(ai))
                 .checked(b -> target == ai);
             }
         }).right().row();
