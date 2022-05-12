@@ -19,7 +19,9 @@ import static mindustry.Vars.*;
 public class MinerTools extends Mod{
 
     public MinerTools(){
-        enableConsole = true;
+        /* Zoom */
+        renderer.minZoom = 0.4f;
+        renderer.maxZoom = 12f;
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Timer.schedule(Updater::checkUpdate, 8);
