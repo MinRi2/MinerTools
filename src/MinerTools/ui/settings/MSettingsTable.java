@@ -46,8 +46,8 @@ public class MSettingsTable extends Table implements Addable{
     }
 
     public void addSettings(){
-        game = new MSettingTable(Icon.list){{
-        }};
+        game = new MSettingTable(Icon.list){
+        };
 
         graphics = new MSettingTable(Icon.image){
             {
