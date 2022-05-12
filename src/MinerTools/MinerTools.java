@@ -21,16 +21,14 @@ public class MinerTools extends Mod{
     public MinerTools(){
         enableConsole = true;
 
-        Events.on(EventType.ContentInitEvent.class, e -> {
-            MinerVars.initContent();
-        });
-
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Timer.schedule(Updater::checkUpdate, 8);
 
             MinerVars.init();
 
             Drawer.init();
+
+            Events.on(EventType.ContentInitEvent.class, e2 -> MinerVars.initContent());
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
