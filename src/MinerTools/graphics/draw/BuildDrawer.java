@@ -7,7 +7,7 @@ import java.lang.reflect.*;
 
 public abstract class BuildDrawer<T extends Building> implements Drawable<T>{
     /* 泛型 */
-    private Class clazz;
+    private final Class<? extends Building> clazz;
 
     public BuildDrawer(){
         var clazz = this.getClass();

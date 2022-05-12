@@ -25,18 +25,18 @@ import static arc.Core.input;
 import static mindustry.Vars.*;
 
 public class Drawer{
-    private static final Seq<BuildDrawer<? extends Building>> buildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
-    private static final Seq<UnitDrawer> unitDrawers = Seq.with(new UnitAlert(), new EnemyIndicator());
+    private static final Seq<BuildDrawer<? extends Building>> allBuildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
+    private static final Seq<UnitDrawer> allUnitDrawers = Seq.with(new UnitAlert(), new EnemyIndicator());
 
     private static Seq<BuildDrawer<? extends Building>> enableBuildDrawers;
     private static Seq<UnitDrawer> enableUnitDrawers;
 
-    private static final Seq<Drawable> drawers = new Seq<>();
+    private static final Seq<Drawable<?>> drawers = new Seq<>();
 
     private static boolean drawBuilding, drawUnit;
 
     public static void init(){
-        drawers.addAll(buildDrawers).addAll(unitDrawers);
+        drawers.addAll(allBuildDrawers).addAll(allUnitDrawers);
 
         updateEnable();
 
@@ -64,10 +64,10 @@ public class Drawer{
     }
 
     public static void updateEnable(){
-        enableBuildDrawers = buildDrawers.select(Drawable::enabled);
-        enableUnitDrawers = unitDrawers.select(Drawable::enabled);
+        enableBuildDrawers = allBuildDrawers.select(Drawable::enabled);
+        enableUnitDrawers = allUnitDrawers.select(Drawable::enabled);
 
-        drawBuilding = buildDrawers.any();
+        drawBuilding = allBuildDrawers.any();
         drawUnit = enableUnitDrawers.any();
     }
 
