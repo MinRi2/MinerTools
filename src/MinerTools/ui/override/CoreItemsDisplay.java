@@ -33,14 +33,15 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private Table override;
 
     private final Table itemsInfoTable = new Table();
+    private final Table planInfoTable = new Table();
+
+    private boolean showPlanInfo;
 
     private final ObjectSet<Item> usedItems = new ObjectSet<>();
     private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
 
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
-
-    private final Table planInfoTable = new Table();
 
     private int lastTotal;
     private final ItemSeq planItems = new ItemSeq();
@@ -54,13 +55,13 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private CoreBuild core;
 
     public CoreItemsDisplay(){
-        init();
+        setup();
+
         addSettings();
 
         Events.on(ResetEvent.class, e -> resetUsed());
 
-        add(itemsInfoTable).row();
-        add(planInfoTable).fillX().padTop(2f);
+        rebuild();
     }
 
     private void addSettings(){
@@ -76,6 +77,11 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
             }
         }).change();
 
+        setting.checkPref("showPlanInfo", true, b -> {
+            showPlanInfo = b;
+            rebuild();
+        }).change();
+
         /* Add coreItems setting for mobile */
         if(mobile){
             var settings = ui.settings.graphics.getSettings();
@@ -84,7 +90,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         }
     }
 
-    private void init(){
+    private void setup(){
         override = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
         override.parent.touchable = Touchable.disabled;
         
@@ -160,6 +166,16 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
                 planItems.add(stack.item, planAmount);
             }
         });
+    }
+
+    private void rebuild(){
+        clearChildren();
+
+        add(itemsInfoTable).row();
+
+        if(showPlanInfo){
+            add(planInfoTable).fillX().padTop(2f);
+        }
     }
 
     private void rebuildItems(){
