@@ -55,15 +55,15 @@ public class MSettingsTable extends Table implements Addable{
                     drawerCheck(setting, "enemyUnitIndicator", true);
                     drawerRadiusSlider(setting, "enemyUnitIndicatorRadius", 100, 25, 250);
 
+                    drawerCheck(setting, "unitAlert", true);
+                    drawerRadiusSlider(setting, "unitAlertRadius", 10, 5, 50);
+
                     drawerCheck(setting, "unitInfoBar", true);
                 });
 
                 addCategory("build", setting -> {
                     drawerCheck(setting, "turretAlert", true);
                     drawerRadiusSlider(setting, "turretAlertRadius", 10, 5, 50);
-
-                    drawerCheck(setting, "unitAlert", true);
-                    drawerRadiusSlider(setting, "unitAlertRadius", 10, 5, 50);
 
                     drawerCheck(setting, "itemTurretAmmoShow", true);
                 });
