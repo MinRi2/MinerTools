@@ -17,6 +17,10 @@ import static mindustry.Vars.*;
 public class UnitAlert extends UnitDrawer{
     public float unitAlertRadius;
 
+    public UnitAlert(){
+        drawInCamera = false;
+    }
+
     @Override
     public void readSetting(){
         unitAlertRadius = MinerVars.settings.getInt("unitAlertRadius") * tilesize;

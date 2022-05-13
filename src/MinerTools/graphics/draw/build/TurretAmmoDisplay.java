@@ -27,11 +27,6 @@ public class TurretAmmoDisplay extends BuildDrawer<ItemTurretBuild>{
     }
 
     @Override
-    public boolean isValid(){
-        return true;
-    }
-
-    @Override
     public boolean isValid(ItemTurretBuild turret){
         return !turret.ammo.isEmpty();
     }

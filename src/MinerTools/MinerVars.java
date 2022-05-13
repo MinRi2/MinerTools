@@ -15,7 +15,7 @@ import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 
 import static arc.Core.*;
-import static mindustry.Vars.*;
+import static mindustry.Vars.content;
 
 public class MinerVars{
     public static MinerToolsSettings settings;
@@ -78,13 +78,17 @@ public class MinerVars{
         int[] lastUiScale = {Core.settings.getInt("uiscale", 100)};
         int index = Vars.ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
 
+        final boolean[] isFistChange = {true};
+
         Core.settings.put("uiscale", Core.settings.getInt("_uiscale", 100));
 
         if(index != -1){
             Vars.ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
                 //if the user changed their UI scale, but then put it back, don't consider it 'changed'
-                Core.settings.put("uiscalechanged", s != lastUiScale[0]);
+                if(!isFistChange[0]) Core.settings.put("uiscalechanged", s != lastUiScale[0]);
                 Core.settings.put("_uiscale", s);
+
+                isFistChange[0] = false;
                 return s + "%";
             }));
         }

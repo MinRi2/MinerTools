@@ -1,12 +1,11 @@
 package MinerTools.graphics.draw;
 
-import MinerTools.interfaces.*;
 import mindustry.gen.*;
 
 import java.lang.reflect.*;
 
-public abstract class BuildDrawer<T extends Building> implements Drawable<T>{
-    /* 泛型 */
+public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
+    /* The type of draw */
     private final Class<? extends Building> clazz;
 
     public BuildDrawer(){
@@ -20,7 +19,7 @@ public abstract class BuildDrawer<T extends Building> implements Drawable<T>{
     @Override
     public void tryDraw(Building type){
         if(clazz.isAssignableFrom(type.getClass())){
-            Drawable.super.tryDraw((T)type);
+            super.tryDraw((T)type);
         }
     }
 }
