@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.unit;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
@@ -15,11 +16,8 @@ public class UnitInfoBar extends UnitDrawer{
     public static float healthBarStroke = 1.7f, healthBarAlpha = 0.85f;
 
     @Override
-    public void readSetting(){}
-
-    @Override
     public boolean enabled(){
-        return true;
+        return MinerVars.settings.getBool("unitInfoBar");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package MinerTools.ui.settings;
 
 import MinerTools.*;
+import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
@@ -11,17 +12,59 @@ import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.gen.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 
 import static arc.Core.bundle;
 
 public class MSettingTable extends Table{
-    public Drawable icon;
-    private final Seq<BaseSetting> settings = new Seq<>();
+    private final Drawable icon;
+    private final String name;
 
-    public MSettingTable(Drawable icon){
+    private final Seq<BaseSetting> settings = new Seq<>();
+    private final Seq<CategorySetting> categories = new Seq<>();
+
+    public MSettingTable(Drawable icon, String name){
         this.icon = icon;
+        this.name = name;
+    }
+
+    public CategorySetting addCategory(String name){
+        return addCategory(name, categorySetting -> {});
+    }
+
+    public CategorySetting addCategory(String name, Cons<CategorySetting> cons){
+        CategorySetting category = new CategorySetting(this.name + "." + name);
+        categories.add(category);
+
+        cons.get(category);
+
+        rebuild();
+
+        return category;
+    }
+
+    protected void rebuild(){
+        clearChildren();
+
+        for(BaseSetting setting : settings){
+            setting.add(this);
+        }
+
+        row();
+
+        for(CategorySetting category : categories){
+            table(Tex.pane, t -> {
+                t.button(category.localizedName(), MStyles.clearToggleTransAccentt, category::toggle).checked(b -> category.isShown()).growX()
+                .get().getLabel().setAlignment(Align.left);
+
+                t.row();
+
+                t.collapser(category, true, category::isShown).padTop(6f).left()
+                .get().setDuration(0.2f);
+            }).padTop(5f).fillX().row();
+        }
     }
 
     public CheckSetting checkPref(String name, boolean def){
@@ -46,11 +89,31 @@ public class MSettingTable extends Table{
         return setting;
     }
 
-    protected void rebuild(){
-        clearChildren();
+    public Drawable icon(){
+        return icon;
+    }
 
-        for(BaseSetting setting : settings){
-            setting.add(this);
+    public String name(){
+        return name;
+    }
+
+    public static class CategorySetting extends MSettingTable{
+        private boolean shown = true;
+
+        public CategorySetting(String name){
+            super(null, name);
+        }
+
+        public String localizedName(){
+            return Core.bundle.format("miner-tools.setting.category." + name() + ".name");
+        }
+
+        public void toggle(){
+            shown = !shown;
+        }
+
+        public boolean isShown(){
+            return shown;
         }
     }
 
@@ -115,9 +178,8 @@ public class MSettingTable extends Table{
             table.row();
         }
 
-        public CheckSetting change(){
+        public void change(){
             changed.get(MinerVars.settings.getBool(name));
-            return this;
         }
     }
 

@@ -16,8 +16,7 @@ public class MSettingsTable extends Table implements Addable{
     private MSettingTable show;
     private final Table settingTableCont = new Table();
 
-    public MSettingTable game, graphics;
-    public CategoriesSettingTable ui;
+    public MSettingTable game, graphics, ui;
 
     public MSettingsTable(){
         addSettings();
@@ -47,36 +46,42 @@ public class MSettingsTable extends Table implements Addable{
     }
 
     public void addSettings(){
-        game = new MSettingTable(Icon.list){
+        game = new MSettingTable(Icon.list, "game"){
         };
 
-        graphics = new MSettingTable(Icon.image){
+        graphics = new MSettingTable(Icon.image, "graphics"){
             {
-                drawerCheck("enemyUnitIndicator", true);
-                drawerRadiusSlider("enemyUnitIndicatorRadius", 100, 25, 250);
+                addCategory("unit", setting -> {
+                    drawerCheck(setting, "enemyUnitIndicator", true);
+                    drawerRadiusSlider(setting, "enemyUnitIndicatorRadius", 100, 25, 250);
 
-                drawerCheck("turretAlert", true);
-                drawerRadiusSlider("turretAlertRadius", 10, 5, 50);
+                    drawerCheck(setting, "unitInfoBar", true);
+                });
 
-                drawerCheck("unitAlert", true);
-                drawerRadiusSlider("unitAlertRadius", 10, 5, 50);
+                addCategory("build", setting -> {
+                    drawerCheck(setting, "turretAlert", true);
+                    drawerRadiusSlider(setting, "turretAlertRadius", 10, 5, 50);
 
-                drawerCheck("itemTurretAmmoShow", true);
+                    drawerCheck(setting, "unitAlert", true);
+                    drawerRadiusSlider(setting, "unitAlertRadius", 10, 5, 50);
+
+                    drawerCheck(setting, "itemTurretAmmoShow", true);
+                });
             }
 
-            public void drawerCheck(String name, boolean def){
-                checkPref(name, def, b -> Drawer.updateEnable());
+            public static void drawerCheck(MSettingTable table, String name, boolean def){
+                table.checkPref(name, def, b -> Drawer.updateEnable());
             }
 
-            public void drawerRadiusSlider(String name, int def, int min, int max){
-                sliderPref(name, def, min, max, s -> {
+            public static void drawerRadiusSlider(MSettingTable table, String name, int def, int min, int max){
+                table.sliderPref(name, def, min, max, s -> {
                     Drawer.updateSettings();
                     return s + "(Tile)";
                 });
             }
         };
 
-        ui = new CategoriesSettingTable(Icon.chat);
+        ui = new MSettingTable(Icon.chat, "ui");
 
         settingTables.addAll(game, graphics, ui);
     }
@@ -90,7 +95,7 @@ public class MSettingsTable extends Table implements Addable{
 
             t.table(buttons -> {
                 for(MSettingTable settingTable : settingTables){
-                    buttons.button(settingTable.icon, clearNoneTogglei, () -> {
+                    buttons.button(settingTable.icon(), clearNoneTogglei, () -> {
                         settingTableCont.clear();
 
                         if(show != settingTable){
