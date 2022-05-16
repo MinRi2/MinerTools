@@ -125,8 +125,9 @@ public class MinerToolsSettings{
 
     private void loadSettings(){
         try{
-            Log.info("MinerToolsSettings: Trying to load settings");
+            Log.info("&lcMinerToolsSettings: Trying to load settings");
             loadSettings(settings);
+            Log.info("&lcMinerToolsSettings: Load settings successfully");
         }catch(Throwable e){
             Log.err("MinerToolsSettings: Filed to load settings: ", e);
             Log.err("MinerToolsSettings: Trying to load backup: ", e);

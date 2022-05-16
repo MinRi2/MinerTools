@@ -3,6 +3,7 @@ package MinerTools.ui;
 import MinerTools.*;
 import MinerTools.interfaces.*;
 import MinerTools.ui.override.CoreItemsDisplay;
+import MinerTools.ui.override.*;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.floats.*;
@@ -34,6 +35,7 @@ public class MUI{
 
     // Override
     public CoreItemsDisplay coreItemsDisplay;
+    public BetterInfoTable betterHover;
 
     // Settings
     public MSettingsTable minerSettings;
@@ -62,7 +64,8 @@ public class MUI{
         );
 
         overrides.addAll(
-        coreItemsDisplay = new CoreItemsDisplay()
+        coreItemsDisplay = new CoreItemsDisplay(),
+        betterHover = new BetterInfoTable()
         );
 
         addUI();

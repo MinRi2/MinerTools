@@ -25,10 +25,10 @@ public class MinerUtils{
         }
     }
 
-    public static Object setValue(Field field, Object object, Object value){
+    public static <T> T setValue(Field field, Object object, T value){
         try{
             field.set(object, value);
-            return object;
+            return value;
         }catch(Exception e){
             throw new RuntimeException(e);
         }

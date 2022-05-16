@@ -12,6 +12,16 @@ import mindustry.ui.*;
 import static arc.Core.bundle;
 
 public class ElementUtils{
+    public static Cell<?> getCell(Element element){
+        Group parent = element.parent;
+
+        if(parent instanceof Table table){
+            return table.getCell(element);
+        }
+
+        return null;
+    }
+
     public static Element addTooltip(Element element, String text, boolean allowMobile){
         return addTooltip(element, text, Align.top, allowMobile);
     }
