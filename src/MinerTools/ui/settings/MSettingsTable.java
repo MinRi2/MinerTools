@@ -70,12 +70,12 @@ public class MSettingsTable extends Table implements Addable{
             }
 
             public static void drawerCheck(MSettingTable table, String name, boolean def){
-                table.checkPref(name, def, b -> Drawer.updateEnable());
+                table.checkPref(name, def, b -> Renderer.updateEnable());
             }
 
             public static void drawerRadiusSlider(MSettingTable table, String name, int def, int min, int max){
                 table.sliderPref(name, def, min, max, s -> {
-                    Drawer.updateSettings();
+                    Renderer.updateSettings();
                     return s + "(Tile)";
                 });
             }
