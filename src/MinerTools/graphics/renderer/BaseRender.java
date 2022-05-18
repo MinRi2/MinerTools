@@ -12,14 +12,16 @@ public abstract class BaseRender<T extends Position>{
     Seq<BaseDrawer<T>> enableDrawers;
     Seq<BaseDrawer<T>> enableCameraDrawers;
 
-    public BaseRender<T> addDrawers(BaseDrawer<T>... drawers){
+    @SafeVarargs
+    public final BaseRender<T> addDrawers(BaseDrawer<T>... drawers){
         for(BaseDrawer<T> drawer : drawers){
             allDrawers.addUnique(drawer);
         }
         return this;
     }
 
-    public BaseRender<T> addCameraDrawers(BaseDrawer<T>... drawers){
+    @SafeVarargs
+    public final BaseRender<T> addCameraDrawers(BaseDrawer<T>... drawers){
         for(BaseDrawer<T> drawer : drawers){
             allCameraDrawers.addUnique(drawer);
         }

@@ -14,10 +14,6 @@ import static mindustry.Vars.*;
 public class TurretAlert extends BuildDrawer<TurretBuild>{
     public float turretAlertRadius;
 
-    public TurretAlert(){
-        drawInCamera = false;
-    }
-
     @Override
     public void readSetting(){
         turretAlertRadius = MinerVars.settings.getInt("turretAlertRadius") * tilesize;

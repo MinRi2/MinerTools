@@ -9,6 +9,7 @@ import mindustry.game.Teams.*;
 import mindustry.gen.*;
 
 public class UnitRender extends BaseRender<Unit>{
+
     @Override
     public void globalRender(Seq<BaseDrawer<Unit>> validDrawers){
         for(TeamData data : Vars.state.teams.getActive()){
@@ -30,4 +31,5 @@ public class UnitRender extends BaseRender<Unit>{
             });
         }
     }
+
 }

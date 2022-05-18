@@ -43,8 +43,8 @@ public class MinerFuncs{
     public static ObjectSet<Building> updatedBuildings = new ObjectSet<>();
 
     public static Item lastDropItem;
-    private static Seq<Class> blackDropBuild = Seq.with(StorageBlock.class, ItemBridge.class, Autotiler.class, MassDriver.class, NuclearReactor.class);
-    private static Seq<DropBuilding> dropBuildings = new Seq<>();
+    private static final Seq<Class<?>> blackDropBuild = Seq.with(StorageBlock.class, ItemBridge.class, Autotiler.class, MassDriver.class, NuclearReactor.class);
+    private static final Seq<DropBuilding> dropBuildings = new Seq<>();
 
     public static int countMiner(Team team){
         return team.data().units.count(unit -> unit.controller() instanceof MinerAI);

@@ -1,12 +1,8 @@
 package MinerTools.graphics.draw;
 
-import arc.*;
 import arc.math.geom.*;
-import arc.util.*;
 
 public abstract class BaseDrawer<T extends Position>{
-    /* Draw in camera only */
-    public boolean drawInCamera = true;
 
     /* Read some settings */
     public void readSetting(){};
@@ -29,16 +25,12 @@ public abstract class BaseDrawer<T extends Position>{
         return true;
     };
 
-    /* Return ture if the type is in camera */
-    protected boolean inCamera(T type){
-        return Core.camera.bounds(Tmp.r1).contains(Tmp.v1.set(type));
-    }
-
     /* Try to draw */
     public void tryDraw(T type){
-        if(isValid(type) && (!drawInCamera || inCamera(type))) draw(type);
+        if(isValid(type)) draw(type);
     }
 
     /* Draw */
-    public void draw(T type){};
+    public void draw(T type){}
+
 }
