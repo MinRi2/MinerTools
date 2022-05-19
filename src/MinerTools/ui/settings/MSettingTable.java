@@ -219,5 +219,9 @@ public class MSettingTable extends Table{
             addDesc(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
             table.row();
         }
+
+        public void change(){
+            sp.get(MinerVars.settings.getInt(name));
+        }
     }
 }

@@ -32,6 +32,8 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     /* For override */
     private Table override;
 
+    private int columns;
+
     private final Table itemsInfoTable = new Table();
     private final Table planInfoTable = new Table();
 
@@ -75,6 +77,12 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
             }else{
                 resetOverride();
             }
+        }).change();
+
+        setting.sliderPref("showColumns", 5, 3, 10, s -> {
+            columns = s;
+            rebuildItems();
+            return s + Core.bundle.get("column");
         }).change();
 
         setting.checkPref("showPlanInfo", true, b -> {
@@ -202,7 +210,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
                 itemsInfoTable.label(() -> "" + UI.formatAmount(core.items.get(item))).padRight(3f).minWidth(labelMinWidth).left();
 
-                if(++i % 5 == 0){
+                if(++i % columns == 0){
                     itemsInfoTable.row();
                 }
             }
@@ -215,7 +223,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
                 //TODO leaks garbage
                 itemsInfoTable.label(() -> "" + Vars.player.team().data().countType(unit)).padRight(3f).minWidth(labelMinWidth).left();
 
-                if(++i % 5 == 0){
+                if(++i % columns == 0){
                     itemsInfoTable.row();
                 }
             }
