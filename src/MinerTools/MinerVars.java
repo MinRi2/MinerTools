@@ -78,17 +78,23 @@ public class MinerVars{
         int[] lastUiScale = {Core.settings.getInt("uiscale", 100)};
         int index = Vars.ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
 
-        final boolean[] isFistChange = {true};
+        final boolean[] shouldChange = {false};
 
         Core.settings.put("uiscale", Core.settings.getInt("_uiscale", 100));
+        Core.settings.put("uiscalechanged", false);
 
         if(index != -1){
             Vars.ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
                 //if the user changed their UI scale, but then put it back, don't consider it 'changed'
-                if(!isFistChange[0]) Core.settings.put("uiscalechanged", s != lastUiScale[0]);
+                if(shouldChange[0]){
+                    Core.settings.put("uiscalechanged", s != lastUiScale[0]);
+                    Log.info("changed");
+                }else{
+                    shouldChange[0] = true;
+                }
+
                 Core.settings.put("_uiscale", s);
 
-                isFistChange[0] = false;
                 return s + "%";
             }));
         }
