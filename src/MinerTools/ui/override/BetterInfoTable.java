@@ -65,7 +65,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
         new UnitBuilder(){
             @Override
             public boolean canBuild(Unit unit){
-                return unit.type.hasWeapons();
+                return unit.type.hasWeapons() && !unit.disarmed;
             }
 
             @Override
@@ -218,7 +218,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
         if(Core.scene.hasMouse() || topTable.hit(v.x, v.y, false) != null) return null;
 
         //check for a unit
-        Unit unit = Units.closestOverlap(null, Core.input.mouseWorldX(), Core.input.mouseWorldY(), 5f, u -> !u.isLocal());
+        Unit unit = Units.closestOverlap(null, Core.input.mouseWorldX(), Core.input.mouseWorldY(), 5f, Entityc::isAdded);
         //if cursor has a unit, display it
         if(unit != null) return unit;
 
