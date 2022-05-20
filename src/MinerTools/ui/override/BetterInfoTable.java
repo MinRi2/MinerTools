@@ -133,8 +133,12 @@ public class BetterInfoTable extends Table implements OverrideUI{
             hover = blockFrag.hover();
             boolean wasHovered = MinerUtils.getValue(wasHoveredField, blockFrag);
 
-            if(wasHovered && hover != lastHover && hover instanceof Teamc teamc){
-                rebuild(teamc.team() == Vars.player.team());
+            if(wasHovered && hover != lastHover){
+                if(hover instanceof Teamc teamc){
+                    rebuild(teamc.team() == Vars.player.team());
+                }else{
+                    clearChildren();
+                }
             }
 
             lastHover = hover;
