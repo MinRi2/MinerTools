@@ -4,6 +4,7 @@ import MinerTools.*;
 import MinerTools.interfaces.*;
 import MinerTools.ui.utils.*;
 import arc.*;
+import arc.func.*;
 import arc.graphics.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
@@ -23,9 +24,8 @@ import mindustry.ui.Displayable;
 import mindustry.ui.*;
 import mindustry.ui.fragments.*;
 import mindustry.world.*;
-import mindustry.world.blocks.storage.*;
-import mindustry.world.blocks.storage.CoreBlock.*;
 import mindustry.world.blocks.units.*;
+import mindustry.world.blocks.units.Reconstructor.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.modules.*;
 
@@ -35,12 +35,15 @@ public class BetterInfoTable extends Table implements OverrideUI{
     private static final Field topTableField, hoverField, wasHoveredField, menuHoverBlockField, nextFlowBuildField;
 
     private static final Seq<BuildBuilder<? extends Block, ? extends Building>> buildBuilders = Seq.with(
-        new BuildBuilder<CoreBlock, CoreBuild>(){
+        new BuildBuilder<>(block -> block.hasItems){
             @Override
-            protected void build(Table table, CoreBuild build){
-                ItemModule items = build.items;
+            public boolean canBuild(Building build){
+                return build.items != null && build.items.any();
+            }
 
-                if(items == null) return;
+            @Override
+            protected void build(Table table, Building build){
+                ItemModule items = build.items;
 
                 table.table(Tex.pane, t -> {
                     t.table(Tex.whiteui, tt -> tt.add("Items")).color(Color.gray).growX().row();
@@ -242,12 +245,18 @@ public class BetterInfoTable extends Table implements OverrideUI{
     private static void addBars(){
         for(Block block : Vars.content.blocks()){
             block.addBar("health", e -> new Bar(
-                () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + 100 * (int)e.healthf() + "%" + ")",
+                () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
                 () -> Pal.health, e::healthf).blink(Color.white));
 
             if(block instanceof UnitFactory factory){
                 factory.addBar("progress", (UnitFactoryBuild e) -> new Bar(
-                () -> 100 * (int)(e.fraction()) + "%",
+                () -> Core.bundle.get("bar.progress") + "(" + 100 * (int)(e.fraction()) + "%" + ")",
+                () -> Pal.ammo, e::fraction));
+            }
+
+            if(block instanceof Reconstructor reconstructor){
+                reconstructor.addBar("progress", (ReconstructorBuild e) -> new Bar(
+                () -> Core.bundle.get("bar.progress") + "(" + 100 * (int)(e.fraction()) + "%" + ")",
                 () -> Pal.ammo, e::fraction));
             }
         }
@@ -274,7 +283,12 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
             blockClass = (Class<KT>)types[0];
 
-            blocks = Vars.content.blocks().select(block -> blockClass.isAssignableFrom(block.getClass()));
+            blocks = MinerVars.visibleBlocks.select(block -> blockClass.isAssignableFrom(block.getClass()));
+        }
+
+        public BuildBuilder(Boolf<Block> filter){
+            blockClass = null;
+            blocks = MinerVars.visibleBlocks.select(filter);
         }
 
         @Override
