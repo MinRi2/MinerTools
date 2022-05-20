@@ -38,7 +38,7 @@ public class MUI{
     public BetterInfoTable betterHover;
 
     // Settings
-    public MSettingsTable minerSettings;
+    public MSettingsTable settings;
 
     // MinerToolsTable
     public MinerToolsTable minerToolsTable;
@@ -55,7 +55,7 @@ public class MUI{
         MStyles.load();
 
         addableTables.addAll(
-        minerSettings = new MSettingsTable(),
+        settings = new MSettingsTable(),
         minerToolsTable = new MinerToolsTable()
         );
 

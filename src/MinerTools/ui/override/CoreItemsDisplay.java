@@ -67,7 +67,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     }
 
     private void addSettings(){
-        addSettings(MinerVars.ui.minerSettings.ui.addCategory("overrideCoreItemsDisplay"));
+        addSettings(MinerVars.ui.settings.ui.addCategory("overrideCoreItemsDisplay"));
     }
 
     private void addSettings(MSettingTable setting){

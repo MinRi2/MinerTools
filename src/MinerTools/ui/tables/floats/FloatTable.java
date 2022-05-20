@@ -51,7 +51,7 @@ public class FloatTable extends DraggableTable implements Addable{
     }
 
     protected void addSettings(){
-        addSettings(MinerVars.ui.minerSettings.ui.addCategory(name));
+        addSettings(MinerVars.ui.settings.ui.addCategory(name));
     }
 
     protected void addSettings(MSettingTable uiSettings){

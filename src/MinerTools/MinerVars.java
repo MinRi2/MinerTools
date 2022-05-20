@@ -5,14 +5,20 @@ import MinerTools.io.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.KeyBinds.*;
+import arc.graphics.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.graphics.*;
 import mindustry.type.*;
+import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.units.*;
+import mindustry.world.blocks.units.Reconstructor.*;
+import mindustry.world.blocks.units.UnitFactory.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.content;
@@ -33,7 +39,7 @@ public class MinerVars{
         settings = new MinerToolsSettings();
         ui = new MUI();
 
-        initBetterUIScaleSetting();
+        betterUIScaleSetting();
 
         desktop = app.isDesktop();
 
@@ -63,6 +69,8 @@ public class MinerVars{
             if(block instanceof ItemBridge){
                 block.allowConfigInventory = true;
             }
+
+            betterBars(block);
         }
 
         for(UnitType type : content.units()){
@@ -74,7 +82,7 @@ public class MinerVars{
         allOres.sort(item -> item.id);
     }
 
-    public static void initBetterUIScaleSetting(){
+    public static void betterUIScaleSetting(){
         int[] lastUiScale = {Core.settings.getInt("uiscale", 100)};
         int index = Vars.ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
 
@@ -114,5 +122,23 @@ public class MinerVars{
         keybinds.setDefaults(newBindings);
         Reflect.invoke(keybinds, "load");
         Reflect.invoke(Vars.ui.controls, "setup");
+    }
+
+    public static void betterBars(Block block){
+        block.addBar("health", e -> new Bar(
+        () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
+        () -> Pal.health, e::healthf).blink(Color.white));
+
+        if(block instanceof UnitFactory factory){
+            factory.addBar("progress", (UnitFactoryBuild e) -> new Bar(
+            () -> Core.bundle.get("bar.progress") + "(" + 100 * (int)(e.fraction()) + "%" + ")",
+            () -> Pal.ammo, e::fraction));
+        }
+
+        if(block instanceof Reconstructor reconstructor){
+            reconstructor.addBar("progress", (ReconstructorBuild e) -> new Bar(
+            () -> Core.bundle.get("bar.progress") + "(" + 100 * (int)(e.fraction()) + "%" + ")",
+            () -> Pal.ammo, e::fraction));
+        }
     }
 }
