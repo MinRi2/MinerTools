@@ -71,7 +71,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
                 table.table(Tex.pane, t -> {
                     t.table(Tex.whiteui, tt -> tt.add("Weapons")).color(Color.gray).growX().row();
 
-                    float iconSize = Vars.mobile ? Vars.iconMed : Vars.iconXLarge;
+                    float iconSize = Vars.mobile ? Vars.iconSmall : Vars.iconXLarge;
 
                     t.table(weaponsTable -> {
                         int index = 0;
@@ -83,11 +83,11 @@ public class BetterInfoTable extends Table implements OverrideUI{
                             label.setAlignment(Align.bottom);
 
                             weaponsTable.table(Tex.pane, weaponTable -> {
-                                weaponTable.stack(new Image(weapon.region), label).minSize(iconSize).maxWidth(100f).row();
+                                weaponTable.stack(new Image(weapon.region), label).minSize(iconSize).maxWidth(80f).row();
                                 weaponTable.add(new Bar("", Pal.ammo, () -> mount.reload / weapon.reload)).minSize(45f, 18f);
                             }).bottom().growX();
 
-                            if(++index % 3 == 0) weaponsTable.row();
+                            if(++index % 4 == 0) weaponsTable.row();
                         }
                     }).growX();
                 }).growX();
