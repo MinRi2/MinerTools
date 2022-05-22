@@ -2,6 +2,7 @@ package MinerTools.graphics.renderer;
 
 import MinerTools.graphics.draw.*;
 import arc.*;
+import arc.func.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -27,6 +28,10 @@ public class BuildRender<T extends Building> extends BaseRender<T>{
                 tiles.insert(tile);
             }
         });
+    }
+
+    public BuildRender(Boolf<Block> predicate){
+        this(Vars.content.blocks().select(predicate));
     }
 
     @Override

@@ -52,7 +52,11 @@ public class BetterInfoTable extends Table implements OverrideUI{
     buildInfo = new BaseInfoTable<Building>(){
         @Override
         public Building hovered(){
-            return Vars.world.tileWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY()).build;
+            Tile tile = Vars.world.tileWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
+
+            if(tile == null) return null;
+
+            return tile.build;
         }
 
         @Override
@@ -120,7 +124,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
                             itemTable.label(() -> UI.formatAmount(items.get(item)) + "").padLeft(3f);
                         }).growX().padLeft(4f);
 
-                        if(++index[0] % 2 == 0) itemsTable.row();
+                        if(++index[0] % 3 == 0) itemsTable.row();
                     }));
                 }).growX();
             }).growX();
@@ -152,7 +156,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
                         label.setAlignment(Align.bottom);
 
                         weaponsTable.table(Tex.pane, weaponTable -> {
-                            weaponTable.stack(new Image(weapon.region), label).minSize(iconSize).maxWidth(80f).row();
+                            weaponTable.stack(new Image(weapon.region), label).minSize(iconSize).maxSize(80f, 120f).row();
                             weaponTable.add(new Bar("", Pal.ammo, () -> mount.reload / weapon.reload)).minSize(45f, 18f);
                         }).bottom().growX();
 
@@ -326,9 +330,9 @@ public class BetterInfoTable extends Table implements OverrideUI{
             blocks = MinerVars.visibleBlocks.select(block -> blockClass.isAssignableFrom(block.getClass()));
         }
 
-        public BuildBuilder(Boolf<Block> filter){
+        public BuildBuilder(Boolf<Block> predicate){
             blockClass = null;
-            blocks = MinerVars.visibleBlocks.select(filter);
+            blocks = MinerVars.visibleBlocks.select(predicate);
         }
 
         @Override

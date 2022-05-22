@@ -35,7 +35,8 @@ public class UnitAlert extends UnitDrawer{
     @Override
     public boolean isValid(Unit unit){
         UnitType type = unit.type;
-        return (type.hasWeapons()) && // has weapons
+        return super.isValid(unit) &&
+        (type.hasWeapons()) && // has weapons
         (unit.team != player.team()) && // isEnemy
         (!state.rules.unitAmmo || unit.ammo > 0f) && // hasAmmo
         (player.unit().isFlying() ? type.targetAir : type.targetGround) && // can hit player

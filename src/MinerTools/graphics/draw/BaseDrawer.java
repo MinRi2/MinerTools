@@ -27,6 +27,7 @@ public abstract class BaseDrawer<T extends Position>{
 
     /* Try to draw */
     public void tryDraw(T type){
+        init();
         if(isValid(type)) draw(type);
     }
 

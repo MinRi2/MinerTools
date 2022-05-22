@@ -28,7 +28,8 @@ public class Renderer{
 
     public static void init(){
         allRenderer.addAll(
-        new TurretRender().addDrawers(new TurretAlert()).addCameraDrawers(new TurretAmmoDisplay()),
+        new TurretRender().addDrawers(new TurretAlert()),
+        new ItemTurretRender().addCameraDrawers(new TurretAmmoDisplay()),
         new UnitRender().addDrawers(new UnitAlert(), new EnemyIndicator()).addCameraDrawers(new UnitInfoBar())
         );
 
