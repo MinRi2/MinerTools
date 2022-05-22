@@ -24,7 +24,11 @@ public class UnitRender extends BaseRender<Unit>{
     @Override
     public void cameraRender(Seq<BaseDrawer<Unit>> validDrawers){
         for(TeamData data : Vars.state.teams.getActive()){
-            data.unitTree.intersect(Core.camera.bounds(Tmp.r1), unit -> {
+            var unitTree = data.unitTree;
+
+            if(unitTree == null) return;
+
+            unitTree.intersect(Core.camera.bounds(Tmp.r1), unit -> {
                 for(BaseDrawer<Unit> drawer : validDrawers){
                     drawer.tryDraw(unit);
                 }
