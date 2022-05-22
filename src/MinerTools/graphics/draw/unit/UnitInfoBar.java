@@ -29,17 +29,20 @@ public class UnitInfoBar extends UnitDrawer{
 
         Draw.z(Layer.flyingUnit + 0.1f);
 
-        /* Background */
-        Lines.stroke(healthBarStroke + 1.3f, unit.team().color);
-        Draw.alpha(healthBarAlpha - 0.25f);
-        Lines.line(startX, startY, endX, startY);
 
         /* HealthBar */
-        Lines.stroke(healthBarStroke, Pal.health);
-        Draw.alpha(healthBarAlpha);
-        Lines.line(startX, startY, startX + (endX - startX) * unit.healthf(), startY);
+        if(unit.health != unit.maxHealth){
+            /* Background */
+            Lines.stroke(healthBarStroke + 1.3f, unit.team().color);
+            Draw.alpha(healthBarAlpha - 0.25f);
+            Lines.line(startX, startY, endX, startY);
 
-        startY += healthBarStroke;
+            Lines.stroke(healthBarStroke, Pal.health);
+            Draw.alpha(healthBarAlpha);
+            Lines.line(startX, startY, startX + (endX - startX) * unit.healthf(), startY);
+
+            startY += healthBarStroke;
+        }
 
         Draw.color();
 
@@ -53,9 +56,10 @@ public class UnitInfoBar extends UnitDrawer{
                 Draw.alpha(healthBarAlpha);
 
                 Lines.line(startX, startY, startX + (endX - startX) * (unit.shield / forceFieldAbility.max), startY);
+                
+                startY += healthBarStroke;
             }
 
-            startY += healthBarStroke;
 
             Draw.color();
         }

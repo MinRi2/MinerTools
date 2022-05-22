@@ -35,7 +35,11 @@ public class BuildRender<T extends Building> extends BaseRender<T>{
             var buildingTypes = data.buildingTypes;
 
             for(Block type : types){
-                for(Building building : buildingTypes.get(type)){
+                var buildings = buildingTypes.get(type);
+
+                if(buildings == null) return;
+
+                for(Building building : buildings){
                     for(BaseDrawer<T> drawer : validDrawers){
                         drawer.tryDraw((T)building);
                     }
@@ -49,7 +53,7 @@ public class BuildRender<T extends Building> extends BaseRender<T>{
         tiles.intersect(Core.camera.bounds(Tmp.r1), tile -> {
             Building building = tile.build;
 
-            if(building != null){
+            if(building != null && types.contains(building.block)){
                 for(BaseDrawer<T> drawer : validDrawers){
                     drawer.tryDraw((T)building);
                 }
