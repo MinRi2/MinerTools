@@ -1,5 +1,6 @@
 package MinerTools.ui.tables.members;
 
+import MinerTools.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
@@ -23,7 +24,7 @@ public class Schematics extends MemberTable{
 
     private Table schematicsTable = new Table(black3);
 
-    private int selectedSchemCount;
+    private int selectedCount;
 
     private Seq<String> tags = new Seq<>(), selectedTags = new Seq<>();
 
@@ -46,11 +47,8 @@ public class Schematics extends MemberTable{
     }
 
     private void rebuild(){
-        try{
-            tags = (Seq<String>)tagsField.get(ui.schematics);
-        }catch(Exception e){
-            ui.showException(e);
-        }
+        tags = MinerUtils.getValue(tagsField, ui.schematics);
+
         ScrollPane pane = pane(noBarPane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
 
         ScrollPane pane2 = pane(noBarPane, tagsTable -> {
@@ -77,13 +75,13 @@ public class Schematics extends MemberTable{
     private void schematicsRebuild(){
         schematicsTable.clear();
 
-        schematicsTable.label(() -> selectedSchemCount + "/" + Vars.schematics.all().size).row();
+        schematicsTable.label(() -> selectedCount + "/" + Vars.schematics.all().size).row();
 
-        selectedSchemCount = 0;
+        selectedCount = 0;
         int i = 0;
         for(Schematic schematic : Vars.schematics.all()){
             if(selectedTags.isEmpty() || schematic.labels.containsAll(selectedTags)){
-                selectedSchemCount++;
+                selectedCount++;
 
                 schematicsTable.button(b -> {
                     b.stack(

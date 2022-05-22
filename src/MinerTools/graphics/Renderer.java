@@ -1,8 +1,9 @@
 package MinerTools.graphics;
 
-import MinerTools.graphics.draw.*;
 import MinerTools.graphics.draw.build.*;
 import MinerTools.graphics.draw.unit.*;
+import MinerTools.graphics.renderer.*;
+import MinerTools.graphics.renderer.build.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -14,7 +15,6 @@ import arc.util.pooling.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.game.EventType.*;
-import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
@@ -23,21 +23,14 @@ import mindustry.world.blocks.ConstructBlock.*;
 
 import static arc.Core.input;
 
-public class Drawer{
-    private static final Seq<BaseDrawer<?>> allDrawers = new Seq<>();
-
-    /* Drawer */
-    private static final Seq<BuildDrawer<?>> allBuildDrawers = Seq.with(new TurretAlert(), new TurretAmmoDisplay());
-    private static final Seq<UnitDrawer> allUnitDrawers = Seq.with(new UnitAlert(), new EnemyIndicator(), new UnitInfoBar());
-
-    /* Drawer that is enabled */
-    private static Seq<BuildDrawer<? extends Building>> enableBuildDrawers;
-    private static Seq<UnitDrawer> enableUnitDrawers;
-
-    private static boolean drawBuilding, drawUnit;
+public class Renderer{
+    private static final Seq<BaseRender<?>> allRenderer = new Seq<>();
 
     public static void init(){
-        allDrawers.addAll(allBuildDrawers).addAll(allUnitDrawers);
+        allRenderer.addAll(
+        new TurretRender().addDrawers(new TurretAlert()).addCameraDrawers(new TurretAmmoDisplay()),
+        new UnitRender().addDrawers(new UnitAlert()).addCameraDrawers(new UnitInfoBar())
+        );
 
         updateEnable();
 
@@ -50,25 +43,21 @@ public class Drawer{
                 drawSelect(select);
             }
 
-            drawEntity();
+            for(BaseRender<?> render : allRenderer){
+                render.render();
+            }
         });
     }
 
     public static void updateEnable(){
-        enableBuildDrawers = allBuildDrawers.select(BaseDrawer::enabled);
-        enableUnitDrawers = allUnitDrawers.select(BaseDrawer::enabled);
-
-        drawBuilding = enableBuildDrawers.any();
-        drawUnit = enableUnitDrawers.any();
+        for(BaseRender<?> render : allRenderer){
+            render.updateEnable();
+        }
     }
 
     public static void updateSettings(){
-        readSettings();
-    }
-
-    public static void readSettings(){
-        for(var drawer : allDrawers){
-            drawer.readSetting();
+        for(BaseRender<?> render : allRenderer){
+            render.updateSetting();
         }
     }
 
@@ -94,49 +83,9 @@ public class Drawer{
         return height;
     }
 
-    public static void drawEntity(){
-        Seq<TeamData> activeTeams = Vars.state.teams.getActive();
-        for(TeamData data : activeTeams){
-            if(drawBuilding) drawBuilding(data);
-            if(drawUnit) drawUnit(data);
-        }
-    }
-
     public static void drawSelect(Building building){
         if(building instanceof ConstructBuild c){
             constructInfo(c);
-        }
-    }
-
-    /* Draw Buildings */
-    private static void drawBuilding(TeamData data){
-        if(data.buildings != null){
-            var validDrawers = enableBuildDrawers.select(BaseDrawer::isValid);
-
-            for(var drawer : validDrawers){
-                drawer.init();
-            }
-
-            for(Building building : data.buildings){
-                for(var drawer : validDrawers){
-                    drawer.tryDraw(building);
-                }
-            }
-        }
-    }
-
-    /* Draw Units */
-    private static void drawUnit(TeamData data){
-        var validDrawers = enableUnitDrawers.select(BaseDrawer::isValid);
-
-        for(var drawer : validDrawers){
-            drawer.init();
-        }
-
-        for(Unit unit : data.units){
-            for(var drawer : validDrawers){
-                drawer.tryDraw(unit);
-            }
         }
     }
 

@@ -27,8 +27,6 @@ public class EnemyIndicator extends UnitDrawer{
     private Seq<CoreBuild> cores;
 
     public EnemyIndicator(){
-        drawInCamera = false;
-
         cameraPos = Core.camera.position;
 
         Events.on(EventType.WorldLoadEvent.class, e -> resetEnemyRadius());

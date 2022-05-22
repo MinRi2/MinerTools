@@ -22,17 +22,17 @@ public class DropManager{
     }
 
     public static void loadSetting(ObjectMap<String, Seq<Item>> map){
-        Fi settingf = root.child(settingName);
-        Fi backupf = root.child(settingName + ".backup");
-        if(!settingf.exists()){
-            if(backupf.exists() && backupf.file().length() > 0L){
-                readFi(backupf, map);
+        Fi settingFi = root.child(settingName);
+        Fi backupFi = root.child(settingName + ".backup");
+        if(!settingFi.exists()){
+            if(backupFi.exists() && backupFi.file().length() > 0L){
+                readFi(backupFi, map);
             }else{
                 saveDefault();
             }
             return;
         }
-        readFi(settingf, map);
+        readFi(settingFi, map);
     }
 
     public static void readFi(Fi fi, ObjectMap<String, Seq<Item>> map){

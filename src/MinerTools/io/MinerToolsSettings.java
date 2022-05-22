@@ -3,10 +3,11 @@ package MinerTools.io;
 import arc.files.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.io.*;
 
 import java.io.*;
 
-import static mindustry.Vars.modDirectory;
+import static mindustry.Vars.*;
 
 public class MinerToolsSettings{
     protected static final byte typeBool = 0, typeInt = 1, typeLong = 2, typeFloat = 3, typeString = 4;
@@ -142,24 +143,28 @@ public class MinerToolsSettings{
     private void loadSettings(Fi fi) throws IOException{
         mSettings.clear();
 
-        var reads = fi.reads();
-        int size = reads.i();
-        for(int i = 0; i < size; i++){
-            String name = reads.str();
+        try(DataInputStream reads = new DataInputStream(fi.read(Streams.defaultBufferSize))){
+            int size = reads.readInt();
+            for(int i = 0; i < size; i++){
+                String name = reads.readUTF();
 
-            byte type = reads.b();
+                byte type = reads.readByte();
 
-            Object value;
-            switch(type){
-                case typeBool -> value = reads.bool();
-                case typeInt -> value = reads.i();
-                case typeLong -> value = reads.l();
-                case typeFloat -> value = reads.f();
-                case typeString -> value = reads.str();
-                default -> throw new IOException("MinerToolsSettings: Field to load type: " + type);
+                Object value;
+                switch(type){
+                    case typeBool -> value = reads.readBoolean();
+                    case typeInt -> value = reads.readInt();
+                    case typeLong -> value = reads.readLong();
+                    case typeFloat -> value = reads.readFloat();
+                    case typeString -> value = reads.readUTF();
+                    default -> throw new IOException("MinerToolsSettings: Field to load type: " + type);
+                }
+
+                mSettings.add(new MinerSetting(name, value));
             }
-
-            mSettings.add(new MinerSetting(name, value));
+        }catch(Exception e){
+            fi.delete();
+            ui.showException(e);
         }
     }
 
