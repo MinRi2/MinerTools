@@ -1,12 +1,11 @@
 package MinerTools.graphics.renderer;
 
 import MinerTools.graphics.draw.*;
-import MinerTools.ui.settings.*;
 import arc.math.geom.*;
 import arc.struct.*;
 
 public abstract class BaseRender<T extends Position>{
-    protected final Seq<BaseDrawer<T>> allDrawers = new Seq<>();
+    protected final Seq<BaseDrawer<T>> allGlobalDrawers = new Seq<>();
     protected final Seq<BaseDrawer<T>> allCameraDrawers = new Seq<>();
 
     Seq<BaseDrawer<T>> enableDrawers;
@@ -15,7 +14,7 @@ public abstract class BaseRender<T extends Position>{
     @SafeVarargs
     public final BaseRender<T> addDrawers(BaseDrawer<T>... drawers){
         for(BaseDrawer<T> drawer : drawers){
-            allDrawers.addUnique(drawer);
+            allGlobalDrawers.addUnique(drawer);
         }
         return this;
     }
@@ -30,12 +29,12 @@ public abstract class BaseRender<T extends Position>{
     }
 
     public void updateEnable(){
-        enableDrawers = allDrawers.select(BaseDrawer::enabled);
+        enableDrawers = allGlobalDrawers.select(BaseDrawer::enabled);
         enableCameraDrawers = allCameraDrawers.select(BaseDrawer::enabled);
     }
 
     public void updateSetting(){
-        for(BaseDrawer<?> drawer : allDrawers){
+        for(BaseDrawer<?> drawer : allGlobalDrawers){
             drawer.readSetting();
         }
         for(BaseDrawer<?> drawer : allCameraDrawers){
@@ -43,11 +42,8 @@ public abstract class BaseRender<T extends Position>{
         }
     }
 
-    public void addSetting(MSettingsTable settings){
-    }
-
     public void render(){
-        if(allDrawers.any()){
+        if(allGlobalDrawers.any()){
             var validDrawers = enableDrawers.select(BaseDrawer::isValid);
 
             if(validDrawers.any()){

@@ -23,7 +23,7 @@ public class EnemyIndicator extends UnitDrawer{
 
     private float enemyRadius = defEnemyRadius;
 
-    private Vec2 cameraPos;
+    private final Vec2 cameraPos;
     private Seq<CoreBuild> cores;
 
     public EnemyIndicator(){
