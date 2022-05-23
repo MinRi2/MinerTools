@@ -13,14 +13,12 @@ import mindustry.gen.*;
 import mindustry.world.*;
 
 public class BuildRender<T extends Building> extends BaseRender<T>{
+    /* Tiles for render in camera */
+    private static QuadTree<Tile> tiles;
+
     private final Seq<Block> types;
 
-    /* Tiles for render in camera */
-    private QuadTree<Tile> tiles;
-
-    public BuildRender(Seq<Block> types){
-        this.types = types;
-
+    static {
         Events.on(WorldLoadEvent.class, e -> {
             tiles = new QuadTree<>(Vars.world.getQuadBounds(Tmp.r1));
 
@@ -28,6 +26,10 @@ public class BuildRender<T extends Building> extends BaseRender<T>{
                 tiles.insert(tile);
             }
         });
+    }
+
+    public BuildRender(Seq<Block> types){
+        this.types = types;
     }
 
     public BuildRender(Boolf<Block> predicate){
