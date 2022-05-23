@@ -18,7 +18,6 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
-import mindustry.world.blocks.storage.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
 
 import static MinerTools.MinerVars.desktop;
@@ -163,7 +162,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         float breakMultiplier = -1 * buildCostMultiplier * state.rules.deconstructRefundMultiplier;
 
         control.input.allPlans().each(plan -> {
-            if(plan.block instanceof CoreBlock || plan.block.requirements.length == 0) return;
+            if(plan.block.requirements.length == 0) return;
 
             planBlockCounter.put(plan.block, 1);
 
