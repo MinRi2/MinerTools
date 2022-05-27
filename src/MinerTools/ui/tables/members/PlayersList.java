@@ -2,6 +2,7 @@ package MinerTools.ui.tables.members;
 
 import MinerTools.*;
 import MinerTools.ui.*;
+import MinerTools.ui.tables.MembersTable.*;
 import arc.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;

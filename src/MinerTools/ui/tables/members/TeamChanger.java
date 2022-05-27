@@ -1,5 +1,6 @@
 package MinerTools.ui.tables.members;
 
+import MinerTools.ui.tables.MembersTable.*;
 import arc.scene.ui.*;
 import arc.util.*;
 import mindustry.game.*;
