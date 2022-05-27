@@ -24,7 +24,7 @@ public class PlayersList extends MemberTable{
     private int lastSize;
     private final Seq<Player> players = new Seq<>();
 
-    private Table playersTable = new Table(black3);
+    private final Table playersTable = new Table(black3);
 
     private Player target;
 
