@@ -2,7 +2,6 @@ package MinerTools.graphics.renderer;
 
 import MinerTools.graphics.draw.*;
 import arc.*;
-import arc.func.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import arc.util.*;
@@ -12,11 +11,9 @@ import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
-public class BuildRender<T extends Building> extends BaseRender<T>{
+public class BuildRender extends BaseRender<BuildDrawer<?>>{
     /* Tiles for render in camera */
     private static QuadTree<Tile> tiles;
-
-    private final Seq<Block> types;
 
     static {
         Events.on(WorldLoadEvent.class, e -> {
@@ -28,41 +25,27 @@ public class BuildRender<T extends Building> extends BaseRender<T>{
         });
     }
 
-    public BuildRender(Seq<Block> types){
-        this.types = types;
-    }
-
-    public BuildRender(Boolf<Block> predicate){
-        this(Vars.content.blocks().select(predicate));
-    }
-
     @Override
-    public void globalRender(Seq<BaseDrawer<T>> validDrawers){
+    public void globalRender(Seq<BuildDrawer<?>> validDrawers){
         for(TeamData data : Vars.state.teams.getActive()){
-            var buildingTypes = data.buildingTypes;
+            var buildings = data.buildings;
 
-            for(Block type : types){
-                var buildings = buildingTypes.get(type);
-
-                if(buildings == null) return;
-
-                for(Building building : buildings){
-                    for(BaseDrawer<T> drawer : validDrawers){
-                        drawer.tryDraw((T)building);
-                    }
+            for(Building building : buildings){
+                for(BuildDrawer<?> drawer : validDrawers){
+                    drawer.tryDraw(building);
                 }
             }
         }
     }
 
     @Override
-    public void cameraRender(Seq<BaseDrawer<T>> validDrawers){
+    public void cameraRender(Seq<BuildDrawer<?>> validDrawers){
         tiles.intersect(Core.camera.bounds(Tmp.r1), tile -> {
             Building building = tile.build;
 
-            if(building != null && types.contains(building.block)){
-                for(BaseDrawer<T> drawer : validDrawers){
-                    drawer.tryDraw((T)building);
+            if(building != null){
+                for(BuildDrawer<?> drawer : validDrawers){
+                    drawer.tryDraw(building);
                 }
             }
         });

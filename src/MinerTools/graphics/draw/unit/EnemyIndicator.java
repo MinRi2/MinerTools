@@ -67,7 +67,7 @@ public class EnemyIndicator extends UnitDrawer{
     }
 
     @Override
-    public void draw(Unit unit){
+    protected void draw(Unit unit){
         var wCores = cores.select(c -> c.within(unit, enemyRadius));
         if(wCores.isEmpty()) return;
 

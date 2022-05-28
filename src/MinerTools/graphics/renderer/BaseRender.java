@@ -1,30 +1,24 @@
 package MinerTools.graphics.renderer;
 
 import MinerTools.graphics.draw.*;
-import arc.math.geom.*;
 import arc.struct.*;
 
-public abstract class BaseRender<T extends Position>{
-    protected final Seq<BaseDrawer<T>> allGlobalDrawers = new Seq<>();
-    protected final Seq<BaseDrawer<T>> allCameraDrawers = new Seq<>();
+public abstract class BaseRender<T extends BaseDrawer<?>>{
+    protected final Seq<T> allGlobalDrawers = new Seq<>();
+    protected final Seq<T> allCameraDrawers = new Seq<>();
 
-    Seq<BaseDrawer<T>> enableDrawers;
-    Seq<BaseDrawer<T>> enableCameraDrawers;
+    Seq<T> enableDrawers;
+    Seq<T> enableCameraDrawers;
 
     @SafeVarargs
-    public final BaseRender<T> addDrawers(BaseDrawer<T>... drawers){
-        for(BaseDrawer<T> drawer : drawers){
-            allGlobalDrawers.addUnique(drawer);
-        }
+    public final BaseRender<T> addDrawers(T... drawers){
+        allGlobalDrawers.addAll(drawers);
         return this;
     }
 
     @SafeVarargs
-    public final BaseRender<T> addCameraDrawers(BaseDrawer<T>... drawers){
-        for(BaseDrawer<T> drawer : drawers){
-            allCameraDrawers.addUnique(drawer);
-        }
-
+    public final BaseRender<T> addCameraDrawers(T... drawers){
+        allCameraDrawers.addAll(drawers);
         return this;
     }
 
@@ -60,7 +54,7 @@ public abstract class BaseRender<T extends Position>{
         }
     }
 
-    public abstract void globalRender(Seq<BaseDrawer<T>> validDrawers);
+    public abstract void globalRender(Seq<T> validDrawers);
 
-    public abstract void cameraRender(Seq<BaseDrawer<T>> validDrawers);
+    public abstract void cameraRender(Seq<T> validDrawers);
 }

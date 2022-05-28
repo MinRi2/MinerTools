@@ -7,12 +7,15 @@ import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
-import mindustry.world.meta.*;
 
 import static mindustry.Vars.*;
 
 public class TurretAlert extends BuildDrawer<TurretBuild>{
     public float turretAlertRadius;
+
+    public TurretAlert(){
+        super(block -> block instanceof Turret);
+    }
 
     @Override
     public void readSetting(){
@@ -32,14 +35,15 @@ public class TurretAlert extends BuildDrawer<TurretBuild>{
     @Override
     public boolean isValid(TurretBuild turret){
         Turret block = (Turret)turret.block;
-        return (turret.team != player.team()) && // isEnemy
-        (turret.status() == BlockStatus.active && turret.hasAmmo()) && // hasAmmo
+        return super.isValid(turret) &&
+        (turret.team != player.team()) && // isEnemy
+        (turret.hasAmmo()) && // hasAmmo
         (player.unit().isFlying() ? block.targetAir : block.targetGround) && // can hit player
         (turret.within(player, turretAlertRadius + block.range)); // within player
     }
 
     @Override
-    public void draw(TurretBuild turret){
+    protected void draw(TurretBuild turret){
         Draw.z(Layer.overlayUI);
 
         Lines.stroke(1.2f, turret.team.color);

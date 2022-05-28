@@ -21,7 +21,7 @@ public class UnitInfoBar extends UnitDrawer{
     }
 
     @Override
-    public void draw(Unit unit){
+    protected void draw(Unit unit){
         float startX = unit.x - unit.hitSize / 2f, startY = unit.y + unit.hitSize / 2f;
         float endX = unit.x + unit.hitSize / 2f;
 

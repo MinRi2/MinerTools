@@ -44,7 +44,7 @@ public class UnitAlert extends UnitDrawer{
     }
 
     @Override
-    public void draw(Unit unit){
+    protected void draw(Unit unit){
         Draw.z(Layer.overlayUI);
 
         Lines.stroke(1.2f, unit.team.color);

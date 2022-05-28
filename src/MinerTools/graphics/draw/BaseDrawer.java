@@ -32,6 +32,6 @@ public abstract class BaseDrawer<T extends Position>{
     }
 
     /* Draw */
-    public void draw(T type){}
+    protected abstract void draw(T type);
 
 }

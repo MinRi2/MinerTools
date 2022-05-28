@@ -25,30 +25,28 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.modules.*;
 
-import java.lang.reflect.*;
-
 public class BetterInfoTable extends Table implements OverrideUI{
     private final BaseInfoTable<?> unitInfo, buildInfo, tileInfo;
 
     private final Seq<BaseInfoTable<?>> infoTables = Seq.with(
     unitInfo = new BaseInfoTable<Unit>(){
-            @Override
-            public Unit hovered(){
-                return Units.closestOverlap(null, Core.input.mouseWorldX(), Core.input.mouseWorldY(), 5f, Entityc::isAdded);
-            }
+        @Override
+        public Unit hovered(){
+            return Units.closestOverlap(null, Core.input.mouseWorldX(), Core.input.mouseWorldY(), 5f, Entityc::isAdded);
+        }
 
-            @Override
-            protected void build(){
-                hover.display(this);
+        @Override
+        protected void build(){
+            hover.display(this);
 
-                var builders = unitBuilders.select(unitBuilder -> unitBuilder.canBuild(hover));
-                if(builders.any()){
-                    for(var builder : builders){
-                        builder.tryBuild(row(), hover);
-                    }
+            var builders = unitBuilders.select(unitBuilder -> unitBuilder.canBuild(hover));
+            if(builders.any()){
+                for(var builder : builders){
+                    builder.tryBuild(row(), hover);
                 }
             }
-},
+        }
+    },
     buildInfo = new BaseInfoTable<Building>(){
         @Override
         public Building hovered(){
@@ -315,23 +313,9 @@ public class BetterInfoTable extends Table implements OverrideUI{
     }
 
     static abstract class BuildBuilder<KT extends Block, DT extends Building> extends BaseBarBuilder<DT>{
-        private final Class<KT> blockClass;
-
         private final Seq<Block> blocks;
 
-        public BuildBuilder(){
-            var clazz = this.getClass();
-
-            ParameterizedType type = (ParameterizedType)clazz.getGenericSuperclass();
-            Type[] types = type.getActualTypeArguments();
-
-            blockClass = (Class<KT>)types[0];
-
-            blocks = MinerVars.visibleBlocks.select(block -> blockClass.isAssignableFrom(block.getClass()));
-        }
-
         public BuildBuilder(Boolf<Block> predicate){
-            blockClass = null;
             blocks = MinerVars.visibleBlocks.select(predicate);
         }
 
