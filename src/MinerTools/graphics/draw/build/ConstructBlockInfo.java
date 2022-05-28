@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.build;
 
+import MinerTools.*;
 import MinerTools.graphics.Renderer;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
@@ -22,6 +23,11 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
             ConstructBlock[] cons = Reflect.get(ConstructBlock.class, "consBlocks");
             seq.addAll(cons);
         }));
+    }
+
+    @Override
+    public boolean enabled(){
+        return MinerVars.settings.getBool("constructBuildInfo");
     }
 
     @Override

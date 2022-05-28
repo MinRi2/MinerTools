@@ -46,8 +46,10 @@ public class TurretAlert extends BuildDrawer<TurretBuild>{
     protected void draw(TurretBuild turret){
         Draw.z(Layer.overlayUI);
 
-        Lines.stroke(1.2f, turret.team.color);
-        Lines.dashCircle(turret.x, turret.y, turret.range());
+        Lines.stroke(1.2f);
+        Drawf.dashCircle(turret.x, turret.y, turret.range(), turret.team.color);
+
+        Draw.color(turret.team.color);
 
         float dst = turret.dst(player);
         if(dst > turret.range()){

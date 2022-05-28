@@ -1,10 +1,16 @@
 package MinerTools.graphics.draw.build;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import mindustry.*;
 import mindustry.gen.*;
 
 public class BuildSelect extends BuildDrawer<Building>{
+
+    @Override
+    public boolean enabled(){
+        return MinerVars.settings.getBool("buildSelectInfo");
+    }
 
     @Override
     public boolean isValid(Building building){
@@ -14,14 +20,6 @@ public class BuildSelect extends BuildDrawer<Building>{
     @Override
     protected void draw(Building build){
         build.drawSelect();
-
-        if(!build.enabled && build.block.drawDisabled){
-            build.drawDisabled();
-        }
-
-        if(Vars.renderer.drawStatus && build.block.hasConsumers){
-            build.drawStatus();
-        }
     }
 
 }

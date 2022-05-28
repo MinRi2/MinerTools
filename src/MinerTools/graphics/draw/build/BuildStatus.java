@@ -1,10 +1,16 @@
 package MinerTools.graphics.draw.build;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import mindustry.*;
 import mindustry.gen.*;
 
 public class BuildStatus extends BuildDrawer<Building>{
+
+    @Override
+    public boolean enabled(){
+        return MinerVars.settings.getBool("buildStatus");
+    }
 
     @Override
     public boolean isValid(Building building){

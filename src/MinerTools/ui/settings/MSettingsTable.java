@@ -66,6 +66,10 @@ public class MSettingsTable extends Table implements Addable{
                     drawerRadiusSlider(setting, "turretAlertRadius", 10, 5, 50);
 
                     drawerCheck(setting, "itemTurretAmmoShow", true);
+
+                    drawerCheck(setting, "constructBuildInfo", true);
+                    drawerCheck(setting, "buildStatus", true);
+                    drawerCheck(setting, "buildSelectInfo", true);
                 });
             }
 
