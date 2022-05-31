@@ -10,6 +10,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.core.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
@@ -131,13 +132,16 @@ public class MinerVars{
 
         if(block instanceof UnitFactory factory){
             factory.addBar("progress", (UnitFactoryBuild e) -> new Bar(
-            () -> Core.bundle.get("bar.progress") + "(" + 100 * (int)(e.fraction()) + "%" + ")",
+            () -> {
+                float ticks = e.currentPlan == -1 ? 0 : (1 - e.fraction()) * factory.plans.get(e.currentPlan).time / e.timeScale();
+                return Core.bundle.get("bar.progress") + ":" + UI.formatTime(ticks) + "(" + (int)(100 * e.fraction()) + "%" + ")";
+            },
             () -> Pal.ammo, e::fraction));
         }
 
         if(block instanceof Reconstructor reconstructor){
             reconstructor.addBar("progress", (ReconstructorBuild e) -> new Bar(
-            () -> Core.bundle.get("bar.progress") + "(" + 100 * (int)(e.fraction()) + "%" + ")",
+            () -> Core.bundle.get("bar.progress") + ":" + UI.formatTime((1 - e.fraction()) * reconstructor.constructTime / e.timeScale()) + "(" + (int)(100 * e.fraction()) + "%" + ")",
             () -> Pal.ammo, e::fraction));
         }
     }
