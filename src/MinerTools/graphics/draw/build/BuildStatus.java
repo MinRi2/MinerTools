@@ -3,6 +3,7 @@ package MinerTools.graphics.draw.build;
 import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import mindustry.*;
+import mindustry.game.*;
 import mindustry.gen.*;
 
 public class BuildStatus extends BuildDrawer<Building>{
@@ -14,7 +15,7 @@ public class BuildStatus extends BuildDrawer<Building>{
 
     @Override
     public boolean isValid(Building building){
-        return super.isValid(building) && building.team != Vars.player.team();
+        return super.isValid(building) && building.team != Team.derelict && building.team != Vars.player.team();
     }
 
     @Override
