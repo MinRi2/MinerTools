@@ -46,7 +46,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
         float buildCostMultiplier = Vars.state.rules.buildCostMultiplier;
         float scl = block.size / 8f / 2f / Scl.scl(1f);
 
-        Renderer.drawText(String.format("%.2f", c.progress * 100) + "%", scl, c.x, c.y + block.size * Vars.tilesize / 2f, Pal.accent, Align.center);
+        Renderer.drawText(Strings.autoFixed(c.progress * 100, 2) + "%", scl, c.x, c.y + block.size * Vars.tilesize / 2f, Pal.accent, Align.center);
 
         float nextPad = 0f;
         for(int i = 0; i < c.current.requirements.length; i++){
@@ -59,7 +59,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
             stack.item.emoji() + (int)(c.progress * buildCostMultiplier * stack.amount) + "/"
             + (int)(buildCostMultiplier * stack.amount) + "/"
             + UI.formatAmount(core.items.get(stack.item)),
-            scl, dx, dy, hasItem ? Pal.accent : Pal.remove, Align.left);
+            scl, dx, dy, hasItem ? Pal.accent : Pal.remove, Align.left).height;
             nextPad ++;
         }
     }

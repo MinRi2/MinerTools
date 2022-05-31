@@ -14,6 +14,7 @@ import mindustry.world.blocks.payloads.*;
 
 public class UnitInfoBar extends UnitDrawer{
     public static float healthBarStroke = 1.7f, healthBarAlpha = 0.85f;
+    public static float backBarStroke = healthBarStroke + 1.3f, backBarAlpha = healthBarAlpha - 0.25f;
 
     @Override
     public boolean enabled(){
@@ -33,15 +34,15 @@ public class UnitInfoBar extends UnitDrawer{
         /* HealthBar */
         if(unit.health != unit.maxHealth){
             /* Background */
-            Lines.stroke(healthBarStroke + 1.3f, unit.team().color);
-            Draw.alpha(healthBarAlpha - 0.25f);
+            Lines.stroke(backBarStroke, unit.team().color);
+            Draw.alpha(backBarAlpha);
             Lines.line(startX, startY, endX, startY);
 
             Lines.stroke(healthBarStroke, Pal.health);
             Draw.alpha(healthBarAlpha);
             Lines.line(startX, startY, startX + (endX - startX) * unit.healthf(), startY);
 
-            startY += healthBarStroke;
+            startY += backBarStroke;
         }
 
         Draw.color();
