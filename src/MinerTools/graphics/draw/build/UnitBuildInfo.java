@@ -15,8 +15,8 @@ import mindustry.world.blocks.units.UnitBlock.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 
 public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
-    public static float proBarStroke = 1.7f, proBarAlpha = 0.75f;
-    public static float backBarStroke = proBarStroke + 1.3f, backBarAlpha = 0.1f;
+    public static float proBarStroke = 1.7f, proBarAlpha = 0.85f;
+    public static float backBarStroke = proBarStroke + 1.3f, backBarAlpha = 0.5f;
 
     public UnitBuildInfo(){
         super(block -> block instanceof UnitBlock);
