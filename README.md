@@ -12,32 +12,51 @@
      * 队伍玩家数量(Tooltip显示基础队伍规则)
      * 队伍单位显示
      * 队伍全局电量(Tooltip显示详细电量情况)
+
+       ![img.png](.github/images/img.png)
+
    * 一些有用的按钮
      * 暂停建造(**仅手机**)
      * 自动升级传送带
      * 重建方块
      * 快捷放下物品(电脑长按h可持续放下)
      * 快捷投降
+
+       ![img_2.png](.github/images/img_2.png)
+
+   * 换队/跳波器
+
+     ![img_1.png](.github/images/img_1.png)
+
    * 玩家列表
      * 所有玩家的名字
      * 可锁定玩家视角(锁定的玩家控制炮塔时,会自动调整视角)
      * 可切换到玩家视角
      * 可一键投票踢出玩家
+     
+     ![img_3.png](.github/images/img_3.png)
+
    * 快捷蓝图
+
+     ![img_4.png](.github/images/img_4.png)
+
    * 玩家AI
      * 挖矿AI
      * 跟随AI
 
-2. 聊天记录
+3. 聊天记录
    * 查询历史聊天记录
    * 可以复制聊天记录(电脑:Ctrl+单击)
 
-3. 更好的**核心资源显示**
+4. 更好的**核心资源显示**
    * 单位数量显示
    * 物品每秒变化量显示
+   * 玩家预建消耗显示
    * 可自定义的ui列数
 
-4. 更好的**信息面板**
+   ![img_5.png](.github/images/img_5.png)
+
+5. 更好的**信息面板**
    * **单位,建筑,地板信息一起显示!**
    * 单位
      * 武器冷却状态
@@ -45,6 +64,8 @@
      * 物品详情
    * 地板
      * 显示更详尽
+   
+   ![img_6.png](.github/images/img_6.png)
 
 ---
 
@@ -52,22 +73,47 @@
 * 建筑
   * 选中
     * 异队选中信息
+
+      ![img_7.png](.github/images/img_7.png)
+
     * 桥带连接详情
+
+      ![img_8.png](.github/images/img_8.png)
+
   * 建筑血条
   * 异队方块状态
+
+    ![img_9.png](.github/images/img_9.png)
+
   * 构造方块耗材信息
+
+    ![img_10.png](.github/images/img_10.png)
+
   * 附近炮塔警戒
   * 物品炮塔子弹类型显示
+
+    ![img_11.png](.github/images/img_11.png)
+
   * 单位工厂进度条
+
+    ![img_12.png](.github/images/img_12.png)
+
 * 单位
   * 单位指示器(核心危险警告)
+
+    ![img_13.png](.github/images/img_13.png)
+
   * 附近单位警戒
+
+    ![img_14.png](.github/images/img_14.png)
+
   * 单位信息条
     * 血条
     * 立场回复条
     * 单位状态条
     * 荷载条
 
+    ![img_15.png](.github/images/img_15.png)
 ---
 
 ## 其他小功能
