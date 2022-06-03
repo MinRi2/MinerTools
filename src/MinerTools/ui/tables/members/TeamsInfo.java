@@ -46,8 +46,8 @@ public class TeamsInfo extends Table{
 
     private Table main;
 
-    private Seq<TeamData> lastTeams = new Seq<>();
-    private Seq<TeamData> teams = new Seq<>();
+    private final Seq<TeamData> lastTeams = new Seq<>();
+    private final Seq<TeamData> teams = new Seq<>();
     private final Interval timer = new Interval(2);
 
     public TeamsInfo(){
