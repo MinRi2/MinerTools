@@ -1,4 +1,6 @@
-[Also try MI2-Utilities-Java!](https://github.com/BlackDeluxeCat/MI2-Utilities-Java/)
+试试[MI2-Utilities](https://github.com/BlackDeluxeCat/MI2-Utilities-Java/)!
+
+---
 
 # 功能
 
