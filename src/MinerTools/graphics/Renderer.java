@@ -1,6 +1,7 @@
 package MinerTools.graphics;
 
 import MinerTools.graphics.draw.build.*;
+import MinerTools.graphics.draw.build.select.*;
 import MinerTools.graphics.draw.unit.*;
 import MinerTools.graphics.renderer.*;
 import arc.*;
@@ -18,9 +19,14 @@ public class Renderer{
 
     public static void init(){
         allRenderer.addAll(
-        new SelectRender().addBuildDrawers(new ConstructBlockInfo(), new BuildSelect()),
-        new BuildRender().addDrawers(new TurretAlert()).addCameraDrawers(new TurretAmmoDisplay(), new BuildStatus(), new UnitBuildInfo()),
-        new UnitRender().addDrawers(new UnitAlert(), new EnemyIndicator()).addCameraDrawers(new UnitInfoBar())
+        new SelectRender()
+            .addBuildDrawers(new ConstructBlockInfo(), new BuildSelect(), new ItemBridgeSelect()),
+        new BuildRender()
+            .addDrawers(new TurretAlert())
+            .addCameraDrawers(new TurretAmmoDisplay(), new BuildStatus(), new UnitBuildInfo(), new BuildHealthBar()),
+        new UnitRender()
+            .addDrawers(new UnitAlert(), new EnemyIndicator())
+            .addCameraDrawers(new UnitInfoBar())
         );
 
         updateEnable();

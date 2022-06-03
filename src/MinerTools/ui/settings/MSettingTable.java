@@ -56,7 +56,7 @@ public class MSettingTable extends Table{
 
         for(CategorySetting category : categories){
             table(Tex.pane, t -> {
-                t.button(category.localizedName(), MStyles.clearToggleTransAccentt, category::toggle).checked(b -> category.isShown()).growX()
+                t.button(category.localizedName(), MStyles.clearToggleTranst, category::toggle).checked(b -> category.isShown()).growX()
                 .get().getLabel().setAlignment(Align.left);
 
                 t.row();

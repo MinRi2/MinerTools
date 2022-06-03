@@ -1,4 +1,4 @@
-package MinerTools.graphics.draw.build;
+package MinerTools.graphics.draw.build.select;
 
 import MinerTools.*;
 import MinerTools.graphics.draw.*;

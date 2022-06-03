@@ -30,9 +30,8 @@ public class UnitInfoBar extends UnitDrawer{
 
         Draw.z(Layer.flyingUnit + 0.1f);
 
-
         /* HealthBar */
-        if(unit.health != unit.maxHealth){
+        if(unit.damaged()){
             /* Background */
             Lines.stroke(backBarStroke, unit.team().color);
             Draw.alpha(backBarAlpha);

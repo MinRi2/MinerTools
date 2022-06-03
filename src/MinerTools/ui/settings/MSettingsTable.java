@@ -68,11 +68,17 @@ public class MSettingsTable extends Table implements Addable{
                     drawerCheck(setting, "itemTurretAmmoShow", true);
 
                     setting.addCategory("info", info -> {
-                        drawerCheck(info, "constructBuildInfo", true);
                         drawerCheck(info, "buildStatus", true);
-                        drawerCheck(info, "buildSelectInfo", true);
+                        drawerCheck(info, "buildHealthBar", true);
+
+                        drawerCheck(info, "constructBuildInfo", true);
                         drawerCheck(info, "unitBuildInfo", true);
                     });
+                });
+
+                addCategory("select", setting -> {
+                    drawerCheck(setting, "buildSelectInfo", true);
+                    drawerCheck(setting, "itemBridgeLinksShow", true);
                 });
             }
 

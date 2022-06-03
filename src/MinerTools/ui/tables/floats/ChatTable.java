@@ -144,7 +144,7 @@ public class ChatTable extends FloatTable{
 
                 table.table(MStyles.clearFlatOver, messages -> {
                     for(String msg : messageStack.messages){
-                        messages.button(msg, MStyles.clearToggleTransAccentt, () -> addSelectMessage(msg))
+                        messages.button(msg, MStyles.clearToggleTranst, () -> addSelectMessage(msg))
                         .checked(b -> selectMessages.contains(msg, true)).growX().left().padTop(2f)
                         .get().getLabel().setAlignment(Align.left);
 
