@@ -6,11 +6,13 @@ import arc.graphics.g2d.*;
 import arc.util.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.defense.turrets.*;
+import mindustry.world.blocks.defense.turrets.BaseTurret.*;
+import mindustry.world.blocks.defense.turrets.TractorBeamTurret.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
 
 import static mindustry.Vars.*;
 
-public class TurretAlert extends BuildDrawer<TurretBuild>{
+public class TurretAlert extends BuildDrawer<BaseTurretBuild>{
     public float turretAlertRadius;
 
     public TurretAlert(){
@@ -33,17 +35,31 @@ public class TurretAlert extends BuildDrawer<TurretBuild>{
     }
 
     @Override
-    public boolean isValid(TurretBuild turret){
-        Turret block = (Turret)turret.block;
-        return super.isValid(turret) &&
-        (turret.team != player.team()) && // isEnemy
-        (turret.hasAmmo()) && // hasAmmo
-        (player.unit().isFlying() ? block.targetAir : block.targetGround) && // can hit player
-        (turret.within(player, turretAlertRadius + block.range)); // within player
+    public boolean isValid(BaseTurretBuild baseTurret){
+        if(!super.isValid(baseTurret)) return false;
+
+        if(baseTurret.team == player.team()) return false;
+
+        if(!baseTurret.within(player, turretAlertRadius + baseTurret.range())) return false;
+
+        BaseTurret baseBlock = (BaseTurret)baseTurret.block;
+
+        boolean hasAmmo = false, canHitPlayer = false;
+        if(baseTurret instanceof TurretBuild turret){
+            Turret block = (Turret)baseBlock;
+            hasAmmo = turret.hasAmmo();
+            canHitPlayer = player.unit().isFlying() ? block.targetAir : block.targetGround;
+        }else if(baseTurret instanceof TractorBeamBuild turret){
+            TractorBeamTurret block = (TractorBeamTurret)baseBlock;
+            hasAmmo = turret.power.status > 0;
+            canHitPlayer = player.unit().isFlying() ? block.targetAir : block.targetGround;
+        }
+
+        return hasAmmo && canHitPlayer;
     }
 
     @Override
-    protected void draw(TurretBuild turret){
+    protected void draw(BaseTurretBuild turret){
         Draw.z(Layer.overlayUI);
 
         Lines.stroke(1.2f);
