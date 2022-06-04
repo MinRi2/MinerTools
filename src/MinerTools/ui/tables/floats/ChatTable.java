@@ -69,7 +69,7 @@ public class ChatTable extends FloatTable{
 
         messageDialog = new BaseDialog("Messages");
         messageTable = new Table(black3);
-        pane = new ScrollPane(messageTable, noBarPane);
+        pane = new ScrollPane(messageTable, nonePane);
 
         fstyle = new TextFieldStyle(areaField){{
             background = black6;
@@ -103,10 +103,10 @@ public class ChatTable extends FloatTable{
                 table.table(buttons -> {
                     buttons.defaults().width(25f).growY();
 
-                    buttons.button(Icon.modeAttackSmall, clearNonei, this::sendMessage);
-                    buttons.button(Icon.copySmall, clearNoneTogglei, this::toggleCopyMode).checked(b -> copyMode);
-                    buttons.button(Icon.upSmall, clearNonei, this::historyShiftUp);
-                    buttons.button(Icon.downSmall, clearNonei, this::historyShiftDown);
+                    buttons.button(Icon.modeAttackSmall, clearPartiali, this::sendMessage);
+                    buttons.button(Icon.copySmall, clearTogglePartiali, this::toggleCopyMode).checked(b -> copyMode);
+                    buttons.button(Icon.upSmall, clearPartiali, this::historyShiftUp);
+                    buttons.button(Icon.downSmall, clearPartiali, this::historyShiftDown);
                 }).growY();
             }
         }).growX();
@@ -118,7 +118,7 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void setupButtons(Table buttons){
-        buttons.button(Icon.chatSmall, clearNonei, () -> {
+        buttons.button(Icon.chatSmall, clearPartiali, () -> {
             rebuildDialog();
             messageDialog.show();
         });
@@ -132,7 +132,7 @@ public class ChatTable extends FloatTable{
         Table cont = messageDialog.cont;
         cont.clearChildren();
 
-        cont.pane(noBarPane, table -> {
+        cont.pane(nonePane, table -> {
             for(MessageStack messageStack : messageStacks){
                 if(!messageStack.hasMessage()){
                     continue;

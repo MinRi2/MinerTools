@@ -3,7 +3,6 @@ package MinerTools.graphics.draw;
 import MinerTools.*;
 import arc.func.*;
 import arc.struct.*;
-import mindustry.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
@@ -31,7 +30,7 @@ public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
 
     @Override
     public boolean isValid(T building){
-        return building.isValid() && !building.inFogTo(Vars.player.team());
+        return building.isValid();
     }
 
 }

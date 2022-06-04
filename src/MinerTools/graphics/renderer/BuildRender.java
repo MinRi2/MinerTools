@@ -10,17 +10,24 @@ import mindustry.game.Teams.*;
 import mindustry.gen.*;
 
 public class BuildRender extends BaseRender<BuildDrawer<?>>{
+    public static Seq<Building> tmp = new Seq<>();
 
     @Override
     public void globalRender(Seq<BuildDrawer<?>> validDrawers){
         for(TeamData data : Vars.state.teams.getActive()){
             var buildings = data.buildings;
 
-            for(Building building : buildings){
+            if(buildings == null) return;
+
+            buildings.getObjects(tmp);
+
+            for(Building building : tmp){
                 for(BuildDrawer<?> drawer : validDrawers){
                     drawer.tryDraw(building);
                 }
             }
+
+            tmp.clear();
         }
     }
 
@@ -29,11 +36,9 @@ public class BuildRender extends BaseRender<BuildDrawer<?>>{
         Rect bounds = Core.camera.bounds(Tmp.r1);
 
         for(TeamData data : Vars.state.teams.getActive()){
-            var buildingTree = data.buildingTree;
+            var buildings = data.buildings;
 
-            if(buildingTree == null) continue;
-
-            buildingTree.intersect(bounds, build -> {
+            buildings.intersect(bounds, build -> {
                 for(BuildDrawer<?> drawer : validDrawers){
                     drawer.tryDraw(build);
                 }

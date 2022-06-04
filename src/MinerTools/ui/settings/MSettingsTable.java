@@ -4,11 +4,13 @@ import MinerTools.graphics.*;
 import MinerTools.ui.tables.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 
-import static mindustry.ui.Styles.clearNoneTogglei;
+import static mindustry.ui.Styles.clearPartiali;
 
 public class MSettingsTable extends Table implements Addable{
     public Seq<MSettingTable> settingTables = new Seq<>();
@@ -26,7 +28,7 @@ public class MSettingsTable extends Table implements Addable{
 
     @Override
     public void addUI(){
-        /*Table menu = Reflect.get(Vars.ui.settings, "menu");
+        Table menu = Reflect.get(Vars.ui.settings, "menu");
         Table prefs = Reflect.get(Vars.ui.settings, "prefs");
 
         menu.row();
@@ -39,10 +41,7 @@ public class MSettingsTable extends Table implements Addable{
             if(menu.find("miner-tools-settings") == null){
                 this.addUI();
             }
-        });*/
-
-        /* Use the setting category */
-        Vars.ui.settings.addCategory("MinerTools", t -> t.add(this));
+        });
     }
 
     public void addSettings(){
@@ -111,7 +110,7 @@ public class MSettingsTable extends Table implements Addable{
 
             t.table(buttons -> {
                 for(MSettingTable settingTable : settingTables){
-                    buttons.button(settingTable.icon(), clearNoneTogglei, () -> {
+                    buttons.button(settingTable.icon(), clearPartiali, () -> {
                         settingTableCont.clear();
 
                         if(show != settingTable){

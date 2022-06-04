@@ -41,7 +41,7 @@ public class TeamChanger extends MemberTable{
         table(black6, t -> {
             int i = 0;
             for(Team team : Team.baseTeams){
-                ImageButton button = t.button(whiteui, clearNoneTogglei, 48, () -> {
+                ImageButton button = t.button(whiteui, clearTogglePartiali, 48, () -> {
                     if(net.client()){
                         if(player.admin){
                             sendChatMessage("/team " + team.id);

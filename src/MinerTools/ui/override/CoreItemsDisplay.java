@@ -161,7 +161,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         float buildCostMultiplier = state.rules.buildCostMultiplier;
         float breakMultiplier = -1 * buildCostMultiplier * state.rules.deconstructRefundMultiplier;
 
-        control.input.allPlans().each(plan -> {
+        control.input.allRequests().each(plan -> {
             if(plan.block.requirements.length == 0) return;
 
             planBlockCounter.put(plan.block, 1);

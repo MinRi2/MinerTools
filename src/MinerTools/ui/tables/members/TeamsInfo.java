@@ -69,7 +69,7 @@ public class TeamsInfo extends Table{
 
         addDivide();
 
-        ScrollPane pane = pane(noBarPane, p -> main = p).fillX().left().maxHeight(135).scrollX(false).get();
+        ScrollPane pane = pane(nonePane, p -> main = p).fillX().left().maxHeight(135).scrollX(false).get();
         MUI.panes.add(pane);
 
         main.background(black3);
@@ -96,9 +96,9 @@ public class TeamsInfo extends Table{
             buttons.defaults().height(35).growX();
 
             if(mobile){
-                buttons.button(Icon.hammer, emptyTogglei, () -> control.input.isBuilding = !control.input.isBuilding)
+                buttons.button(Icon.hammer, emptytogglei, () -> control.input.isBuilding = !control.input.isBuilding)
                 .name("stopBuilding").checked(b -> control.input.isBuilding);
-                buttons.button(Icon.distribution, emptyTogglei, () -> enableUpdateConveyor = !enableUpdateConveyor)
+                buttons.button(Icon.distribution, emptytogglei, () -> enableUpdateConveyor = !enableUpdateConveyor)
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
@@ -127,12 +127,12 @@ public class TeamsInfo extends Table{
                 table.background(black6);
                 table.defaults().grow().size(90f, 50f);
 
-                table.button(Icon.eyeSmall, clearNonei, () -> {
+                table.button(Icon.eyeSmall, clearPartiali, () -> {
                     Call.sendChatMessage("/ob");
                     table.remove();
                 }).row();
 
-                table.button(Icon.trashSmall, clearNonei, () -> {
+                table.button(Icon.trashSmall, clearPartiali, () -> {
                     Vars.ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
                         Call.sendChatMessage("/vote gameover");
                         Call.sendChatMessage("1");

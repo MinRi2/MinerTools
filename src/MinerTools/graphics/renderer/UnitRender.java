@@ -26,17 +26,15 @@ public class UnitRender extends BaseRender<UnitDrawer>{
     public void cameraRender(Seq<UnitDrawer> validDrawers){
         Rect bounds = Core.camera.bounds(Tmp.r1);
 
-        for(TeamData data : Vars.state.teams.getActive()){
-            var unitTree = data.unitTree;
+        QuadTree<Unit> unitTree = Groups.unit.tree();
 
-            if(unitTree == null) return;
+        if(unitTree == null) return;
 
-            unitTree.intersect(bounds, unit -> {
-                for(UnitDrawer drawer : validDrawers){
-                    drawer.tryDraw(unit);
-                }
-            });
-        }
+        unitTree.intersect(bounds, unit -> {
+            for(UnitDrawer drawer : validDrawers){
+                drawer.tryDraw(unit);
+            }
+        });
     }
 
 }

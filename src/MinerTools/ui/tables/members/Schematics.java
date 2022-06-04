@@ -50,9 +50,9 @@ public class Schematics extends MemberTable{
     private void rebuild(){
         tags = MinerUtils.getValue(tagsField, ui.schematics);
 
-        ScrollPane pane = pane(noBarPane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
+        ScrollPane pane = pane(nonePane, schematicsTable).maxHeight(imageSize * 2.5f).top().get();
 
-        ScrollPane pane2 = pane(noBarPane, tagsTable -> {
+        ScrollPane pane2 = pane(nonePane, tagsTable -> {
             for(String tag : tags){
                 tagsTable.button(tag, togglet, () -> {
                     if(selectedTags.contains(tag)) selectedTags.remove(tag);

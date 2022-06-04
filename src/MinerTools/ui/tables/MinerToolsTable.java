@@ -74,13 +74,13 @@ public class MinerToolsTable extends MembersTable{
 
                     if(!member.canShown()) continue;
 
-                    buttons.button(member.icon, clearNoneTogglei, 35, () -> setMember(member))
+                    buttons.button(member.icon, clearTogglePartiali, 35, () -> setMember(member))
                     .checked(b -> memberManager.isShown(member)).growY();
 
                     buttons.row();
                 }
 
-                buttons.button(Icon.none, clearNoneTogglei, 35, () -> setMember(null))
+                buttons.button(Icon.none, clearTogglePartiali, 35, () -> setMember(null))
                 .checked(b -> !memberManager.isShown()).growY();
             }).fillX().growY();
         }).right();

@@ -26,7 +26,7 @@ public class BuildStatus extends BuildDrawer<Building>{
 
         build.drawTeam();
 
-        if(Vars.renderer.drawStatus && build.block.hasConsumers){
+        if(Vars.renderer.drawStatus && build.block.consumes.any()){
             build.drawStatus();
         }
     }

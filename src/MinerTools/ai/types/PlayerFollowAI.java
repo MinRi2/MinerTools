@@ -22,7 +22,7 @@ public class PlayerFollowAI extends PlayerAI{
     public PlayerFollowAI(){
         super(new TextureRegionDrawable(UnitTypes.oct.uiIcon));
 
-        pane = new ScrollPane(playerSelect = new Table(), Styles.noBarPane);
+        pane = new ScrollPane(playerSelect = new Table(), Styles.nonePane);
 
         MUI.panes.add(pane);
 
@@ -46,7 +46,7 @@ public class PlayerFollowAI extends PlayerAI{
             moveTo(follow, follow.unit().hitSize() + 10 * Vars.tilesize, 20f);
         }else{
             if(unit.mineTile != null){
-                circle(unit.mineTile, unit.type.mineRange / 2f, 0.5f);
+                circle(unit.mineTile, unit.type.miningRange / 2f, 0.5f);
             }else{
                 circle(follow, follow.unit().hitSize() + 10 * Vars.tilesize, 0.5f);
             }

@@ -42,7 +42,7 @@ public class MStyles{
             down = flatDown;
         }};
 
-        rclearTransi = new ImageButtonStyle(clearNonei){{
+        rclearTransi = new ImageButtonStyle(clearPartiali){{
             up = none;
         }};
 

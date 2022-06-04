@@ -4,7 +4,6 @@ import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.*;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
@@ -48,8 +47,8 @@ public class UnitInfoBar extends UnitDrawer{
 
         /* Shield Bar */
         var abilities = unit.abilities;
-        if(abilities.length > 0){
-            Ability ability = Structs.find(abilities, a -> a instanceof ForceFieldAbility);
+        if(abilities.size > 0){
+            Ability ability = abilities.find(a -> a instanceof ForceFieldAbility);
 
             if(ability instanceof ForceFieldAbility forceFieldAbility){
                 Lines.stroke(healthBarStroke, Pal.shield);

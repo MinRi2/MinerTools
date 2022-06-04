@@ -21,6 +21,7 @@ import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.Reconstructor.*;
 import mindustry.world.blocks.units.UnitFactory.*;
+import mindustry.world.meta.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.content;
@@ -133,12 +134,14 @@ public class MinerVars{
     }
 
     public static void betterBars(Block block){
-        block.addBar("health", e -> new Bar(
+        BlockBars bars = block.bars;
+
+        bars.add("health", e -> new Bar(
         () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
         () -> Pal.health, e::healthf).blink(Color.white));
 
         if(block instanceof UnitFactory factory){
-            factory.addBar("progress", (UnitFactoryBuild e) -> new Bar(
+            bars.add("progress", (UnitFactoryBuild e) -> new Bar(
             () -> {
                 float ticks = e.currentPlan == -1 ? 0 : (1 - e.fraction()) * factory.plans.get(e.currentPlan).time / e.timeScale();
                 return Core.bundle.get("bar.progress") + ":" + UI.formatTime(ticks) + "(" + (int)(100 * e.fraction()) + "%" + ")";
@@ -147,7 +150,7 @@ public class MinerVars{
         }
 
         if(block instanceof Reconstructor reconstructor){
-            reconstructor.addBar("progress", (ReconstructorBuild e) -> new Bar(
+            bars.add("progress", (ReconstructorBuild e) -> new Bar(
             () -> Core.bundle.get("bar.progress") + ":" + UI.formatTime((1 - e.fraction()) * reconstructor.constructTime / e.timeScale()) + "(" + (int)(100 * e.fraction()) + "%" + ")",
             () -> Pal.ammo, e::fraction));
         }
