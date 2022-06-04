@@ -94,6 +94,13 @@ public class MinerVars{
         Core.settings.put("uiscalechanged", false);
 
         if(index != -1){
+            Vars.ui.settings.graphics.getSettings().add(new Setting("rebuildListener"){
+                @Override
+                public void add(SettingsTable table){
+                    shouldChange[0] = false;
+                }
+            });
+
             Vars.ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
                 //if the user changed their UI scale, but then put it back, don't consider it 'changed'
                 if(shouldChange[0]){
@@ -106,13 +113,6 @@ public class MinerVars{
 
                 return s + "%";
             }));
-
-            Vars.ui.settings.graphics.getSettings().insert(0, new Setting("rebuildListener"){
-                @Override
-                public void add(SettingsTable table){
-                    shouldChange[0] = false;
-                }
-            });
         }
         Vars.ui.settings.graphics.rebuild();
 
