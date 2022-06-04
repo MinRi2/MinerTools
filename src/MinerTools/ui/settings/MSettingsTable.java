@@ -10,7 +10,7 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
-import static mindustry.ui.Styles.clearPartiali;
+import static mindustry.ui.Styles.*;
 
 public class MSettingsTable extends Table implements Addable{
     public Seq<MSettingTable> settingTables = new Seq<>();
@@ -110,7 +110,7 @@ public class MSettingsTable extends Table implements Addable{
 
             t.table(buttons -> {
                 for(MSettingTable settingTable : settingTables){
-                    buttons.button(settingTable.icon(), clearPartiali, () -> {
+                    buttons.button(settingTable.icon(), clearTogglePartiali, () -> {
                         settingTableCont.clear();
 
                         if(show != settingTable){

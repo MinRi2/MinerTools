@@ -158,7 +158,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
                             weaponTable.add(new Bar("", Pal.ammo, () -> mount.reload / weapon.reload)).minSize(45f, 18f);
                         }).bottom().growX();
 
-                        if(++index % 4 == 0) weaponsTable.row();
+                        if(++index % 3 == 0) weaponsTable.row();
                     }
                 }).growX();
             }).growX();
@@ -168,7 +168,6 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
     /* For reset override */
     private Table topTable;
-    private Stack mainStack;
     private Boolp oldVisible;
     private Cell<?> topTableCell, oldCell;
 
@@ -211,7 +210,6 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
     public void initOverride(){
         topTable = Reflect.get(Vars.ui.hudfrag.blockfrag, "topTable");
-        mainStack = Reflect.get(Vars.ui.hudfrag.blockfrag, "mainStack");
     }
 
     public void tryToggleOverride(){
@@ -244,12 +242,6 @@ public class BetterInfoTable extends Table implements OverrideUI{
                 t.add(this).growX();
             }));
         }
-
-        Cell<?> mainStackCell = ElementUtils.getCell(mainStack);
-        if(mainStackCell != null){
-            oldCell = new Cell<>().set(mainStackCell);
-            mainStackCell.set(new Cell<>().colspan(3).right());
-        }
     }
 
     @Override
@@ -260,13 +252,6 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
         if(topTableCell != null){
             topTableCell.setElement(topTable);
-        }
-
-        if(mainStack != null){
-            Cell<?> mainStackCell = ElementUtils.getCell(mainStack);
-            if(mainStackCell != null){
-                mainStackCell.set(oldCell);
-            }
         }
     }
 

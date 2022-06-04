@@ -9,6 +9,8 @@ import mindustry.type.*;
 import mindustry.world.blocks.defense.turrets.*;
 import mindustry.world.blocks.defense.turrets.ItemTurret.*;
 
+import java.lang.reflect.*;
+
 import static mindustry.Vars.tilesize;
 
 
@@ -16,6 +18,11 @@ import static mindustry.Vars.tilesize;
  * 炮塔子弹类型显示
  */
 public class TurretAmmoDisplay extends BuildDrawer<ItemTurretBuild>{
+    private static Field itemField;
+
+    static{
+        itemField = MinerUtils.getField(ItemEntry.class, "item");
+    }
 
     public TurretAmmoDisplay(){
         super(block -> block instanceof ItemTurret);
@@ -39,7 +46,7 @@ public class TurretAmmoDisplay extends BuildDrawer<ItemTurretBuild>{
         ItemTurret block = (ItemTurret)turret.block;
         ItemEntry entry = (ItemEntry)turret.ammo.peek();
 
-        Item item = entry.item;
+        Item item = MinerUtils.getValue(itemField, entry);
 
         Draw.z(Layer.turret + 0.1f);
 

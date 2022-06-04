@@ -107,7 +107,7 @@ public class MinerFuncs{
         Table t = new Table(Styles.black3);
         t.touchable = Touchable.disabled;
 
-        Seq<UnitType> units = state.rules.bannedUnits.toSeq();
+        Seq<UnitType> units = state.rules.bannedUnits.asArray();
         if(!units.isEmpty()){
             Seq<UnitType> seq;
 
@@ -125,7 +125,7 @@ public class MinerFuncs{
             t.row();
         }
 
-        Seq<Block> blocks = state.rules.bannedBlocks.toSeq();
+        Seq<Block> blocks = state.rules.bannedBlocks.asArray();
         if(!blocks.isEmpty()){
             Seq<Block> seq;
 
