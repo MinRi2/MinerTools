@@ -19,7 +19,7 @@ version: 1.6.5
 hidden: true
 
 #the minimum game build required to run this mod
-minGameVersion: 135.1
+minGameVersion: 135
 
 #this is a java mod
 java: true
