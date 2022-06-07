@@ -1,7 +1,7 @@
 package MinerTools.graphics.draw.build;
 
 import MinerTools.*;
-import MinerTools.graphics.Renderer;
+import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.layout.*;
@@ -46,7 +46,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
         float buildCostMultiplier = Vars.state.rules.buildCostMultiplier;
         float scl = block.size / 8f / 2f / Scl.scl(1f);
 
-        Renderer.drawText(Strings.autoFixed(c.progress * 100, 2) + "%", scl, c.x, c.y + block.size * Vars.tilesize / 2f, Pal.accent, Align.center);
+        MDrawf.drawText(Strings.autoFixed(c.progress * 100, 2) + "%", scl, c.x, c.y + block.size * Vars.tilesize / 2f, Pal.accent, Align.center);
 
         float nextPad = 0f;
         for(int i = 0; i < c.current.requirements.length; i++){
@@ -55,7 +55,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
             float dx = c.x - (block.size * Vars.tilesize) / 2f, dy = c.y - (block.size * Vars.tilesize) / 2f + nextPad;
             boolean hasItem = (1.0f - c.progress) * buildCostMultiplier * stack.amount <= core.items.get(stack.item);
 
-            nextPad += Renderer.drawText(
+            nextPad += MDrawf.drawText(
             stack.item.emoji() + (int)(c.progress * buildCostMultiplier * stack.amount) + "/"
             + (int)(buildCostMultiplier * stack.amount) + "/"
             + UI.formatAmount(core.items.get(stack.item)),

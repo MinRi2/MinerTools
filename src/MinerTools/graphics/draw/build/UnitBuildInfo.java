@@ -7,7 +7,6 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.Reconstructor.*;
@@ -43,32 +42,26 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
             conTime = (1 - reconBuild.fraction()) * reconstructor.constructTime / reconBuild.timeScale();
         }
 
-        float size = block.size * Vars.tilesize;
+        float size = build.hitSize();
 
         float startX = build.x - size / 2f + 5f;
         float startY = build.y + size / 2f - 5f;
 
         float endX = startX + size - 5f * 2;
 
-        float drawX = startX + (endX - startX) * fraction;
-
         Draw.z(Layer.power + 1f);
 
-        // Background bar
-        Lines.stroke(backBarStroke, build.team.color);
-        Draw.alpha(backBarAlpha);
-        Lines.line(startX, startY, endX, startY);
-
-        // Process bar
-        Lines.stroke(proBarStroke, Pal.accent);
-        Draw.alpha(proBarAlpha);
-        Lines.line(startX, startY, drawX, startY);
+        float drawX = MDrawf.drawProgressBar(
+            startX, startY, endX, startY, fraction,
+            backBarStroke, backBarAlpha, build.team.color,
+            proBarStroke, proBarAlpha, Pal.accent
+        );
 
         startY += backBarStroke;
 
         float scl = block.size / 8f / 2f / Scl.scl(1f);
 
-        Renderer.drawText(Strings.autoFixed(conTime / 60f, 1) + "s", scl, drawX, startY, Color.white, Align.center);
+        MDrawf.drawText(Strings.autoFixed(conTime / 60f, 1) + "s", scl, drawX, startY, Color.white, Align.center);
 
         Draw.reset();
     }
