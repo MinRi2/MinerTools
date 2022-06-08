@@ -1,6 +1,5 @@
 package MinerTools.graphics.draw.build;
 
-import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
@@ -16,11 +15,6 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
 
     public UnitAssemblerInfo(){
         super(block -> block instanceof UnitAssembler);
-    }
-
-    @Override
-    public boolean enabled(){
-        return MinerVars.settings.getBool("unitBuildInfo");
     }
 
     @Override
