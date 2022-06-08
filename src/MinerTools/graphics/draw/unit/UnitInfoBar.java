@@ -1,10 +1,12 @@
 package MinerTools.graphics.draw.unit;
 
 import MinerTools.*;
+import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.struct.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -31,16 +33,13 @@ public class UnitInfoBar extends UnitDrawer{
 
         /* HealthBar */
         if(unit.damaged()){
-            /* Background */
-            Lines.stroke(backBarStroke, unit.team().color);
-            Draw.alpha(backBarAlpha);
-            Lines.line(startX, startY, endX, startY);
+            MDrawf.drawProgressBar(
+                startX, startY, endX, startY, unit.healthf(),
+                backBarStroke, backBarAlpha, unit.team().color,
+                healthBarStroke, healthBarAlpha, Pal.health
+            );
 
-            Lines.stroke(healthBarStroke, Pal.health);
-            Draw.alpha(healthBarAlpha);
-            Lines.line(startX, startY, startX + (endX - startX) * unit.healthf(), startY);
-
-            startY += backBarStroke;
+            startY += backBarStroke + 0.5f;
         }
 
         Draw.color();
@@ -51,16 +50,27 @@ public class UnitInfoBar extends UnitDrawer{
             Ability ability = abilities.find(a -> a instanceof ForceFieldAbility);
 
             if(ability instanceof ForceFieldAbility forceFieldAbility){
-                Lines.stroke(healthBarStroke, Pal.shield);
-                Draw.alpha(healthBarAlpha);
-
-                Lines.line(startX, startY, startX + (endX - startX) * (unit.shield / forceFieldAbility.max), startY);
+                MDrawf.drawProgressBar(
+                    startX, startY, endX, startY, unit.shield / forceFieldAbility.max,
+                    backBarStroke, backBarAlpha, unit.team().color,
+                    healthBarStroke, healthBarAlpha, Pal.shield
+                );
                 
-                startY += healthBarStroke;
+                startY += healthBarStroke + 0.5f;
             }
 
 
             Draw.color();
+        }
+
+        if(unit.canDrown() && unit.drownTime != 0f){
+            MDrawf.drawProgressBar(
+                startX, startY, endX, startY, (1f - unit.drownTime),
+                backBarStroke, backBarAlpha, unit.team().color,
+                healthBarStroke, healthBarAlpha, Liquids.water.color
+            );
+
+            startY += healthBarStroke + 0.5f;
         }
 
         /* Status */

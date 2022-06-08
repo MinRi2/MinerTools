@@ -47,8 +47,8 @@ public class UnitAlert extends UnitDrawer{
     protected void draw(Unit unit){
         Draw.z(Layer.overlayUI);
 
-        Lines.stroke(1.2f, unit.team.color);
-        Lines.dashCircle(unit.x, unit.y, unit.range());
+        Lines.stroke(1.2f);
+        Drawf.dashCircle(unit.x, unit.y, unit.range(), unit.team().color);
 
         float dst = unit.dst(player);
         if(dst > unit.range()){
