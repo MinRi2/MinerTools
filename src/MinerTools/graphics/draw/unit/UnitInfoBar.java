@@ -7,6 +7,7 @@ import arc.graphics.g2d.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.content.*;
 import mindustry.entities.abilities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
@@ -39,7 +40,7 @@ public class UnitInfoBar extends UnitDrawer{
                 healthBarStroke, healthBarAlpha, Pal.health
             );
 
-            startY += backBarStroke + 0.5;
+            startY += backBarStroke + 0.5f;
         }
 
         Draw.color();
@@ -56,11 +57,21 @@ public class UnitInfoBar extends UnitDrawer{
                     healthBarStroke, healthBarAlpha, Pal.shield
                 );
                 
-                startY += healthBarStroke;
+                startY += healthBarStroke + 0.5f;
             }
 
 
             Draw.color();
+        }
+
+        if(unit.canDrown() && unit.drownTime != 0f){
+            MDrawf.drawProgressBar(
+                startX, startY, endX, startY, (1f - unit.drownTime),
+                backBarStroke, backBarAlpha, unit.team().color,
+                healthBarStroke, healthBarAlpha, Liquids.water.color
+            );
+
+            startY += healthBarStroke + 0.5f;
         }
 
         /* Status */
