@@ -131,7 +131,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
     );
 
     private static final Seq<UnitBuilder> unitBuilders = Seq.with(
-    new UnitBuilder(){
+    /* Weapons */ new UnitBuilder(){
         @Override
         public boolean canBuild(Unit unit){
             return unit.type.hasWeapons() && !unit.disarmed;
@@ -159,6 +159,47 @@ public class BetterInfoTable extends Table implements OverrideUI{
                         }).bottom().growX();
 
                         if(++index % 4 == 0) weaponsTable.row();
+                    }
+                }).growX();
+            }).growX();
+        }
+    },
+    /* Status */ new UnitBuilder(){
+        @Override
+        public boolean canBuild(Unit unit){
+            return !unit.statusBits().isEmpty();
+        }
+
+        @Override
+        protected void build(Table table, Unit unit){
+            Bits status = unit.statusBits();
+
+            table.table(Tex.pane, t -> {
+                t.table(Tex.whiteui, tt -> tt.add("Status")).color(Color.gray).growX().row();
+
+                float iconSize = Vars.mobile ? Vars.iconSmall : Vars.iconXLarge;
+
+                t.table(statusTable -> {
+                    int index = 0;
+                    for(StatusEffect effect : Vars.content.statusEffects()){
+                        if(!status.get(effect.id)) continue;
+
+                        float duration = unit.getDuration(effect);
+
+                        Label label;
+                        if(Float.isInfinite(duration)){
+                            label = new Label(() -> "[red]Inf");
+                        }else{
+                            label = new Label(() -> String.format("%.1f", duration) + "s");
+                        }
+
+                        label.setAlignment(Align.bottom);
+
+                        statusTable.table(Tex.pane2, stateTable -> {
+                            stateTable.stack(new Image(effect.uiIcon), label).size(iconSize).row();
+                        }).bottom().growX();
+
+                        if(++index % 4 == 0) statusTable.row();
                     }
                 }).growX();
             }).growX();

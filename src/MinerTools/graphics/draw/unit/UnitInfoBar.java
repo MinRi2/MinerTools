@@ -83,9 +83,9 @@ public class UnitInfoBar extends UnitDrawer{
 
             int index = 0;
             for(StatusEffect effect : Vars.content.statusEffects()){
-                if(applied.get(effect.id) && !effect.isHidden()){
+                if(applied.get(effect.id)){
                     Draw.color(effect.color);
-                    Draw.rect(effect.fullIcon, startX + (index++ * iconSize), startY, iconSize, iconSize);
+                    Draw.rect(effect.uiIcon, startX + (index++ * iconSize), startY, iconSize, iconSize);
                 }
             }
 
