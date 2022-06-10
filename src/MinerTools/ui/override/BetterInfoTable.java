@@ -184,13 +184,11 @@ public class BetterInfoTable extends Table implements OverrideUI{
                     for(StatusEffect effect : Vars.content.statusEffects()){
                         if(!status.get(effect.id)) continue;
 
-                        float duration = unit.getDuration(effect);
-
                         Label label;
-                        if(Float.isInfinite(duration)){
+                        if(Float.isInfinite(unit.getDuration(effect))){
                             label = new Label(() -> "[red]Inf");
                         }else{
-                            label = new Label(() -> String.format("%.1f", duration) + "s");
+                            label = new Label(() -> String.format("%.1f", unit.getDuration(effect)) + "s");
                         }
 
                         label.setAlignment(Align.bottom);
