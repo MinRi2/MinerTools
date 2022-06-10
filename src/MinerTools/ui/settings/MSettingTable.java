@@ -31,7 +31,8 @@ public class MSettingTable extends Table{
     }
 
     public CategorySetting addCategory(String name){
-        return addCategory(name, categorySetting -> {});
+        return addCategory(name, categorySetting -> {
+        });
     }
 
     public CategorySetting addCategory(String name, Cons<CategorySetting> cons){
@@ -54,16 +55,20 @@ public class MSettingTable extends Table{
 
         row();
 
-        for(CategorySetting category : categories){
-            table(Tex.pane, t -> {
-                t.button(category.localizedName(), MStyles.clearToggleTranst, category::toggle).checked(b -> category.isShown()).growX()
-                .get().getLabel().setAlignment(Align.left);
+        if(categories.any()){
+            for(CategorySetting category : categories){
+                table(t -> {
+                    t.button(category.localizedName(), MStyles.clearToggleTranst, category::toggle)
+                     .checked(b -> category.isShown()).growX();
 
-                t.row();
+                    t.row();
 
-                t.collapser(category, true, category::isShown).padTop(6f).left()
-                .get().setDuration(0.2f);
-            }).padTop(5f).fillX().row();
+                    t.table(Tex.pane2, tt -> {
+                        tt.collapser(category, true, category::isShown).padTop(2f).top()
+                          .get().setDuration(0.4f);
+                    }).fillX();
+                }).padTop(5f).fillX().row();
+            }
         }
     }
 

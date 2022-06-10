@@ -53,10 +53,10 @@ public class MStyles{
         }};
 
         clearToggleTranst = new TextButtonStyle(defaultt){{
-            up = none;
+            up = whiteuiRegion.tint(Color.gray);
             over = flatOver;
-            down = whiteuiRegion.tint(Pal.gray);
-            checked = whiteuiRegion.tint(Pal.gray);
+            down = transAccentDrawable;
+            checked = transAccentDrawable;
         }};
 
         noneField = new TextFieldStyle(defaultField){{

@@ -47,6 +47,8 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
 
         float scl = block.size / 8f / 2f / Scl.scl(1f);
         MDrawf.drawText(Strings.autoFixed((1 - fraction)  * build.plan().time / 60, 1) + "s", scl, startX + size / 2, startY);
+
+        Draw.reset();
     }
 
 }
