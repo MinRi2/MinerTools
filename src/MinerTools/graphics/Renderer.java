@@ -17,7 +17,7 @@ public class Renderer{
             .addBuildDrawers(new ConstructBlockInfo(), new BuildSelect(), new ItemBridgeSelect()),
         new BuildRender()
             .addDrawers(new TurretAlert())
-            .addCameraDrawers(new TurretAmmoDisplay(), new BuildStatus(), new UnitBuildInfo(), new BuildHealthBar(), new UnitAssemblerInfo()),
+            .addCameraDrawers(new TurretAmmoDisplay(), new BuildStatus(), new UnitBuildInfo(), new BuildHealthBar()),
         new UnitRender()
             .addDrawers(new UnitAlert(), new EnemyIndicator())
             .addCameraDrawers(new UnitInfoBar())
