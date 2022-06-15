@@ -85,11 +85,21 @@ public class MStats{
     public abstract static class StatAdder<T extends UnlockableContent> extends StatValueOverrider<T>{
 
         public StatAdder(String name){
-            super(new MStat(name));
+            this(name, StatCat.general);
         }
 
         public StatAdder(String name, StatCat category){
-            super(new MStat(name, category));
+            super(getStat(name, category));
+        }
+
+        private static Stat getStat(String name, StatCat category){
+            Stat stat = Stat.all.find(s -> s.name.equals(name));
+
+            if(stat == null){
+                return new MStat(name, category);
+            }
+
+            return stat;
         }
 
     }
