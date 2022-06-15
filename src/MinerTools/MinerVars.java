@@ -2,25 +2,20 @@ package MinerTools;
 
 import MinerTools.input.*;
 import MinerTools.io.*;
+import MinerTools.override.*;
+import MinerTools.override.stats.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.KeyBinds.*;
-import arc.graphics.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.core.*;
-import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.blocks.units.Reconstructor.*;
-import mindustry.world.blocks.units.UnitFactory.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.content;
@@ -72,13 +67,16 @@ public class MinerVars{
                 block.allowConfigInventory = true;
             }
 
-            betterBars(block);
+            Bars.override(block);
+            MStats.block.override(block);
         }
 
         for(UnitType type : content.units()){
             if(!type.isHidden()){
                 visibleUnits.add(type);
             }
+
+            MStats.unit.override(type);
         }
 
         allOres.sort(item -> item.id);
@@ -130,26 +128,5 @@ public class MinerVars{
         keybinds.setDefaults(newBindings);
         Reflect.invoke(keybinds, "load");
         Reflect.invoke(Vars.ui.controls, "setup");
-    }
-
-    public static void betterBars(Block block){
-        block.addBar("health", e -> new Bar(
-        () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
-        () -> Pal.health, e::healthf).blink(Color.white));
-
-        if(block instanceof UnitFactory factory){
-            factory.addBar("progress", (UnitFactoryBuild e) -> new Bar(
-            () -> {
-                float ticks = e.currentPlan == -1 ? 0 : (1 - e.fraction()) * factory.plans.get(e.currentPlan).time / e.timeScale();
-                return Core.bundle.get("bar.progress") + ":" + UI.formatTime(ticks) + "(" + (int)(100 * e.fraction()) + "%" + ")";
-            },
-            () -> Pal.ammo, e::fraction));
-        }
-
-        if(block instanceof Reconstructor reconstructor){
-            reconstructor.addBar("progress", (ReconstructorBuild e) -> new Bar(
-            () -> Core.bundle.get("bar.progress") + ":" + UI.formatTime((1 - e.fraction()) * reconstructor.constructTime / e.timeScale()) + "(" + (int)(100 * e.fraction()) + "%" + ")",
-            () -> Pal.ammo, e::fraction));
-        }
     }
 }
