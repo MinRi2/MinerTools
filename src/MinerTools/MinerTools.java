@@ -6,7 +6,6 @@ import MinerTools.ui.*;
 import arc.*;
 import arc.input.*;
 import arc.util.*;
-import mindustry.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
@@ -34,8 +33,6 @@ public class MinerTools extends Mod{
             MinerVars.init();
 
             Renderer.init();
-
-            Vars.ui.database.show();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
