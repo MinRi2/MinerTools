@@ -9,7 +9,6 @@ import mindustry.ui.*;
 
 public class MDrawf{
 
-
     public static Rect drawText(String text, float scl, float dx, float dy){
         return drawText(text, scl, dx, dy, Align.center);
     }
