@@ -9,17 +9,19 @@ import mindustry.world.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.Reconstructor.*;
 import mindustry.world.blocks.units.UnitFactory.*;
+import mindustry.world.meta.*;
 
 public class Bars{
 
     public static void override(Block block){
+        BlockBars bars = block.bars;
 
-        block.addBar("health", e -> new Bar(
+        bars.add("health", e -> new Bar(
         () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
         () -> Pal.health, e::healthf).blink(Color.white));
 
         if(block instanceof UnitFactory factory){
-            block.addBar("progress", (UnitFactoryBuild e) -> new Bar(
+            bars.add("progress", (UnitFactoryBuild e) -> new Bar(
             () -> {
                 float ticks = e.currentPlan == -1 ? 0 : (1 - e.fraction()) * factory.plans.get(e.currentPlan).time / e.timeScale();
                 return Core.bundle.get("bar.progress") + ":" + UI.formatTime(ticks) + "(" + (int)(100 * e.fraction()) + "%" + ")";
@@ -28,7 +30,7 @@ public class Bars{
         }
 
         if(block instanceof Reconstructor reconstructor){
-            block.addBar("progress", (ReconstructorBuild e) -> new Bar(
+            bars.add("progress", (ReconstructorBuild e) -> new Bar(
             () -> Core.bundle.get("bar.progress") + ":" + UI.formatTime((1 - e.fraction()) * reconstructor.constructTime / e.timeScale()) + "(" + (int)(100 * e.fraction()) + "%" + ")",
             () -> Pal.ammo, e::fraction));
         }

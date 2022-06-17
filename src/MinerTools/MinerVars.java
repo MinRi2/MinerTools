@@ -3,7 +3,6 @@ package MinerTools;
 import MinerTools.input.*;
 import MinerTools.io.*;
 import MinerTools.override.*;
-import MinerTools.override.stats.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.KeyBinds.*;
@@ -68,15 +67,12 @@ public class MinerVars{
             }
 
             Bars.override(block);
-            MStats.block.override(block);
         }
 
         for(UnitType type : content.units()){
             if(!type.isHidden()){
                 visibleUnits.add(type);
             }
-
-            MStats.unit.override(type);
         }
 
         allOres.sort(item -> item.id);
