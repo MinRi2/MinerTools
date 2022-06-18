@@ -1,4 +1,4 @@
-name: AutoUpload
+name: autoReleaseUpload
 
 on:
   push:
@@ -13,7 +13,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set up PATH
       run: |
-        echo "tag ${CI_COMMIT_REF_NAME}"
         echo "${ANDROID_HOME}/build-tools/30.0.1" >> $GITHUB_PATH
     - name: Set up JDK 17
       uses: actions/setup-java@v1
@@ -22,10 +21,9 @@ jobs:
     - name: Build mod jar
       run: ./gradlew deploy
 
-    - name: Upload artifacts
+    - name: Upload
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.TOKEN }}
         file: build/libs/${{ github.event.repository.name }}.jar
-        tag: ${{ CI_COMMIT_REF_NAME }}
-
+        tag: ${{ github.ref }}
