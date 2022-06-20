@@ -55,10 +55,12 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
             float dx = c.x - (block.size * Vars.tilesize) / 2f, dy = c.y - (block.size * Vars.tilesize) / 2f + nextPad;
             boolean hasItem = (1.0f - c.progress) * buildCostMultiplier * stack.amount <= core.items.get(stack.item);
 
+            int needAmount = (int)(c.progress * buildCostMultiplier * stack.amount);
+            int invertAmount = (int)(buildCostMultiplier * stack.amount);
+            int coreAmount = core.items.get(stack.item);
+
             nextPad += MDrawf.drawText(
-            stack.item.emoji() + (int)(c.progress * buildCostMultiplier * stack.amount) + "/"
-            + (int)(buildCostMultiplier * stack.amount) + "/"
-            + UI.formatAmount(core.items.get(stack.item)),
+            stack.item.emoji() + needAmount + "/" + invertAmount + "/" + UI.formatAmount(coreAmount),
             scl, dx, dy, hasItem ? Pal.accent : Pal.remove, Align.left).height;
             nextPad ++;
         }
