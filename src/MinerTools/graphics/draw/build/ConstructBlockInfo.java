@@ -39,8 +39,8 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
     protected void draw(ConstructBuild c){
         CoreBuild core = c.core();
 
-        // Above flying Unit
-        Draw.z(Layer.flyingUnit + 0.1f);
+        // Above building
+        Draw.z(Layer.blockBuilding + 0.1f);
 
         ConstructBlock block = (ConstructBlock)c.block;
         float buildCostMultiplier = Vars.state.rules.buildCostMultiplier;
