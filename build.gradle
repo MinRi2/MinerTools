@@ -23,7 +23,7 @@ ext{
     output = System.getenv("AppData") + "/mindustry/mods"
 }
 
-//java 16 backwards compatibility flag
+//java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
         options.compilerArgs.addAll(['--release', '16'])

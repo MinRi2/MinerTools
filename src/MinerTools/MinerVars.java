@@ -24,21 +24,23 @@ public class MinerVars{
     public static MinerToolsSettings settings;
     public static MUI ui;
 
+    public static BlockFinder finder;
+
     public static boolean desktop;
 
     public static Seq<UnitType> visibleUnits = new Seq<>();
     public static Seq<Block> visibleBlocks = new Seq<>();
     public static Seq<Item> allOres = new Seq<>();
 
-    public static boolean enableUpdateConveyor;
-
     public static void init(){
         settings = new MinerToolsSettings();
         ui = new MUI();
 
-        betterUIScaleSetting();
+        finder = new BlockFinder();
 
         desktop = app.isDesktop();
+
+        betterUIScaleSetting();
 
         // update controls
         if(desktop){

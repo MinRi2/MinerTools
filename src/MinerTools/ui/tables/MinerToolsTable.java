@@ -16,7 +16,7 @@ public class MinerToolsTable extends MembersTable{
     private boolean showInfo = true;
 
     public MinerToolsTable(){
-        addMember(new TeamChanger(), new PlayersList(), new Schematics(), new AITable());
+        addMember(new TeamChanger(), new PlayersList(), new Schematics(), new AITable(), new FinderTable());
 
         setup();
     }
@@ -70,6 +70,8 @@ public class MinerToolsTable extends MembersTable{
             t.table(memberManager::setContainer).fillX().top();
 
             t.table(black3, buttons -> {
+
+                int index = 0;
                 for(MemberTable member : memberManager.getMemberTables()){
 
                     if(!member.canShown()) continue;
@@ -77,7 +79,7 @@ public class MinerToolsTable extends MembersTable{
                     buttons.button(member.icon, clearNoneTogglei, 35, () -> setMember(member))
                     .checked(b -> memberManager.isShown(member)).growY();
 
-                    buttons.row();
+                    if(++index % 2 == 0) buttons.row();
                 }
 
                 buttons.button(Icon.none, clearNoneTogglei, 35, () -> setMember(null))

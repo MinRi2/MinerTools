@@ -46,6 +46,8 @@ public class MinerFuncs{
     private static final Seq<Class<?>> blackDropBuild = Seq.with(StorageBlock.class, ItemBridge.class, Autotiler.class, MassDriver.class, NuclearReactor.class);
     private static final Seq<DropBuilding> dropBuildings = new Seq<>();
 
+    public static boolean enableUpdateConveyor;
+
     public static int countMiner(Team team){
         return team.data().units.count(unit -> unit.controller() instanceof MinerAI);
     }
