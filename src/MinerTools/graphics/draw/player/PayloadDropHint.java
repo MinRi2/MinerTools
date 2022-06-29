@@ -1,5 +1,6 @@
 package MinerTools.graphics.draw.player;
 
+import MinerTools.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -13,6 +14,11 @@ import mindustry.world.*;
 import mindustry.world.blocks.payloads.*;
 
 public class PayloadDropHint extends PlayerDrawer{
+
+    @Override
+    public boolean enabled(){
+        return MinerVars.settings.getBool("payloadDropHint");
+    }
 
     @Override
     public boolean isValid(Player player){

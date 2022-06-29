@@ -26,21 +26,6 @@ public class MSettingsTable extends Table implements Addable{
 
     @Override
     public void addUI(){
-        /*Table menu = Reflect.get(Vars.ui.settings, "menu");
-        Table prefs = Reflect.get(Vars.ui.settings, "prefs");
-
-        menu.row();
-        menu.button("MinerTools", Styles.cleart, () -> {
-            prefs.clearChildren();
-            prefs.add(this);
-        }).name("miner-tools-settings");
-
-        menu.update(() -> {
-            if(menu.find("miner-tools-settings") == null){
-                this.addUI();
-            }
-        });*/
-
         /* Use the setting category */
         Vars.ui.settings.addCategory("MinerTools", t -> t.add(this));
     }
@@ -79,6 +64,11 @@ public class MSettingsTable extends Table implements Addable{
                 addCategory("select", setting -> {
                     drawerCheck(setting, "buildSelectInfo", true);
                     drawerCheck(setting, "itemBridgeLinksShow", true);
+                });
+
+                addCategory("player", setting -> {
+                    drawerCheck(setting, "payloadDropHint", true);
+                    drawerCheck(setting, "playerRange", true);
                 });
             }
 
