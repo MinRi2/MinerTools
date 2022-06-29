@@ -1,11 +1,9 @@
 package MinerTools;
 
-import org.jetbrains.annotations.*;
-
 import java.lang.reflect.*;
 
 public class MinerUtils{
-    public static @NotNull Field getField(Class<?> clazz, String name){
+    public static Field getField(Class<?> clazz, String name){
         try{
             Field field = clazz.getDeclaredField(name);
             field.setAccessible(true);
@@ -15,7 +13,7 @@ public class MinerUtils{
         }
     }
 
-    public static @NotNull Field getField(Object object, String name){
+    public static Field getField(Object object, String name){
         try{
             Field field = object.getClass().getDeclaredField(name);
             field.setAccessible(true);

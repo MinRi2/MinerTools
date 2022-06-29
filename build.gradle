@@ -19,29 +19,30 @@ repositories{
 
 ext{
     //the build number that this mod is made for
+    mindustryVersion = 'v135'
+    jabelVersion = "0.7.0"
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
-    output = System.getenv("AppData") + "/mindustry/mods"
 }
 
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--release', '16'])
+        options.compilerArgs.addAll(['--release', '8'])
     }
 }
 
 dependencies{
-    implementation 'org.jetbrains:annotations:23.0.0'
+    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+
     compileOnly 'com.github.Anuken.Arc:arc-core:dfcb21ce56'
     compileOnly 'com.github.Anuken.MindustryJitpack:core:c68e206e8a'
-//    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 }
 
 task jarAndroid{
     dependsOn "jar"
 
     doLast{
-        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.");
+        if(!sdkRoot || !new File(sdkRoot).exists()) throw new GradleException("No valid Android SDK found. Ensure that ANDROID_HOME is set to your Android SDK directory.")
 
         def platformRoot = new File("$sdkRoot/platforms/").listFiles().sort().reverse().find{ f -> new File(f, "android.jar").exists()}
 
@@ -52,7 +53,7 @@ task jarAndroid{
 
         //dex and desugar files - this requires d8 in your PATH
         "d8 $dependencies --min-api 14 --output ${project.archivesBaseName}Android.jar ${project.archivesBaseName}Desktop.jar"
-            .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
+                .execute(null, new File("$buildDir/libs")).waitForProcessOutput(System.out, System.err)
     }
 }
 

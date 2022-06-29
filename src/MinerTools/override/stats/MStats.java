@@ -32,7 +32,6 @@ public class MStats{
             map.get(value.stat, Seq::new).add(value);
         }
 
-        @SafeVarargs
         public final void addValues(BaseOverrider<T>... values){
             for(BaseOverrider<T> value : values){
                 addValue(value);
