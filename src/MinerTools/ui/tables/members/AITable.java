@@ -11,10 +11,10 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 
 public class AITable extends MemberTable{
-    private PlayerAI[] ais = new PlayerAI[]{new PlayerMinerAI(), new PlayerFollowAI()};
+    private final PlayerAI[] ais = new PlayerAI[]{new PlayerMinerAI(), new PlayerFollowAI()};
     private PlayerAI target;
 
-    private Table displayTable = new Table(Styles.black6);
+    private final Table displayTable = new Table(Styles.black6);
 
     public AITable(){
         super(Icon.android);

@@ -210,6 +210,8 @@ public class BetterInfoTable extends Table implements OverrideUI{
     private Boolp oldVisible;
     private Cell<?> topTableCell, oldCell;
 
+    private boolean locked;
+
     public BetterInfoTable(){
         /* PlacementFragment rebuild event */
         Events.on(WorldLoadEvent.class, event -> Core.app.post(this::tryOverride));
@@ -228,6 +230,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
     private void addSetting(){
         MinerVars.ui.settings.ui.addCategory("overrideInfoTable", setting -> {
             setting.checkPref("overrideInfoTable", true, b -> tryToggleOverride());
+            setting.checkPref("hover-locked", false, b -> locked = !locked).change();
         });
     }
 
@@ -241,7 +244,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
         for(BaseInfoTable<?> table : infoTables){
             table.update();
 
-            if(table.shouldAdd()){
+            if(locked || table.shouldAdd()){
                 add(table).margin(6).growX().row();
             }
         }
