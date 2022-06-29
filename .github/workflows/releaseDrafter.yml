@@ -1,10 +1,6 @@
 name: Release Drafter
 
-on:
-  push:
-    # Draft when tag is drafted
-    tags:
-      - 'v*'
+on: [push, workflow_dispatch]
 
 permissions:
   contents: read
