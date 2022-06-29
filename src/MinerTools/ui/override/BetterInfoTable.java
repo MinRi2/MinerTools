@@ -208,7 +208,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
     /* For reset override */
     private Table topTable;
     private Boolp oldVisible;
-    private Cell<?> topTableCell, oldCell;
+    private Cell<?> topTableCell;
 
     private boolean locked;
 

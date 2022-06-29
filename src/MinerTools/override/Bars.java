@@ -4,22 +4,18 @@ import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.util.*;
+import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.heat.*;
-import mindustry.world.blocks.heat.HeatProducer.*;
-import mindustry.world.blocks.power.*;
-import mindustry.world.blocks.power.NuclearReactor.*;
-import mindustry.world.blocks.production.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.Reconstructor.*;
 import mindustry.world.blocks.units.UnitFactory.*;
-import mindustry.world.meta.*;
 import mindustry.world.consumers.*;
+import mindustry.world.meta.*;
 
 public class Bars{
 
@@ -32,14 +28,6 @@ public class Bars{
 
         if(block.hasLiquids){
             addLiquidBars(block);
-
-            if(block instanceof GenericCrafter crafter && crafter.outputLiquids != null){
-                crafter.removeBar("liquid");
-
-                for(var stack : crafter.outputLiquids){
-                    addLiquidBar(crafter, stack.liquid);
-                }
-            }
         }
 
         if(block instanceof UnitFactory factory){
@@ -56,61 +44,30 @@ public class Bars{
             () -> Core.bundle.get("bar.progress") + ":" + UI.formatTime((1 - e.fraction()) * reconstructor.constructTime / e.timeScale()) + "(" + (int)(100 * e.fraction()) + "%" + ")",
             () -> Pal.ammo, e::fraction));
         }
-
-        if(block instanceof HeatProducer producer){
-            producer.addBar("heat", (HeatProducerBuild e) -> new Bar(
-            () -> Core.bundle.format("bar.heatamount", (int)e.heat),
-            () -> Pal.lightOrange, () -> e.heat / producer.heatOutput)
-            );
-        }
-
-        if(block instanceof NuclearReactor reactor){
-            reactor.addBar("heat", (NuclearReactorBuild e) -> new Bar(
-            () -> Core.bundle.format("bar.heatamount", Strings.autoFixed(e.heat, 2)),
-            () -> Pal.lightOrange, () -> e.heat));
-        }
     }
 
     private static void addLiquidBars(Block block){
-        boolean added = false;
-        for(var consume : block.consumers){
-            if(consume instanceof ConsumeLiquid liq){
-                added = true;
-                addLiquidBar(block, liq.liquid);
-            }else if(consume instanceof ConsumeLiquids multi){
-                added = true;
-                for(var stack : multi.liquids){
-                    addLiquidBar(block, stack.liquid);
+        if(block.hasLiquids){
+            Func<Building, Liquid> current;
+            if(block.consumes.has(ConsumeType.liquid) && block.consumes.get(ConsumeType.liquid) instanceof ConsumeLiquid consumeLiquid){
+                Liquid liquid = consumeLiquid.liquid;
+                current = entity -> liquid;
+            }else{
+                current = entity -> entity.liquids == null ? Liquids.water : entity.liquids.current();
+            }
+            block.bars.add("liquid", e -> new Bar(
+            () -> {
+                Liquid liquid = current.get(e);
+                float amount = e.liquids.get(liquid);
+                if(amount <= 0.001f){
+                    return Core.bundle.get("bar.liquid");
+                }else{
+                    return current.get(e).localizedName + ":" + Strings.autoFixed(amount, 2);
                 }
-            }
+            },
+            () -> current.get(e).barColor(),
+            () -> e == null || e.liquids == null ? 0f : e.liquids.get(current.get(e)) / block.liquidCapacity));
         }
-
-        //nothing was added, so it's safe to add a dynamic liquid bar (probably?)
-        if(!added){
-            addLiquidBar(block, build -> build.liquids.current());
-        }
-    }
-
-    private static void addLiquidBar(Block block, Liquid liq){
-        block.addBar("liquid-" + liq.name, e -> new Bar(
-        () -> liq.localizedName + ": " + Strings.autoFixed(e.liquids.get(liq), 2),
-        liq::barColor,
-        () -> e.liquids.get(liq) / block.liquidCapacity
-        ));
-    }
-
-    private static <T extends Building> void addLiquidBar(Block block, Func<T, Liquid> current){
-        block.addBar("liquid", e -> new Bar(
-        () -> {
-            if(current.get((T)e) == null || e.liquids.get(current.get((T)e)) <= 0.001f){
-                return Core.bundle.get("bar.liquid");
-            }
-            Liquid liq = current.get((T)e);
-            return liq.localizedName + ": " + Strings.autoFixed(e.liquids.get(liq), 2);
-        },
-        () -> current.get((T)e) == null ? Color.clear : current.get((T)e).barColor(),
-        () -> current.get((T)e) == null ? 0f : e.liquids.get(current.get((T)e)) / block.liquidCapacity)
-        );
     }
 
 }
