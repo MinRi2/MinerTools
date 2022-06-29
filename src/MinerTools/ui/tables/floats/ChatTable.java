@@ -3,6 +3,7 @@ package MinerTools.ui.tables.floats;
 import MinerTools.ui.*;
 import MinerTools.ui.settings.*;
 import arc.*;
+import arc.flabel.*;
 import arc.graphics.*;
 import arc.input.*;
 import arc.math.*;
@@ -12,6 +13,7 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.Timer;
 import arc.util.*;
+import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.ui.dialogs.*;
@@ -60,7 +62,11 @@ public class ChatTable extends FloatTable{
             Timer.schedule(this::scrollToBottom, 1f);
         });
 
-        Timer.schedule(() -> messageStacks.add(new MessageStack()), 0f, 60f);
+        Timer.schedule(() ->{
+            if(Vars.state.isGame()){
+                messageStacks.add(new MessageStack());
+            }
+        }, 0f, 60f);
     }
 
     @Override
@@ -217,7 +223,11 @@ public class ChatTable extends FloatTable{
     }
 
     private void addMessage(String msg){
-        Label label = messageTable.labelWrap(msg).growX().left().get();
+        Label label = new FLabel(msg);
+
+        label.setWrap(true);
+
+        messageTable.add(label).growX().left();
 
         if(desktop){
             /* Ctrl + MouseLeft --> copy the message */
