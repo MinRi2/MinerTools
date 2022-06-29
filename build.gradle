@@ -4,7 +4,7 @@ version '1.0'
 
 //compile java 16 code, targeting java 8
 targetCompatibility = 8
-sourceCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_16
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
@@ -26,7 +26,7 @@ ext{
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--release', '17'])
+        options.compilerArgs.addAll(['--release', '11'])
     }
 }
 
