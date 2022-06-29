@@ -11,10 +11,12 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
+import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.core.*;
 import mindustry.ctype.*;
 import mindustry.entities.*;
+import mindustry.entities.abilities.*;
 import mindustry.entities.units.*;
 import mindustry.game.EventType.*;
 import mindustry.game.*;
@@ -23,7 +25,10 @@ import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.logic.LogicBlock.*;
 import mindustry.world.modules.*;
+
+import static mindustry.Vars.*;
 
 public class BetterInfoTable extends Table implements OverrideUI{
     private final BaseInfoTable<?> unitInfo, buildInfo, tileInfo;
@@ -37,7 +42,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
         @Override
         protected void build(){
-            hover.display(this);
+            unitDisplay(hover, this);
 
             var builders = unitBuilders.select(unitBuilder -> unitBuilder.canBuild(hover));
             if(builders.any()){
@@ -309,6 +314,72 @@ public class BetterInfoTable extends Table implements OverrideUI{
             if(mainStackCell != null){
                 mainStackCell.set(oldCell);
             }
+        }
+    }
+
+    public static void unitDisplay(Unit unit, Table table){
+        UnitType type = unit.type;
+
+        table.table(t -> {
+            t.left();
+            t.add(new Image(type.uiIcon)).size(iconMed).scaling(Scaling.fit);
+            t.labelWrap(type.localizedName).left().width(190f).padLeft(5);
+        }).growX().left();
+        table.row();
+
+        table.table(bars -> {
+            bars.defaults().growX().height(20f).pad(4);
+
+            //TODO overlay shields
+            bars.add(new Bar(
+            () -> unit.health + "/" + type.health + "(" + (int)(unit.healthf() * 100) + "%" + ")",
+            () -> Pal.health, unit::healthf).blink(Color.white));
+            bars.row();
+
+            if(state.rules.unitAmmo){
+                bars.add(new Bar(type.ammoType.icon() + " " + Core.bundle.get("stat.ammo"), type.ammoType.barColor(), () -> unit.ammo / type.ammoCapacity));
+                bars.row();
+            }
+
+            for(Ability ability : unit.abilities){
+                ability.displayBars(unit, bars);
+            }
+
+            if(type.payloadCapacity > 0 && unit instanceof Payloadc payload){
+                bars.add(new Bar(
+                () -> Core.bundle.get("stat.payloadcapacity") + ": " + payload.payloadUsed() + "/" + type.payloadCapacity,
+                () -> Pal.items, () -> payload.payloadUsed() /type.payloadCapacity));
+                bars.row();
+
+                var count = new float[]{-1};
+                bars.table().update(t -> {
+                    if(count[0] != payload.payloadUsed()){
+                        payload.contentInfo(t, 8 * 2, 270);
+                        count[0] = payload.payloadUsed();
+                    }
+                }).growX().left().height(0f).pad(0f);
+            }
+        }).growX();
+
+        if(unit.controller() instanceof LogicAI ai){
+            table.row();
+
+            table.add(Blocks.microProcessor.emoji() + Core.bundle.get("units.processorcontrol")).growX().wrap().left();
+
+            /* Show the position of controller */
+            if(ai.controller instanceof LogicBuild logicBuild){
+                table.row();
+
+                table.add(Blocks.microProcessor.emoji() + Tmp.v1.set(logicBuild)).growX().wrap().left();
+            }
+        }
+
+        table.row();
+
+        if(type.logicControllable){
+            /* Unit flag always show */
+            table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
+            table.row();
         }
     }
 
