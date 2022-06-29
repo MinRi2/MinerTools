@@ -188,7 +188,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
                         if(Float.isInfinite(unit.getDuration(effect))){
                             label = new Label(() -> "[red]Inf");
                         }else{
-                            label = new Label(() -> String.format("%.1f", unit.getDuration(effect)) + "s");
+                            label = new Label(() -> UI.formatTime(unit.getDuration(effect)));
                         }
 
                         label.setAlignment(Align.bottom);
