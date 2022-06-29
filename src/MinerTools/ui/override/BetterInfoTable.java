@@ -361,11 +361,9 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
         table.row();
 
-        if(type.logicControllable){
-            /* Unit flag always show */
-            table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
-            table.row();
-        }
+        /* Unit flag always show */
+        table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
+        table.row();
     }
 
     static abstract class BaseInfoTable<T> extends Table{

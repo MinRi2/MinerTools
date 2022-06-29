@@ -1,6 +1,7 @@
 package MinerTools.graphics.draw.player;
 
 import MinerTools.*;
+import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -99,7 +100,7 @@ public class PayloadDropHint extends PlayerDrawer{
             size *= tile.build.block.size;
         }
 
-        Drawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), tile.drawx() - size / 2, tile.drawy() - size / 2, size, size);
+        MDrawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), tile.drawx() - size / 2, tile.drawy() - size / 2, size, size);
 
         Draw.reset();
     }

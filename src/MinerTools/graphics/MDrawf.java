@@ -5,6 +5,7 @@ import arc.graphics.g2d.*;
 import arc.math.geom.*;
 import arc.util.*;
 import arc.util.pooling.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 
 public class MDrawf{
@@ -60,6 +61,14 @@ public class MDrawf{
         Draw.reset();
 
         return barX;
+    }
+
+    /* DashRect from 136 */
+    public static void dashRect(Color color, float x, float y, float width, float height){
+        Drawf.dashLine(color, x, y, x + width, y);
+        Drawf.dashLine(color, x + width, y, x + width, y + height);
+        Drawf.dashLine(color, x + width, y + height, x, y + height);
+        Drawf.dashLine(color, x, y + height, x, y);
     }
 
 }
