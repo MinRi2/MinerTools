@@ -2,6 +2,7 @@ package MinerTools.graphics.draw.build;
 
 import MinerTools.*;
 import MinerTools.graphics.draw.*;
+import arc.graphics.g2d.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
@@ -29,6 +30,8 @@ public class BuildStatus extends BuildDrawer<Building>{
         if(Vars.renderer.drawStatus && build.block.hasConsumers){
             build.drawStatus();
         }
+
+        Draw.reset();
     }
 
 }

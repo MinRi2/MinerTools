@@ -64,6 +64,8 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
             scl, dx, dy, hasItem ? Pal.accent : Pal.remove, Align.left).height;
             nextPad ++;
         }
+
+        Draw.reset();
     }
 
 }

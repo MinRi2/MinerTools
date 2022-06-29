@@ -2,6 +2,7 @@ package MinerTools.graphics.draw.build.select;
 
 import MinerTools.*;
 import MinerTools.graphics.draw.*;
+import arc.graphics.g2d.*;
 import mindustry.*;
 import mindustry.gen.*;
 
@@ -20,6 +21,8 @@ public class BuildSelect extends BuildDrawer<Building>{
     @Override
     protected void draw(Building build){
         build.drawSelect();
+
+        Draw.reset();
     }
 
 }

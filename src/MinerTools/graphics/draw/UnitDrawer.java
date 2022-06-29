@@ -10,4 +10,6 @@ public abstract class UnitDrawer extends BaseDrawer<Unit>{
         return unit.isValid() && !unit.inFogTo(Vars.player.team());
     }
 
+    @Override
+    protected abstract void draw(Unit unit);
 }
