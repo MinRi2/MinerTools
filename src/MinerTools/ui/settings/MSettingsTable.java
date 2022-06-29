@@ -79,6 +79,11 @@ public class MSettingsTable extends Table implements Addable{
                     drawerCheck(setting, "buildSelectInfo", true);
                     drawerCheck(setting, "itemBridgeLinksShow", true);
                 });
+
+                addCategory("player", setting -> {
+                    drawerCheck(setting, "payloadDropHint", true);
+                    drawerCheck(setting, "playerRange", true);
+                });
             }
 
             public static void drawerCheck(MSettingTable table, String name, boolean def){

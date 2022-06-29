@@ -114,6 +114,15 @@
     * 荷载条
 
     ![img_15.png](.github/images/img_15.png)
+
+* 玩家 
+  * 荷载拾放提示
+  
+    ![img_16.png](img.png)
+  
+  * 玩家范围显示
+  
+    ![img_1.png](img_1.png)
 ---
 
 ## 其他小功能

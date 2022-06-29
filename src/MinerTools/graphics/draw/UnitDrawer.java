@@ -9,4 +9,6 @@ public abstract class UnitDrawer extends BaseDrawer<Unit>{
         return unit.isValid();
     }
 
+    @Override
+    protected abstract void draw(Unit unit);
 }
