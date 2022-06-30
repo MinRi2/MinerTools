@@ -61,7 +61,7 @@ public class PayloadDropHint extends PlayerDrawer{
         if(tile != null){
             Building build = tile.build;
 
-            if(build != null && unit.canPickup(tile.build)){
+            if(build != null && build.interactable(unit.team) && unit.canPickup(tile.build)){
                 Block block = build.block;
 
                 float size = block.size * Vars.tilesize + block.offset;
@@ -76,7 +76,7 @@ public class PayloadDropHint extends PlayerDrawer{
             float drawX = tile.drawx(), drawY = tile.drawy();
             float size = Vars.tilesize;
 
-            if(build != null){
+            if(build != null && build.interactable(unit.team)){
                 if(unit.canPickup(build)){
                     size *= build.block.size;
 
@@ -94,7 +94,7 @@ public class PayloadDropHint extends PlayerDrawer{
     private static boolean unitPickUpHint(PayloadUnit unit){
         Unit target = Units.closest(unit.team(), unit.x, unit.y, unit.type.hitSize * 2f, u -> u.isAI() && u.isGrounded() && unit.canPickup(u) && u.within(unit, u.hitSize + unit.hitSize));
 
-        if(target != null){
+        if(target != null && target.team == unit.team){
             Draw.mixcol(Pal.accent, 0.24f + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);
             Draw.rect(target.type.fullIcon, target.x, target.y, target.rotation - 90);
