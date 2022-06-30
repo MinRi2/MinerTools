@@ -82,7 +82,7 @@ public class MinerVars{
 
         final boolean[] shouldChange = {false};
 
-        Core.settings.put("uiscale", Core.settings.getInt("_uiscale", 100));
+        Core.settings.put("uiscale", MinerVars.settings.getInt("_uiscale", 100));
         Core.settings.put("uiscalechanged", false);
 
         if(index != -1){
@@ -101,14 +101,14 @@ public class MinerVars{
                     shouldChange[0] = true;
                 }
 
-                Core.settings.put("_uiscale", s);
+                MinerVars.settings.put("_uiscale", s);
 
                 return s + "%";
             }));
         }
         Vars.ui.settings.graphics.rebuild();
 
-        Scl.setProduct(Core.settings.getInt("_uiscale", 100) / 100f);
+        Scl.setProduct(MinerVars.settings.getInt("_uiscale", 100) / 100f);
     }
 
     public static void initBindings(){
