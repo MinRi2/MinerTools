@@ -4,6 +4,7 @@ import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.content.*;
@@ -63,7 +64,7 @@ public class UnitInfoBar extends UnitDrawer{
             Draw.color();
         }
 
-        if(unit.canDrown() && unit.drownTime != 0f){
+        if(!Mathf.zero(unit.drownTime)){
             MDrawf.drawProgressBar(
                 startX, startY, endX, startY, (1f - unit.drownTime),
                 backBarStroke, backBarAlpha, unit.team().color,
