@@ -57,13 +57,15 @@ public class PayloadDropHint extends PlayerDrawer{
         if(on != null){
             boolean valid = Build.validPlace(build.block, build.team, tx, ty, build.rotation, false);
 
-            float size = build.block.size * Vars.tilesize + build.block.offset;
+            Block block = build.block;
+
+            float size = block.size * Vars.tilesize + block.offset;
 
             int rot = (int)((unit.rotation + 45f) / 90f) % 4  * 90;
 
             Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);
-            Draw.rect(build.block.fullIcon, (on.x + 0.5f) * Vars.tilesize, (on.y + 0.5f) * Vars.tilesize, size, size, rot);
+            Draw.rect(block.fullIcon, (on.x + 0.5f) * Vars.tilesize, (on.y + 0.5f) * Vars.tilesize, size, size, rot);
 
             Draw.reset();
         }
@@ -77,11 +79,13 @@ public class PayloadDropHint extends PlayerDrawer{
 
             if(build == null || !unit.canPickup(tile.build)) return;
 
-            float size = build.block.size * Vars.tilesize + build.block.offset;
+            Block block = build.block;
+
+            float size = block.size * Vars.tilesize + block.offset;
 
             Draw.mixcol(Color.white, 0.24f + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);
-            Draw.rect(build.block.fullIcon, tile.build.x, tile.build.y, size, size, build.rotation * 90);
+            Draw.rect(block.fullIcon, tile.build.x, tile.build.y, size, size, build.rotation * 90);
 
             Draw.reset();
         }
@@ -95,11 +99,15 @@ public class PayloadDropHint extends PlayerDrawer{
         float drawX = tile.drawx(), drawY = tile.drawy();
         float size = Vars.tilesize;
 
-        if(tile.build != null && unit.canPickup(tile.build)){
-            size *= tile.build.block.size;
+        if(tile.build != null){
+            Building build = tile.build;
 
-            drawX = tile.build.x;
-            drawY = tile.build.y;
+            if(unit.canPickup(build)){
+                size *= build.block.size;
+
+                drawX = build.x;
+                drawY = build.y;
+            }
         }
 
         Drawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), drawX - size / 2, drawY - size / 2, size, size);
