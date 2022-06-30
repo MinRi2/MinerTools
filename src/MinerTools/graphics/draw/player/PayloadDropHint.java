@@ -120,7 +120,7 @@ public class PayloadDropHint extends PlayerDrawer{
 
             float size = block.size * Vars.tilesize + block.offset;
 
-            int rot = (int)((unit.rotation + 45f) / 90f) % 4  * 90;
+            int rot = block.rotate ? (int)((unit.rotation + 45f) / 90f) % 4  * 90 : 0;
 
             Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);
