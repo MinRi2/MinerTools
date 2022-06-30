@@ -24,8 +24,6 @@ public class MinerVars{
     public static MSettings settings;
     public static MUI ui;
 
-    public static BlockFinder finder;
-
     public static boolean desktop;
 
     public static Seq<UnitType> visibleUnits = new Seq<>();
@@ -35,8 +33,6 @@ public class MinerVars{
     public static void init(){
         settings = new MSettings();
         ui = new MUI();
-
-        finder = new BlockFinder();
 
         desktop = app.isDesktop();
 
