@@ -32,7 +32,7 @@ public class PayloadDropHint extends PlayerDrawer{
         Draw.z(Layer.flyingUnit + 0.1f);
 
         if(unit.payloads.any()){
-            Payload payload = unit.payloads.first();
+            Payload payload = unit.payloads.peek();
 
             if(payload instanceof BuildPayload p){
                 buildDrop(unit, p);
@@ -61,10 +61,9 @@ public class PayloadDropHint extends PlayerDrawer{
 
             int rot = (int)((unit.rotation + 45f) / 90f) % 4  * 90;
 
-            Draw.reset();
             Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);
-            Draw.rect(build.block.fullIcon, on.drawx(), on.drawy(), size, size, rot);
+            Draw.rect(build.block.fullIcon, (on.x + 0.5f) * Vars.tilesize, (on.y + 0.5f) * Vars.tilesize, size, size, rot);
 
             Draw.reset();
         }
@@ -82,7 +81,7 @@ public class PayloadDropHint extends PlayerDrawer{
 
             Draw.mixcol(Color.white, 0.24f + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);
-            Draw.rect(build.block.fullIcon, tile.drawx(), tile.drawy(), size, size, build.rotation * 90);
+            Draw.rect(build.block.fullIcon, tile.build.x, tile.build.y, size, size, build.rotation * 90);
 
             Draw.reset();
         }
@@ -93,13 +92,17 @@ public class PayloadDropHint extends PlayerDrawer{
 
         if(tile == null) return;
 
+        float drawX = tile.drawx(), drawY = tile.drawy();
         float size = Vars.tilesize;
 
         if(tile.build != null && unit.canPickup(tile.build)){
             size *= tile.build.block.size;
+
+            drawX = tile.build.x;
+            drawY = tile.build.y;
         }
 
-        Drawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), tile.drawx() - size / 2, tile.drawy() - size / 2, size, size);
+        Drawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), drawX - size / 2, drawY - size / 2, size, size);
 
         Draw.reset();
     }
