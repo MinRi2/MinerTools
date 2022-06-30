@@ -8,6 +8,7 @@ import arc.math.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
+import mindustry.entities.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.world.*;
@@ -35,10 +36,10 @@ public class PayloadDropHint extends PlayerDrawer{
             Payload payload = unit.payloads.peek();
 
             if(payload instanceof BuildPayload p){
-                buildDrop(unit, p);
+                buildDropHint(unit, p);
+            }else if(payload instanceof UnitPayload p){
+                unitDropHint(unit, p);
             }
-        }else{
-            buildPickUp(unit);
         }
 
         if(unit.payloadUsed() + Vars.tilesize < unit.type.payloadCapacity){
@@ -48,7 +49,65 @@ public class PayloadDropHint extends PlayerDrawer{
         Draw.reset();
     }
 
-    private static void buildDrop(Unit unit, BuildPayload payload){
+    private static void pickUpHint(PayloadUnit unit){
+        if(!unitPickUpHint(unit)){
+            buildPickUpHint(unit);
+        }
+    }
+
+    private static void buildPickUpHint(PayloadUnit unit){
+        Tile tile = unit.tileOn();
+
+        if(tile != null){
+            Building build = tile.build;
+
+            if(build != null && unit.canPickup(tile.build)){
+                Block block = build.block;
+
+                float size = block.size * Vars.tilesize + block.offset;
+
+                Draw.mixcol(Pal.accent, 0.24f + Mathf.absin(Time.globalTime, 6f, 0.28f));
+                Draw.alpha(0.8f);
+                Draw.rect(block.fullIcon, tile.build.x, tile.build.y, size, size, build.rotation * 90);
+
+                Draw.reset();
+            }
+
+            float drawX = tile.drawx(), drawY = tile.drawy();
+            float size = Vars.tilesize;
+
+            if(build != null){
+                if(unit.canPickup(build)){
+                    size *= build.block.size;
+
+                    drawX = build.x;
+                    drawY = build.y;
+                }
+            }
+
+            Drawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), drawX - size / 2, drawY - size / 2, size, size);
+
+            Draw.reset();
+        }
+    }
+
+    private static boolean unitPickUpHint(PayloadUnit unit){
+        Unit target = Units.closest(unit.team(), unit.x, unit.y, unit.type.hitSize * 2f, u -> u.isAI() && u.isGrounded() && unit.canPickup(u) && u.within(unit, u.hitSize + unit.hitSize));
+
+        if(target != null){
+            Draw.mixcol(Pal.accent, 0.24f + Mathf.absin(Time.globalTime, 6f, 0.28f));
+            Draw.alpha(0.8f);
+            Draw.rect(target.type.fullIcon, target.x, target.y, target.rotation - 90);
+
+            Draw.reset();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void buildDropHint(PayloadUnit unit, BuildPayload payload){
         Building build = payload.build;
         int tx = World.toTile(unit.x - build.block.offset);
         int ty = World.toTile(unit.y - build.block.offset);
@@ -71,46 +130,14 @@ public class PayloadDropHint extends PlayerDrawer{
         }
     }
 
-    private static void buildPickUp(PayloadUnit unit){
-        Tile tile = unit.tileOn();
+    private static void unitDropHint(PayloadUnit unit, UnitPayload payload){
+        Unit u = payload.unit;
 
-        if(tile != null){
-            Building build = tile.build;
+        boolean valid = u.canPass(unit.tileX(), unit.tileY()) && Units.count(unit.x, unit.y, u.physicSize(), Flyingc::isGrounded) <= 1;
 
-            if(build == null || !unit.canPickup(tile.build)) return;
-
-            Block block = build.block;
-
-            float size = block.size * Vars.tilesize + block.offset;
-
-            Draw.mixcol(Color.white, 0.24f + Mathf.absin(Time.globalTime, 6f, 0.28f));
-            Draw.alpha(0.8f);
-            Draw.rect(block.fullIcon, tile.build.x, tile.build.y, size, size, build.rotation * 90);
-
-            Draw.reset();
-        }
-    }
-
-    private static void pickUpHint(PayloadUnit unit){
-        Tile tile = unit.tileOn();
-
-        if(tile == null) return;
-
-        float drawX = tile.drawx(), drawY = tile.drawy();
-        float size = Vars.tilesize;
-
-        if(tile.build != null){
-            Building build = tile.build;
-
-            if(unit.canPickup(build)){
-                size *= build.block.size;
-
-                drawX = build.x;
-                drawY = build.y;
-            }
-        }
-
-        Drawf.dashRect(Tmp.c1.set(Pal.accent).a(0.6f), drawX - size / 2, drawY - size / 2, size, size);
+        Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
+        Draw.alpha(0.8f);
+        Draw.rect(u.type.fullIcon, unit.x, unit.y, unit.rotation - 90);
 
         Draw.reset();
     }
