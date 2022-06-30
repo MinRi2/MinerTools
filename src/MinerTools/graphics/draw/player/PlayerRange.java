@@ -5,6 +5,7 @@ import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.blocks.defense.turrets.Turret.*;
 
 public class PlayerRange extends PlayerDrawer{
 
@@ -17,7 +18,19 @@ public class PlayerRange extends PlayerDrawer{
     protected void draw(Player player){
         Draw.z(Layer.flyingUnitLow - 1f);
 
-        Drawf.dashCircle(player.x, player.y, player.unit().range(), player.team().color);
+        Unit unit = player.unit();
+
+        float range = unit.range();
+
+        if(unit instanceof BlockUnitUnit blockUnit){
+            Building building = blockUnit.tile();
+
+            if(building instanceof TurretBuild turret){
+                range = turret.range();
+            }
+        }
+
+        Drawf.dashCircle(player.x, player.y, range, player.team().color);
 
         Draw.reset();
     }
