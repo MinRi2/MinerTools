@@ -7,7 +7,6 @@ import MinerTools.ui.tables.*;
 import arc.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
-import org.jetbrains.annotations.ApiStatus.*;
 
 import static arc.Core.scene;
 import static mindustry.Vars.*;
@@ -77,7 +76,6 @@ public class FloatTable extends DraggableTable implements Addable{
         invalidateHierarchy();
     }
 
-    @OverrideOnly
     protected void setupCont(Table cont){
     }
 
@@ -106,11 +104,9 @@ public class FloatTable extends DraggableTable implements Addable{
         }).growY().right();
     }
 
-    @OverrideOnly
     protected void setupButtons(Table buttons){
     }
 
-    @OverrideOnly
     protected void update(){
         pack();
         keepInStage();

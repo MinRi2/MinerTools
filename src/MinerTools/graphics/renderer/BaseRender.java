@@ -10,13 +10,11 @@ public abstract class BaseRender<T extends BaseDrawer<?>>{
     Seq<T> enableDrawers;
     Seq<T> enableCameraDrawers;
 
-    @SafeVarargs
     public final BaseRender<T> addDrawers(T... drawers){
         allGlobalDrawers.addAll(drawers);
         return this;
     }
 
-    @SafeVarargs
     public final BaseRender<T> addCameraDrawers(T... drawers){
         allCameraDrawers.addAll(drawers);
         return this;

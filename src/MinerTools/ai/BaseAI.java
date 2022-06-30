@@ -1,7 +1,6 @@
 package MinerTools.ai;
 
 import mindustry.entities.units.*;
-import org.jetbrains.annotations.ApiStatus.*;
 
 public class BaseAI extends AIController{
     public static BaseAI controller;
@@ -10,7 +9,6 @@ public class BaseAI extends AIController{
         controller = this;
     }
 
-    @OverrideOnly
     protected void update(){}
 
     public static void resetController(){

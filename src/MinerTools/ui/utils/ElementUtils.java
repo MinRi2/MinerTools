@@ -13,7 +13,6 @@ import static arc.Core.bundle;
 
 public class ElementUtils{
 
-    @Nullable
     public static Cell<?> getCell(Element element){
         Group parent = element.parent;
 

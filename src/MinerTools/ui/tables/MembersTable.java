@@ -7,7 +7,6 @@ import arc.scene.ui.layout.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.game.*;
-import org.jetbrains.annotations.ApiStatus.*;
 
 public abstract class MembersTable extends Table implements Addable{
     final MemberManager memberManager = new MemberManager();
@@ -89,7 +88,6 @@ public abstract class MembersTable extends Table implements Addable{
         /**
          * MemberTable设置成自己时会调用此方法
          */
-        @OverrideOnly
         public void memberRebuild(){}
     }
 }
