@@ -21,7 +21,7 @@ import static arc.Core.*;
 import static mindustry.Vars.content;
 
 public class MinerVars{
-    public static MinerToolsSettings settings;
+    public static MSettings settings;
     public static MUI ui;
 
     public static BlockFinder finder;
@@ -33,7 +33,7 @@ public class MinerVars{
     public static Seq<Item> allOres = new Seq<>();
 
     public static void init(){
-        settings = new MinerToolsSettings();
+        settings = new MSettings();
         ui = new MUI();
 
         finder = new BlockFinder();

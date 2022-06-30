@@ -9,7 +9,7 @@ import java.io.*;
 
 import static mindustry.Vars.*;
 
-public class MinerToolsSettings{
+public class MSettings{
     protected static final byte typeBool = 0, typeInt = 1, typeLong = 2, typeFloat = 3, typeString = 4;
 
     private static final String settingsName = "settings";
