@@ -74,6 +74,8 @@ public class BetterInfoTable extends Table implements OverrideUI{
                 hover.display(this);
             }
 
+            marginBottom(6);
+
             var builders = buildBuilders.select(buildBuilder -> buildBuilder.canBuild(hover));
             if(builders.any()){
                 for(var builder : builders){
@@ -237,23 +239,15 @@ public class BetterInfoTable extends Table implements OverrideUI{
     private void addSetting(){
         MinerVars.ui.settings.ui.addCategory("overrideInfoTable", setting -> {
             setting.checkPref("overrideInfoTable", true, b -> tryToggleOverride());
-            setting.checkPref("hover-locked", false, b -> locked = !locked).change();
+            setting.checkPref("hover-locked", false, b -> locked = b).change();
         });
     }
 
     private void setup(){
-        update(this::rebuild);
-    }
-
-    private void rebuild(){
-        clearChildren();
-
         for(BaseInfoTable<?> table : infoTables){
-            table.update();
+            collapser(table,() -> locked || table.shouldAdd()).margin(6).growX().update(c -> table.update());
 
-            if(locked || table.shouldAdd()){
-                add(table).margin(6).growX().row();
-            }
+            row();
         }
     }
 
