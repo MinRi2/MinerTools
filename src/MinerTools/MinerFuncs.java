@@ -8,10 +8,10 @@ import arc.scene.event.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.ai.types.*;
 import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.ctype.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
@@ -35,9 +35,8 @@ import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.consumers.*;
 
-import static MinerTools.MinerVars.*;
+import static MinerTools.content.Contents.*;
 import static arc.Core.*;
-import static mindustry.Vars.*;
 
 public class MinerFuncs{
     public static ObjectSet<Building> updatedBuildings = new ObjectSet<>();
@@ -47,6 +46,8 @@ public class MinerFuncs{
     private static final Seq<DropBuilding> dropBuildings = new Seq<>();
 
     public static boolean enableUpdateConveyor;
+
+    private static final ObjectMap<Category, Seq<Block>> catBlockMap = new ObjectMap<>();
 
     public static int countMiner(Team team){
         return team.data().units.count(unit -> unit.controller() instanceof MinerAI);
@@ -58,10 +59,10 @@ public class MinerFuncs{
 
     public static void tryUpdateConveyor(){
         Vec2 pos = input.mouseWorld(input.mouseX(), input.mouseY());
-        Building target = world.build(World.toTile(pos.x), World.toTile(pos.y));
-        if(control.input.block instanceof Autotiler && target != null){
+        Building target = Vars.world.build(World.toTile(pos.x), World.toTile(pos.y));
+        if(Vars.control.input.block instanceof Autotiler && target != null){
             updatedBuildings.clear();
-            tryUpdateConveyor(target, control.input.block);
+            tryUpdateConveyor(target, Vars.control.input.block);
             updatedBuildings.clear();
         }
     }
@@ -71,7 +72,7 @@ public class MinerFuncs{
         if(!updatedBuildings.add(start)) return;
 
         if(start.block != type){
-            player.unit().addBuild(new BuildPlan(start.tileX(), start.tileY(), start.rotation, type));
+            Vars.player.unit().addBuild(new BuildPlan(start.tileX(), start.tileY(), start.rotation, type));
         }
 
         if(start instanceof ChainedBuilding chainedBuild && chainedBuild.next() != null){
@@ -82,7 +83,7 @@ public class MinerFuncs{
 
                 if(building != null) tryUpdateConveyor(building, type);
             }else if(build.next instanceof ItemBridgeBuild bridge){
-                Tile otherTile = world.tile(bridge.link);
+                Tile otherTile = Vars.world.tile(bridge.link);
                 ItemBridge block = (ItemBridge)bridge.block;
 
                 if(block.linkValid(bridge.tile, otherTile)){
@@ -97,81 +98,115 @@ public class MinerFuncs{
     }
 
     public static void tryPanToController(){
-        Unit unit = Units.closestOverlap(player.team(), input.mouseWorldX(), input.mouseWorldY(), 5f, u -> !u.isLocal());
+        Unit unit = Units.closestOverlap(Vars.player.team(), input.mouseWorldX(), input.mouseWorldY(), 5f, u -> !u.isLocal());
         if(unit != null && unit.controller() instanceof LogicAI ai && ai.controller != null){
-            ((DesktopInput)control.input).panning = true;
+            ((DesktopInput)Vars.control.input).panning = true;
             camera.position.set(ai.controller);
             Fx.spawn.at(ai.controller);
         }
     }
 
     public static void showBannedInfo(){
-        Table t = new Table(Styles.black3);
+        Table t = new Table(Tex.pane);
         t.touchable = Touchable.disabled;
 
-        Seq<UnitType> units = state.rules.bannedUnits.toSeq();
-        if(!units.isEmpty()){
-            Seq<UnitType> seq;
+        var units = Vars.state.rules.bannedUnits.toSeq();
+        if(units.any()){
+            t.table(unitTable -> {
+                var seq = units;
+                String fixed = "[red]Banned";
 
-            if(units.size < visibleUnits.size / 2){
-                t.add("[red]Banned [accent]Units:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-                seq = units;
-            }else{
-                t.add("[green]UnBanned [accent]Units:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-                seq = visibleUnits.select(u -> !units.contains(u));
-            }
+                if(units.size > visibleUnits.size / 2){
+                    seq = visibleUnits.select(u -> !units.contains(u));
+                    fixed = "[green]UnBanned";
+                }
 
-            for(UnlockableContent c : seq){
-                t.image(c.uiIcon).size(iconSmall).left().padLeft(3f);
-            }
-            t.row();
+                unitTable.add(fixed + "[accent]Units:[] ").top()
+                 .style(Styles.outlineLabel).labelAlign(Align.left);
+
+                unitTable.row();
+
+                var finalSeq = seq;
+                unitTable.table(infoTable -> {
+                    for(var linkedUnit : linkedUnits){
+                        for(UnitType type : linkedUnit){
+                            if(finalSeq.contains(type)){
+                                infoTable.image(type.uiIcon).size(Vars.iconSmall).left().padLeft(3f);
+                            }
+                        }
+
+                        infoTable.row();
+                    }
+                }).left();
+            }).left().row();
         }
 
-        Seq<Block> blocks = state.rules.bannedBlocks.toSeq();
-        if(!blocks.isEmpty()){
-            Seq<Block> seq;
+        var blocks = Vars.state.rules.bannedBlocks.toSeq();
+        if(blocks.any()){
+            t.table(blockTable -> {
+                var seq = blocks;
+                String fixed = "[red]Banned";
 
-            if(blocks.size < visibleBlocks.size / 2){
-                t.add("[red]Banned [accent]Blocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-                seq = blocks;
-            }else{
-                t.add("[green]UnBanned [accent]Blocks:[] ").style(Styles.outlineLabel).labelAlign(Align.left);
-                seq = visibleBlocks.select(b -> !blocks.contains(b));
-            }
+                if(units.size > visibleUnits.size / 2){
+                    seq = visibleBlocks.select(b -> !blocks.contains(b));
+                    fixed = "[green]UnBanned";
+                }
 
-            for(UnlockableContent c : seq){
-                t.image(c.uiIcon).size(iconSmall).left().padLeft(3f);
-            }
-            t.row();
+                blockTable.add(fixed + "[accent]Blocks:[] ").top()
+                 .style(Styles.outlineLabel).labelAlign(Align.left);
+
+                blockTable.row();
+
+                catBlockMap.clear();
+
+                for(Block block : seq){
+                    catBlockMap.get(block.category, Seq::new).add(block);
+                }
+
+                blockTable.table(infoTable -> {
+                    for(var entry : catBlockMap){
+                        Category cat = entry.key;
+                        var catBlocks = entry.value;
+
+                        infoTable.image(Vars.ui.getIcon(cat.name())).left().padLeft(8f);
+
+                        for(Block block : catBlocks){
+                            infoTable.image(block.uiIcon).size(Vars.iconSmall).left().padLeft(3f);
+                        }
+
+                        infoTable.row();
+                    }
+                }).left();
+            }).left().row();
         }
 
         t.margin(8f).update(() -> t.setPosition(graphics.getWidth()/2f, graphics.getHeight()/2f, Align.center));
-        t.actions(Actions.fadeOut(8.5f, Interp.pow4In), Actions.remove());
+        t.actions(Actions.fadeOut(8.5f, Interp.pow5In), Actions.remove());
         t.pack();
         t.act(0.1f);
         scene.add(t);
     }
 
     public static void rebuildBlocks(){
-        if(!player.unit().canBuild()) return;
+        if(!Vars.player.unit().canBuild()) return;
 
         int i = 0;
-        for(BlockPlan block : player.team().data().plans){
-            if(Mathf.len(block.x - player.tileX(), block.y - player.tileY()) >= buildingRange) continue;
+        for(BlockPlan block : Vars.player.team().data().plans){
+            if(Mathf.len(block.x - Vars.player.tileX(), block.y - Vars.player.tileY()) >= Vars.buildingRange) continue;
             if(++i > 511) break;
-            player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, content.block(block.block), block.config));
+            Vars.player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, Vars.content.block(block.block), block.config));
         }
     }
 
     public static void dropItems(){
         dropBuildings.clear();
 
-        CoreBuild core = player.closestCore();
-        if(core == null && !player.unit().hasItem()) return;
+        CoreBuild core = Vars.player.closestCore();
+        if(core == null && !Vars.player.unit().hasItem()) return;
 
-        boolean autoDrop = player.dst(core) <= itemTransferRange && core != null && core.items != null;
+        boolean autoDrop = Vars.player.dst(core) <= Vars.itemTransferRange && core != null && core.items != null;
 
-        indexer.eachBlock(player.team(), player.x, player.y, itemTransferRange,
+        Vars.indexer.eachBlock(Vars.player.team(), Vars.player.x, Vars.player.y, Vars.itemTransferRange,
         building -> !blackDropBuild.contains(clazz -> clazz.isAssignableFrom(building.block.getClass())), building -> {
             DropBuilding db = new DropBuilding(building, autoDrop);
             if(db.any()){
@@ -191,10 +226,10 @@ public class MinerFuncs{
     private static void tryDropItem(Item item, int amount){
         for(DropBuilding db : dropBuildings){
             Building build = db.building;
-            if(build.acceptStack(item, amount, player.unit()) > 0){
-                Call.transferInventory(player, build);
+            if(build.acceptStack(item, amount, Vars.player.unit()) > 0){
+                Call.transferInventory(Vars.player, build);
 
-                if(!player.unit().hasItem()) break;
+                if(!Vars.player.unit().hasItem()) break;
                 dropBuildings.remove(db);
             }
         }
@@ -203,24 +238,24 @@ public class MinerFuncs{
     }
 
     private static void requestItem(Item item){
-        CoreBuild core = player.closestCore();
+        CoreBuild core = Vars.player.closestCore();
 
         /* 玩家有物品, 需要扔回核心 */
-        if(player.unit().hasItem() && player.unit().item() != item){
+        if(Vars.player.unit().hasItem() && Vars.player.unit().item() != item){
             // 核心是否接受
-            if(core.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0){
-                Call.transferInventory(player, core);
+            if(core.acceptStack(Vars.player.unit().item(), Vars.player.unit().stack.amount, Vars.player.unit()) > 0){
+                Call.transferInventory(Vars.player, core);
             }else{
                 Call.dropItem(0);
             }
         }
 
         /* 拿物品 */
-        if(!player.unit().hasItem()){
+        if(!Vars.player.unit().hasItem()){
             int coreAmount = core.items.get(item);
             if(coreAmount > 0){
-                int getAmount = Math.min(coreAmount, player.unit().maxAccepted(item));
-                Call.requestItem(player, core, item, getAmount);
+                int getAmount = Math.min(coreAmount, Vars.player.unit().maxAccepted(item));
+                Call.requestItem(Vars.player, core, item, getAmount);
             }
         }
     }
@@ -235,9 +270,9 @@ public class MinerFuncs{
             this.building = building;
             consumeItems = getConsItemStack(building);
 
-            if(player.unit().hasItem() && building.acceptStack(player.unit().item(), player.unit().stack.amount, player.unit()) > 0){
+            if(Vars.player.unit().hasItem() && building.acceptStack(Vars.player.unit().item(), Vars.player.unit().stack.amount, Vars.player.unit()) > 0){
                 status = DropStatus.PLAYER;
-            }else if(lastDropItem != null && !player.unit().hasItem() && building.acceptItem(building, lastDropItem)){
+            }else if(lastDropItem != null && !Vars.player.unit().hasItem() && building.acceptItem(building, lastDropItem)){
                 status = DropStatus.LAST;
             }else if(autoDrop && consumeItems != null){
                 status = DropStatus.AUTO;
@@ -253,7 +288,7 @@ public class MinerFuncs{
                 return null;
             }
 
-            CoreBuild core = player.closestCore();
+            CoreBuild core = Vars.player.closestCore();
 
             if(building.block instanceof ItemTurret block){
                 Seq<Item> items = DropSettingDialog.get(block.name);
@@ -261,7 +296,7 @@ public class MinerFuncs{
                 if(items == null) return null;
 
                 for(Item oldItem : items){
-                    Item item = content.item(oldItem.id);
+                    Item item = Vars.content.item(oldItem.id);
                     if(building.acceptItem(building, item) && core.items.has(item)){
                         return item;
                     }
@@ -308,12 +343,12 @@ public class MinerFuncs{
         public static boolean drop(DropBuilding dropBuilding){
             switch(dropBuilding.status){
                 case PLAYER -> {
-                    tryDropItem(player.unit().item(), player.unit().stack.amount);
+                    tryDropItem(Vars.player.unit().item(), Vars.player.unit().stack.amount);
                     return true;
                 }
                 case LAST -> {
                     requestItem(lastDropItem);
-                    tryDropItem(lastDropItem, player.unit().stack.amount);
+                    tryDropItem(lastDropItem, Vars.player.unit().stack.amount);
                     return true;
                 }
                 case AUTO -> {
@@ -321,7 +356,7 @@ public class MinerFuncs{
                     if(dropItem == null) return false;
 
                     requestItem(dropItem);
-                    tryDropItem(dropItem, player.unit().stack.amount);
+                    tryDropItem(dropItem, Vars.player.unit().stack.amount);
                     return true;
                 }
             }

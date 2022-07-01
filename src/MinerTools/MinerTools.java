@@ -1,6 +1,7 @@
 package MinerTools;
 
 import MinerTools.ai.*;
+import MinerTools.content.*;
 import MinerTools.graphics.*;
 import MinerTools.ui.*;
 import arc.*;
@@ -11,7 +12,7 @@ import mindustry.game.EventType.*;
 import mindustry.mod.*;
 
 import static MinerTools.MinerFuncs.*;
-import static MinerTools.MinerVars.*;
+import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.updateConveyor;
 import static arc.Core.input;
 import static mindustry.Vars.*;
@@ -25,7 +26,7 @@ public class MinerTools extends Mod{
 
         // mobile = true; // Only for debug
 
-        Events.on(EventType.ContentInitEvent.class, e -> MinerVars.initContent());
+        Events.on(EventType.ContentInitEvent.class, e -> Contents.init());
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
             Timer.schedule(Updater::checkUpdate, 8);

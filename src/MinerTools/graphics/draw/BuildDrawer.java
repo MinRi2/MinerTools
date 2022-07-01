@@ -1,6 +1,6 @@
 package MinerTools.graphics.draw;
 
-import MinerTools.*;
+import MinerTools.content.*;
 import arc.func.*;
 import arc.struct.*;
 import mindustry.*;
@@ -11,20 +11,20 @@ public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
     private final Seq<Block> blocks;
 
     public BuildDrawer(){
-        this(MinerVars.visibleBlocks.copy());
+        this((Seq<Block>)null);
+    }
+
+    public BuildDrawer(Boolf<Block> predicate){
+        this(Contents.visibleBlocks.select(predicate));
     }
 
     public BuildDrawer(Seq<Block> blocks){
         this.blocks = blocks;
     }
 
-    public BuildDrawer(Boolf<Block> predicate){
-        this(MinerVars.visibleBlocks.select(predicate));
-    }
-
     @Override
     public void tryDraw(Building building){
-        if(!blocks.contains(building.block)) return;
+        if(blocks != null && !blocks.contains(building.block)) return;
 
         super.tryDraw((T)building);
     }

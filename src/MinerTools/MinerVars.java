@@ -2,23 +2,16 @@ package MinerTools;
 
 import MinerTools.input.*;
 import MinerTools.io.*;
-import MinerTools.override.*;
-import MinerTools.override.stats.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.KeyBinds.*;
 import arc.scene.ui.layout.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.type.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
-import mindustry.world.*;
-import mindustry.world.blocks.distribution.*;
 
 import static arc.Core.*;
-import static mindustry.Vars.content;
 
 public class MinerVars{
     public static MSettings settings;
@@ -26,17 +19,11 @@ public class MinerVars{
 
     public static boolean desktop;
 
-    public static Seq<UnitType> visibleUnits = new Seq<>();
-    public static Seq<Block> visibleBlocks = new Seq<>();
-    public static Seq<Item> allOres = new Seq<>();
-
     public static void init(){
         settings = new MSettings();
         ui = new MUI();
 
         desktop = app.isDesktop();
-
-        betterUIScaleSetting();
 
         // update controls
         if(desktop){
@@ -45,39 +32,8 @@ public class MinerVars{
 
         settings.init();
         ui.init();
-    }
 
-    public static void initContent(){
-        visibleBlocks.clear();
-        visibleUnits.clear();
-        allOres.clear();
-
-        for(Block block : content.blocks()){
-            if(block.buildVisibility.visible()){
-                visibleBlocks.add(block);
-            }
-
-            if(block.itemDrop != null && !allOres.contains(block.itemDrop)){
-                allOres.add(block.itemDrop);
-            }
-
-            if(block instanceof ItemBridge){
-                block.allowConfigInventory = true;
-            }
-
-            Bars.override(block);
-            MStats.block.override(block);
-        }
-
-        for(UnitType type : content.units()){
-            if(!type.isHidden()){
-                visibleUnits.add(type);
-            }
-
-            MStats.unit.override(type);
-        }
-
-        allOres.sort(item -> item.id);
+        betterUIScaleSetting();
     }
 
     public static void betterUIScaleSetting(){
@@ -98,14 +54,14 @@ public class MinerVars{
             });
 
             Vars.ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
-                //if the user changed their UI scale, but then put it back, don't consider it 'changed'
                 if(shouldChange[0]){
+                    //if the user changed their UI scale, but then put it back, don't consider it 'changed'
                     Core.settings.put("uiscalechanged", s != lastUiScale[0]);
                 }else{
                     shouldChange[0] = true;
                 }
 
-                MinerVars.settings.put("_uiscale", s);
+                MinerVars.settings.put("_uiscale", s, false, true);
 
                 return s + "%";
             }));
