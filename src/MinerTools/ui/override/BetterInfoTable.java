@@ -1,6 +1,7 @@
 package MinerTools.ui.override;
 
 import MinerTools.*;
+import MinerTools.content.*;
 import MinerTools.interfaces.*;
 import MinerTools.ui.utils.*;
 import arc.*;
@@ -412,7 +413,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
         private final Seq<Block> blocks;
 
         public BuildBuilder(Boolf<Block> predicate){
-            blocks = MinerVars.visibleBlocks.select(predicate);
+            blocks = Contents.visibleBlocks.select(predicate);
         }
 
         @Override

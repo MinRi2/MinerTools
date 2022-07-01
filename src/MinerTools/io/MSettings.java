@@ -10,6 +10,8 @@ import java.io.*;
 import static mindustry.Vars.*;
 
 public class MSettings{
+    public static boolean debug;
+
     protected static final byte typeBool = 0, typeInt = 1, typeLong = 2, typeFloat = 3, typeString = 4;
 
     private static final String settingsName = "settings";
@@ -161,6 +163,10 @@ public class MSettings{
                 }
 
                 mSettings.add(new MinerSetting(name, value));
+
+                if(debug){
+                    Log.infoTag("MinerToolsSettings", "Read setting " + name + ": " + value);
+                }
             }
         }catch(Exception e){
             fi.delete();
@@ -171,7 +177,10 @@ public class MSettings{
     private void save(){
         if(!loaded) return;
 
-//        Log.info("MinerToolsSettings: Saving");
+        if(debug){
+            Log.infoTag("MinerToolsSettings", "Saving");
+        }
+
         settings.copyTo(backup);
 
         var writes = settings.writes();
@@ -198,6 +207,10 @@ public class MSettings{
             }else if(value instanceof String s){
                 writes.b(typeString);
                 writes.str(s);
+            }
+
+            if(debug){
+                Log.infoTag("MinerToolsSettings", "Write setting " + setting.name + ": " + value);
             }
         }
 
