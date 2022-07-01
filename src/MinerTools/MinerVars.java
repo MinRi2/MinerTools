@@ -37,6 +37,11 @@ public class MinerVars{
     }
 
     public static void betterUIScaleSetting(){
+        if(Core.settings.has("_uiscale")){
+            MinerVars.settings.put("_uiscale", Core.settings.getInt("_uiscale"));
+            Core.settings.remove("_uiscale");
+        }
+
         int[] lastUiScale = {Core.settings.getInt("uiscale", 100)};
         int index = Vars.ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
 
