@@ -141,7 +141,7 @@ public class MinerFuncs{
             }).left().row();
         }
 
-        var blocks = Vars.state.rules.bannedBlocks.toSeq();
+        var blocks = Vars.state.rules.bannedBlocks.asArray();
         if(blocks.any()){
             t.table(blockTable -> {
                 var seq = blocks;

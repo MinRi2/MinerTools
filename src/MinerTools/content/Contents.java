@@ -1,7 +1,6 @@
 package MinerTools.content;
 
 import MinerTools.override.*;
-import MinerTools.override.stats.*;
 import arc.struct.*;
 import mindustry.type.*;
 import mindustry.world.*;
@@ -62,7 +61,6 @@ public class Contents{
             }
 
             Bars.override(block);
-            MStats.block.override(block);
         }
 
         allOres.sort(item -> item.id);
@@ -75,8 +73,6 @@ public class Contents{
             if(!type.isHidden()){
                 visibleUnits.add(type);
             }
-
-            MStats.unit.override(type);
         }
     }
 
