@@ -8,26 +8,30 @@ import mindustry.gen.*;
 import mindustry.world.*;
 
 public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
-    private final Seq<Block> blocks;
+    /* Ids of block */
+    private final IntSeq blocks;
 
     public BuildDrawer(){
-        this((Seq<Block>)null);
+        this((IntSeq)null);
     }
 
     public BuildDrawer(Boolf<Block> predicate){
-        this(Contents.visibleBlocks.select(predicate));
+        this(Contents.visibleBlocks.select(predicate).mapInt(block -> block.id));
     }
 
-    public BuildDrawer(Seq<Block> blocks){
+    public BuildDrawer(IntSeq blocks){
         this.blocks = blocks;
     }
 
     @Override
     public void tryDraw(Building building){
-        if(blocks != null && !blocks.contains(building.block)) return;
+        if(blocks != null && !blocks.contains(building.block.id)) return;
 
         super.tryDraw((T)building);
     }
+
+    @Override
+    protected abstract void draw(T building);
 
     @Override
     public boolean isValid(T building){
