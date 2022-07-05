@@ -52,6 +52,8 @@ public class MSettingsTable extends Table implements Addable{
 
                     drawerCheck(setting, "itemTurretAmmoShow", true);
 
+                    drawerCheck(setting, "overdriveZone", true);
+
                     setting.addCategory("info", info -> {
                         drawerCheck(info, "buildStatus", true);
                         drawerCheck(info, "buildHealthBar", true);
