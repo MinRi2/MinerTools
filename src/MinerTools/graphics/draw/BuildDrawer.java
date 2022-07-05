@@ -3,13 +3,10 @@ package MinerTools.graphics.draw;
 import MinerTools.content.*;
 import arc.func.*;
 import arc.struct.*;
-import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
 public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
-    public static Interval timer = new Interval();
-
     /* Ids of block */
     protected final IntSeq blocks;
 
