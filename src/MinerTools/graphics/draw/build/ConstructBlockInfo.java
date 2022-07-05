@@ -19,10 +19,7 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
 
     public ConstructBlockInfo(){
-        super(new Seq<Block>().with(seq -> {
-            ConstructBlock[] cons = Reflect.get(ConstructBlock.class, "consBlocks");
-            seq.addAll(cons);
-        }));
+        super(getConsBlock());
     }
 
     @Override
@@ -66,6 +63,11 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
         }
 
         Draw.reset();
+    }
+
+    public static IntSeq getConsBlock(){
+        ConstructBlock[] cons = Reflect.get(ConstructBlock.class, "consBlocks");
+        return new Seq<Block>().addAll(cons).mapInt(block -> block.id);
     }
 
 }
