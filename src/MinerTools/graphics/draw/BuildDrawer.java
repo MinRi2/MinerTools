@@ -3,23 +3,30 @@ package MinerTools.graphics.draw;
 import MinerTools.content.*;
 import arc.func.*;
 import arc.struct.*;
+import arc.util.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
 public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
+    public static Interval timer = new Interval();
+
     /* Ids of block */
-    private final IntSeq blocks;
+    protected final IntSeq blocks;
 
     public BuildDrawer(){
         this((IntSeq)null);
     }
 
-    public BuildDrawer(Boolf<Block> predicate){
-        this(Contents.visibleBlocks.select(predicate).mapInt(block -> block.id));
-    }
-
     public BuildDrawer(IntSeq blocks){
         this.blocks = blocks;
+    }
+
+    public BuildDrawer(Seq<Block> blocks){
+        this(blocks.mapInt(block -> block.id));
+    }
+
+    public BuildDrawer(Boolf<Block> predicate){
+        this(Contents.visibleBlocks.select(predicate));
     }
 
     @Override

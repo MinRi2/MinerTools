@@ -38,6 +38,7 @@ public class Renderer{
         new UnitRender()
             .addDrawers(new UnitAlert(), new EnemyIndicator())
             .addCameraDrawers(new UnitInfoBar()),
+
         new PlayerRender()
             .addDrawers(new PlayerRange())
             .addCameraDrawers(new PayloadDropHint())

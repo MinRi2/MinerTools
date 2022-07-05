@@ -7,27 +7,34 @@ import arc.graphics.g2d.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.OverdriveProjector.*;
 
-public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
+import java.lang.reflect.*;
 
-    @Override
-    public boolean enabled(){
-        return MinerVars.settings.getBool("overdriveZone");
-    }
+public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
+    private static final Field heatField = MinerUtils.getField(OverdriveBuild.class, "heat");
+    private static final Field phaseHeatField = MinerUtils.getField(OverdriveBuild.class, "phaseHeat");
 
     public OverdriveZone(){
         super(block -> block instanceof OverdriveProjector);
     }
 
     @Override
+    public boolean enabled(){
+        return MinerVars.settings.getBool("overdriveZone");
+    }
+
+    @Override
     public boolean isValid(OverdriveBuild building){
-        return super.isValid(building) && building.canConsume();
+        return super.isValid(building) && building.consValid();
     }
 
     @Override
     protected void draw(OverdriveBuild build){
         OverdriveProjector  block = (OverdriveProjector)build.block;
 
-        float realRange = block.range + build.phaseHeat * block.phaseRangeBoost;
+        float heat = MinerUtils.getValue(heatField, build);
+        float phaseHeat = MinerUtils.getValue(phaseHeatField, build);
+
+        float realRange = heat * block.range + phaseHeat * block.phaseRangeBoost;
 
         Draw.z(MLayer.overdriveZone);
 

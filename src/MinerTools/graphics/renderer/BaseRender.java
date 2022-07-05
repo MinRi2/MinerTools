@@ -35,7 +35,7 @@ public abstract class BaseRender<T extends BaseDrawer<?>>{
     }
 
     public void render(){
-        if(allGlobalDrawers.any()){
+        if(enableDrawers.any()){
             var validDrawers = enableDrawers.select(BaseDrawer::isValid);
 
             if(validDrawers.any()){
