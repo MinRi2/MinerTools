@@ -6,6 +6,7 @@ import arc.graphics.g2d.*;
 import mindustry.*;
 import mindustry.game.*;
 import mindustry.gen.*;
+import mindustry.graphics.*;
 
 public class BuildStatus extends BuildDrawer<Building>{
 
@@ -22,12 +23,15 @@ public class BuildStatus extends BuildDrawer<Building>{
     @Override
     protected void draw(Building build){
         if(!build.enabled && build.block.drawDisabled){
+            Draw.z(Layer.overlayUI);
             build.drawDisabled();
         }
 
+        Draw.z(Layer.block);
         build.drawTeam();
 
         if(Vars.renderer.drawStatus && build.block.consumes.any()){
+            Draw.z(Layer.block);
             build.drawStatus();
         }
 
