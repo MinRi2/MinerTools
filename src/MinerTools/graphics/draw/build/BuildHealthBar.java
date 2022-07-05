@@ -27,6 +27,8 @@ public class BuildHealthBar extends BuildDrawer<Building>{
         float startX = build.x - build.hitSize() / 2f + 5f, startY = build.y - build.hitSize() / 2f + backBarStroke;
         float endX = build.x + build.hitSize() / 2f - 5f;
 
+        Draw.z(Layer.power - 1f);
+
         MDrawf.drawProgressBar(
             startX, startY, endX, startY, build.healthf(),
             backBarStroke, backBarAlpha, build.team.color,
