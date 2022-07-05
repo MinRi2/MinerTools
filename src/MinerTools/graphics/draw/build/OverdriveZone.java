@@ -19,6 +19,11 @@ public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
     }
 
     @Override
+    public boolean isValid(OverdriveBuild building){
+        return super.isValid(building) && building.canConsume();
+    }
+
+    @Override
     protected void draw(OverdriveBuild build){
         OverdriveProjector  block = (OverdriveProjector)build.block;
 
@@ -26,10 +31,8 @@ public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
 
         Draw.z(MLayer.overdriveZone);
 
-        if(build.canConsume()){
-            Draw.color(block.baseColor);
-            Fill.circle(build.x, build.y, realRange);
-        }
+        Draw.color(block.baseColor);
+        Fill.circle(build.x, build.y, realRange);
 
         Draw.reset();
     }
