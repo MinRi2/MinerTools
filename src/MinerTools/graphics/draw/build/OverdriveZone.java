@@ -9,13 +9,13 @@ import mindustry.world.blocks.defense.OverdriveProjector.*;
 
 public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
 
+    public OverdriveZone(){
+        super(block -> block instanceof OverdriveProjector);
+    }
+
     @Override
     public boolean enabled(){
         return MinerVars.settings.getBool("overdriveZone");
-    }
-
-    public OverdriveZone(){
-        super(block -> block instanceof OverdriveProjector);
     }
 
     @Override

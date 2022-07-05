@@ -15,12 +15,16 @@ public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
         this((IntSeq)null);
     }
 
-    public BuildDrawer(Boolf<Block> predicate){
-        this(Contents.visibleBlocks.select(predicate).mapInt(block -> block.id));
-    }
-
     public BuildDrawer(IntSeq blocks){
         this.blocks = blocks;
+    }
+
+    public BuildDrawer(Seq<Block> blocks){
+        this(blocks.mapInt(block -> block.id));
+    }
+
+    public BuildDrawer(Boolf<Block> predicate){
+        this(Contents.visibleBlocks.select(predicate));
     }
 
     @Override
