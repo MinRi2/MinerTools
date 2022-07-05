@@ -2,14 +2,12 @@ package MinerTools.ui.tables.members;
 
 import MinerTools.*;
 import MinerTools.ui.*;
-import MinerTools.ui.dialogs.*;
 import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.*;
-import arc.scene.event.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
@@ -27,13 +25,12 @@ import mindustry.ui.*;
 import mindustry.world.*;
 
 import static MinerTools.MinerFuncs.*;
-import static MinerTools.MinerVars.*;
-import static MinerTools.input.ModBinding.*;
+import static MinerTools.MinerVars.desktop;
+import static MinerTools.input.ModBinding.buildBlocks;
 import static MinerTools.ui.MStyles.rclearTransi;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.content.Blocks.*;
-import static mindustry.content.Items.copper;
 import static mindustry.content.UnitTypes.*;
 import static mindustry.ui.Styles.*;
 
@@ -41,8 +38,6 @@ public class TeamsInfo extends Table{
     public static int dropHeat = 35;
     public static float fontScale = 0.75f;
     public static float imgSize = iconSmall * fontScale;
-
-    private final DropSettingDialog dropSetting = new DropSettingDialog();
 
     private Table main;
 
@@ -105,24 +100,6 @@ public class TeamsInfo extends Table{
             ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), rclearTransi, 25, MinerFuncs::rebuildBlocks)
             .name("rebuildBlocks").get();
 
-            /* 结构尚未优化 慎用 */
-            ImageButton dropButton = buttons.button(new TextureRegionDrawable(copper.uiIcon), rclearTransi, 25, MinerFuncs::dropItems)
-            .name("dropItems").get();
-
-            dropButton.changed(() -> {
-                if(lastDropItem != null){
-                    dropButton.replaceImage(new Image(lastDropItem.uiIcon));
-                }
-            });
-
-            dropButton.addListener(new ElementGestureListener(){
-                @Override
-                public boolean longPress(Element actor, float x, float y){
-                    dropSetting.show();
-                    return true;
-                }
-            });
-
             buttons.button(Icon.list, rclearTransi, () -> MUI.showTableAt(table -> {
                 table.background(black6);
                 table.defaults().grow().size(90f, 50f);
@@ -148,10 +125,6 @@ public class TeamsInfo extends Table{
 
                     if(input.keyDown(buildBlocks)){
                         rebuildBlocks();
-                    }
-
-                    if(timer.get(1, dropHeat) && input.keyDown(dropItem)){
-                        dropButton.fireClick();
                     }
                 });
             }
