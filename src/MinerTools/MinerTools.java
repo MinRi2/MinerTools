@@ -11,7 +11,7 @@ import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 
-import static MinerTools.MinerFuncs.*;
+import static MinerTools.MinerFunc.*;
 import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.updateConveyor;
 import static arc.Core.input;
@@ -41,7 +41,7 @@ public class MinerTools extends Mod{
         Events.on(EventType.WorldLoadEvent.class, e -> {
             Timer.schedule(PowerInfo::load, 1f);
 
-            Timer.schedule(MinerFuncs::showBannedInfo, 2f);
+            Timer.schedule(MinerFunc::showBannedInfo, 2f);
         });
 
         Events.run(Trigger.update, this::update);

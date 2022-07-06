@@ -24,7 +24,7 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 
-import static MinerTools.MinerFuncs.*;
+import static MinerTools.MinerFunc.*;
 import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.buildBlocks;
 import static MinerTools.ui.MStyles.rclearTransi;
@@ -97,7 +97,7 @@ public class TeamsInfo extends Table{
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
             }
 
-            ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), rclearTransi, 25, MinerFuncs::rebuildBlocks)
+            ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), rclearTransi, 25, MinerFunc::rebuildBlocks)
             .name("rebuildBlocks").get();
 
             buttons.button(Icon.list, rclearTransi, () -> MUI.showTableAt(table -> {

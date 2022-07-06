@@ -10,11 +10,13 @@ public abstract class BaseRender<T extends BaseDrawer<?>>{
     Seq<T> enableDrawers;
     Seq<T> enableCameraDrawers;
 
+    @SuppressWarnings("unchecked")
     public final BaseRender<T> addDrawers(T... drawers){
         allGlobalDrawers.addAll(drawers);
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public final BaseRender<T> addCameraDrawers(T... drawers){
         allCameraDrawers.addAll(drawers);
         return this;

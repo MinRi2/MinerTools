@@ -27,6 +27,7 @@ public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void tryDraw(Building building){
         if(blocks != null && !blocks.contains(building.block.id)) return;
 
