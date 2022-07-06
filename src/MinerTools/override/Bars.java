@@ -96,6 +96,7 @@ public class Bars{
         ));
     }
 
+    @SuppressWarnings("unchecked")
     private static <T extends Building> void addLiquidBar(Block block, Func<T, Liquid> current){
         block.addBar("liquid", e -> new Bar(
         () -> {

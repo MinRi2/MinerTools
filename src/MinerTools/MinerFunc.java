@@ -29,7 +29,7 @@ import mindustry.world.blocks.distribution.Junction.*;
 import static MinerTools.content.Contents.*;
 import static arc.Core.*;
 
-public class MinerFuncs{
+public class MinerFunc{
     public static ObjectSet<Building> updatedBuildings = new ObjectSet<>();
 
     public static boolean enableUpdateConveyor;

@@ -32,7 +32,8 @@ public class MStats{
             map.get(value.stat, Seq::new).add(value);
         }
 
-        public final void addValues(BaseOverrider<T>... values){
+        @SuppressWarnings("unchecked")
+        public void addValues(BaseOverrider<T>... values){
             for(BaseOverrider<T> value : values){
                 addValue(value);
             }

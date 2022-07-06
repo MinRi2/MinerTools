@@ -65,7 +65,7 @@ public class PlayersList extends MemberTable{
 
         playersTable.table(t -> {
             /* players */
-            t.label(() -> "[#" + player.team().color + "]" + MinerFuncs.countPlayer(player.team()) + "[white] / " + Groups.player.size()).row();
+            t.label(() -> "[#" + player.team().color + "]" + MinerFunc.countPlayer(player.team()) + "[white] / " + Groups.player.size()).row();
 
             for(Player player : players){
                 t.table(info -> {
