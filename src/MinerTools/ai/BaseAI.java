@@ -1,6 +1,8 @@
 package MinerTools.ai;
 
+import mindustry.*;
 import mindustry.entities.units.*;
+import mindustry.input.*;
 
 public class BaseAI extends AIController{
     public static BaseAI controller;
@@ -9,7 +11,11 @@ public class BaseAI extends AIController{
         controller = this;
     }
 
-    protected void update(){}
+    protected void update(){
+        if(Vars.control.input instanceof MobileInput input){
+            input.movement.setZero();
+        }
+    }
 
     public static void resetController(){
         controller = null;

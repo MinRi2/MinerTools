@@ -2,7 +2,6 @@ package MinerTools.ai;
 
 import MinerTools.interfaces.*;
 import arc.scene.style.*;
-import arc.scene.style.Drawable;
 import arc.scene.ui.layout.*;
 
 import static mindustry.Vars.player;
@@ -24,6 +23,8 @@ public class PlayerAI extends BaseAI implements Displayable{
     public void updateTargeting(){}
 
     protected void update(){
+        super.update();
+
         if(unit == null || unit != player.unit()){
             unit(player.unit());
         }
