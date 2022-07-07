@@ -47,7 +47,7 @@ public class MinerVars{
         ui.init();
 
         betterUIScaleSetting();
-        betterSchemeSize();
+//        betterSchemeSize();
     }
 
     public static void betterUIScaleSetting(){
