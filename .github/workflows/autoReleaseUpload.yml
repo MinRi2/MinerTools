@@ -19,7 +19,8 @@ jobs:
       with:
         java-version: 17
     - name: Build mod jar
-      run: ./gradlew deploy
+      run: |
+        ./gradlew deploy
         mv build/libs/${{ github.event.repository.name }}.jar build/libs/${{ github.event.repository.name }}-136-${{ github.ref }}.jar
 
     - name: Upload
