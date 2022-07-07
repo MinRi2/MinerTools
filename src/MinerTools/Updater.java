@@ -25,7 +25,7 @@ public class Updater{
             ui.showCustomConfirm("@miner-tools.updater.name",
             Core.bundle.format("miner-tools.updater.info", mod.meta.version, version),
             "@miner-tools.updater.load", "@ok", () -> {
-                Reflect.invoke(ModsDialog.class, ui.mods, "githubImportJavaMod", new Object[]{repo}, String.class);
+                Reflect.invoke(ModsDialog.class, ui.mods, "githubImportJavaMod", new Object[]{repo, null}, String.class, String.class);
             }, () -> {});
         }, e -> {});
     }
