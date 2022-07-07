@@ -35,7 +35,7 @@ dependencies{
     annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 
 //    compileOnly 'com.github.Anuken.Arc:arc-core:29a4391826'
-    compileOnly 'com.github.Anuken.MindustryJitpack:core:c68e206e8a'
+    compileOnly 'com.github.Anuken.MindustryJitpack:core:64a42ef661'
 }
 
 task jarAndroid{
