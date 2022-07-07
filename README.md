@@ -141,3 +141,7 @@
 
 # 其他
 Mod的**90%功能**均可在**设置**中**打开或关闭**
+
+# 如何下载MinerTools[135]?
+1. 前往[Github-Actions](https://github.com/RlCCJ/MinerTools/actions?query=branch%3A135)点击**最新的构建**
+2. 在**Artifacts**里下载MinerTools[135]
