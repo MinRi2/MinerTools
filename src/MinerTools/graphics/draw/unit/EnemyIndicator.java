@@ -15,9 +15,6 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 
 import static mindustry.Vars.*;
 
-/**
- * 敌方单位指示器
- */
 public class EnemyIndicator extends UnitDrawer{
     public float defEnemyRadius;
 

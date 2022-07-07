@@ -18,7 +18,7 @@ import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class PlayersList extends MemberTable{
+public class PlayerList extends MemberTable{
     public static float buttonSize = 45f;
 
     private int lastSize;
@@ -28,7 +28,7 @@ public class PlayersList extends MemberTable{
 
     private Player target;
 
-    public PlayersList(){
+    public PlayerList(){
         super(Icon.players);
 
         ScrollPane pane = pane(noBarPane, playersTable).maxHeight(buttonSize * (mobile ? 5 : 8)).get();

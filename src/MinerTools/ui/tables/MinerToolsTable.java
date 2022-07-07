@@ -16,7 +16,7 @@ public class MinerToolsTable extends MembersTable{
     private boolean showInfo = true;
 
     public MinerToolsTable(){
-        addMember(new TeamChanger(), new PlayersList(), new Schematics(), new AITable());
+        addMember(new TeamChanger(), new PlayerList(), new SchematicList(), new AITable());
 
         setup();
     }
