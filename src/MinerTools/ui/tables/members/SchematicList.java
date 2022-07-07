@@ -20,7 +20,7 @@ import static arc.util.Scaling.fit;
 import static mindustry.Vars.ui;
 import static mindustry.ui.Styles.*;
 
-public class Schematics extends MemberTable{
+public class SchematicList extends MemberTable{
     public static float imageSize = 85f;
 
     private Table schematicsTable = new Table(black3);
@@ -32,7 +32,7 @@ public class Schematics extends MemberTable{
     private Field tagsField;
 
 
-    public Schematics(){
+    public SchematicList(){
         super(Icon.paste);
 
         try{

@@ -13,10 +13,10 @@ import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.ItemBridge.*;
 
-public class ItemBridgeSelect extends BuildDrawer<ItemBridgeBuild>{
+public class BridgeLinkedList extends BuildDrawer<ItemBridgeBuild>{
     private static final Seq<ItemBridgeBuild> currentBridges = new Seq<>();
 
-    public ItemBridgeSelect(){
+    public BridgeLinkedList(){
         super(block -> block instanceof ItemBridge);
     }
 

@@ -13,20 +13,19 @@
      * 队伍单位显示
      * 队伍全局电量(Tooltip显示详细电量情况)
 
-       ![img.png](.github/images/img.png)
+       ![img.png](.github/images/MinerToolsTable.png)
 
    * 一些有用的按钮
      * 暂停建造(**仅手机**)
      * 自动升级传送带
      * 重建方块
-     * 快捷放下物品(电脑长按h可持续放下)
      * 快捷投降
 
-       ![img_2.png](.github/images/img_2.png)
+       ![img_2.png](.github/images/UsefulButtons.png)
 
    * 换队/跳波器
 
-     ![img_1.png](.github/images/img_1.png)
+     ![img_1.png](.github/images/WaveSkipper.png)
 
    * 玩家列表
      * 所有玩家的名字
@@ -34,11 +33,11 @@
      * 可切换到玩家视角
      * 可一键投票踢出玩家
      
-     ![img_3.png](.github/images/img_3.png)
+     ![img_3.png](.github/images/PlayerList.png)
 
    * 快捷蓝图
 
-     ![img_4.png](.github/images/img_4.png)
+     ![img_4.png](.github/images/SchematicList.png)
 
    * 玩家AI
      * 挖矿AI
@@ -54,7 +53,7 @@
    * 玩家预建消耗显示
    * 可自定义的ui列数
 
-   ![img_5.png](.github/images/img_5.png)
+   ![img_5.png](.github/images/BetterCoreItemsDisplay.png)
 
 5. 更好的**信息面板**
    * **单位,建筑,地板信息一起显示!**
@@ -65,7 +64,7 @@
    * 地板
      * 显示更详尽
    
-   ![img_6.png](.github/images/img_6.png)
+   ![img_6.png](.github/images/BetterHoverInfoTable.png)
 
 ---
 
@@ -74,55 +73,60 @@
   * 选中
     * 异队选中信息
 
-      ![img_7.png](.github/images/img_7.png)
+      ![img_7.png](.github/images/BlockStatus.png)
 
     * 桥带连接详情
 
-      ![img_8.png](.github/images/img_8.png)
+      ![img_8.png](.github/images/BridgeLinkedInfo.png)
 
   * 建筑血条
   * 异队方块状态
 
-    ![img_9.png](.github/images/img_9.png)
+    ![img_9.png](.github/images/BuildHealthBar.png)
 
   * 构造方块耗材信息
 
-    ![img_10.png](.github/images/img_10.png)
+    ![img_10.png](.github/images/ConstructorBlockInfo.png)
 
   * 附近炮塔警戒
   * 物品炮塔子弹类型显示
 
-    ![img_11.png](.github/images/img_11.png)
+    ![img_11.png](.github/images/TurretAlert.png)
 
   * 单位工厂进度条
 
-    ![img_12.png](.github/images/img_12.png)
-
-* 单位
-  * 单位指示器(核心危险警告)
-
-    ![img_13.png](.github/images/img_13.png)
-
-  * 附近单位警戒
-
-    ![img_14.png](.github/images/img_14.png)
-
-  * 单位信息条
-    * 血条
-    * 立场回复条
-    * 单位状态条
-    * 荷载条
-
-    ![img_15.png](.github/images/img_15.png)
-
-* 玩家 
-  * 荷载拾放提示
+    ![img_12.png](.github/images/UnitBuildInfo.png)
   
-    ![img_16.png](img.png)
+  * 显示超速区域
   
-  * 玩家范围显示
+    ![img.png](.github/images/OverdriveZone.png)
+
+  * 单位
+    * 单位指示器(核心危险警告)
+
+      ![img_13.png](.github/images/EnemyIndicator.png)
+
+    * 附近单位警戒
+
+      ![img_14.png](.github/images/UnitAlert.png)
+
+    * 单位信息条
+      * 血条
+      * 立场回复条
+      * 单位状态条
+      * 荷载条
+
+      ![img_15.png](.github/images/UnitInfoBar.png)
+
+  * 玩家 
+    * 荷载拾放提示
   
-    ![img_1.png](img_1.png)
+      ![img_16.png](.github/images/PayloadHint.png)
+  
+    * 玩家范围显示
+  
+      ![img_17.png](.github/images/PlayerRange.png)
+    
 ---
 
 ## 其他小功能

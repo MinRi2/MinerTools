@@ -23,6 +23,8 @@ public class PlayerAI extends BaseAI implements Displayable{
     public void updateTargeting(){}
 
     protected void update(){
+        super.update();
+
         if(unit == null || unit != player.unit()){
             unit(player.unit());
         }

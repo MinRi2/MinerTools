@@ -26,7 +26,7 @@ public class Renderer{
 
         allRenderer.addAll(
         new SelectRender()
-            .addBuildDrawers(new ConstructBlockInfo(), new BuildSelect(), new ItemBridgeSelect()),
+            .addBuildDrawers(new ConstructBlockInfo(), new BuildSelect(), new BridgeLinkedList()),
 
         new BuildRender()
             .addDrawers(new TurretAlert())
