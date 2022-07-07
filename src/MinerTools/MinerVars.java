@@ -2,7 +2,6 @@ package MinerTools;
 
 import MinerTools.input.*;
 import MinerTools.io.*;
-import MinerTools.override.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.KeyBinds.*;
@@ -48,7 +47,7 @@ public class MinerVars{
         ui.init();
 
         betterUIScaleSetting();
-        betterSchemeSize();
+//        betterSchemeSize();
     }
 
     public static void betterUIScaleSetting(){
