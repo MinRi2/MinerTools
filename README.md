@@ -1,5 +1,7 @@
 试试[MI2-Utilities](https://github.com/BlackDeluxeCat/MI2-Utilities-Java/)!
 
+Miner的Mindustry群:757679470
+
 ---
 
 # 功能
