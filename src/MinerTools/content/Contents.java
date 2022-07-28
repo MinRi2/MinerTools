@@ -57,6 +57,9 @@ public class Contents{
 
                     Seq<UnitType> link = linkedUnits.find(seq -> seq.contains(from));
 
+                    // TODO better system
+                    if(link == null) continue;
+                    
                     link.add(to);
                 }
             }
