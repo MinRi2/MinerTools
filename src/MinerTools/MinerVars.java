@@ -1,19 +1,17 @@
 package MinerTools;
 
-import MinerTools.input.ModBinding;
-import MinerTools.io.MSettings;
-import MinerTools.ui.MUI;
-import arc.Core;
-import arc.KeyBinds.KeyBind;
-import arc.scene.ui.layout.Scl;
-import arc.util.Reflect;
-import mindustry.Vars;
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable;
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.Setting;
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.SliderSetting;
+import MinerTools.input.*;
+import MinerTools.io.*;
+import MinerTools.ui.*;
+import arc.*;
+import arc.KeyBinds.*;
+import arc.scene.ui.layout.*;
+import arc.util.*;
+import mindustry.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.*;
+import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 
-import static arc.Core.app;
-import static arc.Core.keybinds;
+import static arc.Core.*;
 import static mindustry.Vars.maxSchematicSize;
 
 public class MinerVars{
