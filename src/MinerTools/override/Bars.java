@@ -24,7 +24,7 @@ public class Bars{
 
     public static void override(Block block){
         block.addBar("health", e -> new Bar(
-        () -> String.format("%.2f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
+        () -> String.format("%.1f", e.health) + "/" + e.maxHealth + "(" + (int)(100 * e.healthf()) + "%" + ")",
         () -> Pal.health, e::healthf).blink(Color.white));
 
         if(block.hasLiquids){
