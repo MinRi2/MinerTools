@@ -42,7 +42,7 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
             fraction = reconBuild.fraction();
             conTime = (1 - reconBuild.fraction()) * reconstructor.constructTime / reconBuild.timeScale();
         }
-        conTime /= Vars.state.rules.unitBuildSpeed(build.team);q
+        conTime /= Vars.state.rules.unitBuildSpeed(build.team);
 
         float size = build.hitSize();
 
