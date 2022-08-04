@@ -42,7 +42,7 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
         float startX = x - size / 2f, startY = y + size / 2f;
         float endX = x + size / 2f;
 
-        Draw.z(Layer.blockOver + 0.2f + 0.1f);
+        Draw.z(Layer.power + 0.3f);
 
         MDrawf.drawProgressBar(
             startX, startY, endX, startY, fraction,
