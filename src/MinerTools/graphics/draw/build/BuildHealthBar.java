@@ -31,7 +31,7 @@ public class BuildHealthBar extends BuildDrawer<Building>{
 
         Draw.z(Layer.power - 1f);
 
-        if(building.damaged()){
+        if(build.damaged()){
             MDrawf.drawProgressBar(
                 startX, startY, endX, startY, build.healthf(),
                 backBarStroke, backBarAlpha, build.team.color,
