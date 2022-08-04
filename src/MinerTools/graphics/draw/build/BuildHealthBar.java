@@ -7,6 +7,8 @@ import arc.graphics.g2d.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.world.blocks.defense.*;
+import mindustry.world.blocks.defense.ShieldWall.*;
 
 public class BuildHealthBar extends BuildDrawer<Building>{
     public static float healthBarStroke = 1.7f, healthBarAlpha = 0.85f;
@@ -34,6 +36,20 @@ public class BuildHealthBar extends BuildDrawer<Building>{
             backBarStroke, backBarAlpha, build.team.color,
             healthBarStroke, healthBarAlpha, Pal.health
         );
+
+        startY += backBarStroke;
+
+        if(build instanceof ShieldWallBuild shieldWall){
+            ShieldWall block = (ShieldWall)shieldWall.block;
+
+            MDrawf.drawProgressBar(
+                startX, startY, endX, startY, shieldWall.shield / block.shieldHealth,
+                backBarStroke, backBarAlpha, shieldWall.team.color,
+                healthBarStroke, healthBarAlpha, Pal.shield
+            );
+
+            // start += backBarStroke;
+        }
 
         Draw.reset();
     }

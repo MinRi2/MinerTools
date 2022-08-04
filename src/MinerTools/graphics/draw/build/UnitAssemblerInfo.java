@@ -53,7 +53,7 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
         startY += backBarStroke;
 
         float scale = build.timeScale() * Vars.state.rules.unitBuildSpeed(build.team);
-        float time = (1 - fraction)  * build.plan().time * scale;
+        float time = (1 - fraction)  * build.plan().time / scale;
 
         float scl = block.size / 8f / 2f / Scl.scl(1f);
         MDrawf.drawText(Strings.autoFixed(time / 60, 1) + "s", scl, startX + size / 2, startY);

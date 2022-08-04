@@ -7,6 +7,7 @@ import arc.graphics.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.graphics.*;
 import mindustry.world.blocks.units.*;
 import mindustry.world.blocks.units.Reconstructor.*;
@@ -41,6 +42,7 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
             fraction = reconBuild.fraction();
             conTime = (1 - reconBuild.fraction()) * reconstructor.constructTime / reconBuild.timeScale();
         }
+        conTime /= Vars.state.rules.unitBuildSpeed(build.team);q
 
         float size = build.hitSize();
 
