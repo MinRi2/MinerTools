@@ -21,25 +21,27 @@ public class BuildHealthBar extends BuildDrawer<Building>{
 
     @Override
     public boolean isValid(Building building){
-        return super.isValid(building) && building.team != Team.derelict && building.damaged();
+        return super.isValid(building) && building.team != Team.derelict;
     }
 
     @Override
     protected void draw(Building build){
-        float startX = build.x - build.hitSize() / 2f + 5f, startY = build.y - build.hitSize() / 2f + backBarStroke;
-        float endX = build.x + build.hitSize() / 2f - 5f;
+        float startX = build.x - build.hitSize() / 2f + build.hitSize() / 6f, startY = build.y - build.hitSize() / 2f + backBarStroke;
+        float endX = build.x + build.hitSize() / 2f - build.hitSize() / 6f;
 
         Draw.z(Layer.power - 1f);
 
-        MDrawf.drawProgressBar(
-            startX, startY, endX, startY, build.healthf(),
-            backBarStroke, backBarAlpha, build.team.color,
-            healthBarStroke, healthBarAlpha, Pal.health
-        );
+        if(building.damaged()){
+            MDrawf.drawProgressBar(
+                startX, startY, endX, startY, build.healthf(),
+                backBarStroke, backBarAlpha, build.team.color,
+                healthBarStroke, healthBarAlpha, Pal.health
+            );
 
-        startY += backBarStroke;
+            startY += backBarStroke;
+        }
 
-        if(build instanceof ShieldWallBuild shieldWall){
+        if(build instanceof ShieldWallBuild shieldWall && shieldWall.shield > 0.001f){
             ShieldWall block = (ShieldWall)shieldWall.block;
 
             MDrawf.drawProgressBar(
