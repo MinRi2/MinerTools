@@ -3,9 +3,12 @@ package MinerTools.graphics.draw.build;
 import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
 import mindustry.world.blocks.defense.*;
 import mindustry.world.blocks.defense.OverdriveProjector.*;
+
+import static mindustry.Vars.renderer;
 
 public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
 
@@ -21,6 +24,14 @@ public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
     @Override
     public boolean isValid(OverdriveBuild building){
         return super.isValid(building) && building.canConsume();
+    }
+
+    @Override
+    public void drawShader(){
+        Draw.drawRange(MLayer.overdriveZone, 0.2f, () -> renderer.effectBuffer.begin(Color.clear), () -> {
+            renderer.effectBuffer.end();
+            renderer.effectBuffer.blit(MShaders.overdriveZone);
+        });
     }
 
     @Override

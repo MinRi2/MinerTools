@@ -48,12 +48,6 @@ public class Renderer{
         updateSettings();
 
         Events.run(Trigger.draw, () -> {
-
-            Draw.drawRange(MLayer.overdriveZone, 0.02f, () -> renderer.effectBuffer.begin(Color.clear), () -> {
-                renderer.effectBuffer.end();
-                renderer.effectBuffer.blit(MShaders.overdriveZone);
-            });
-
             for(BaseRender<?> render : allRenderer){
                 render.render();
             }

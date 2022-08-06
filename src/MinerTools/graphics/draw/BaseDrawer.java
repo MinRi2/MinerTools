@@ -25,6 +25,9 @@ public abstract class BaseDrawer<T extends Position>{
         return true;
     }
 
+    /* Draw Shader */
+    public void drawShader(){};
+
     /* Try to draw */
     public void tryDraw(T type){
         init();

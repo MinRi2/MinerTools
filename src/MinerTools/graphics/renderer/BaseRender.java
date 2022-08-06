@@ -41,6 +41,8 @@ public abstract class BaseRender<T extends BaseDrawer<?>>{
             var validDrawers = enableDrawers.select(BaseDrawer::isValid);
 
             if(validDrawers.any()){
+                drawShader(validDrawers);
+
                 globalRender(validDrawers);
             }
         }
@@ -49,12 +51,21 @@ public abstract class BaseRender<T extends BaseDrawer<?>>{
             var validCameraDrawers = enableCameraDrawers.select(BaseDrawer::isValid);
 
             if(validCameraDrawers.any()){
+                drawShader(validCameraDrawers);
+
                 cameraRender(validCameraDrawers);
             }
+        }
+    }
+
+    public void drawShader(Seq<T> validDrawers){
+        for(T drawer : validDrawers){
+            drawer.drawShader();
         }
     }
 
     public abstract void globalRender(Seq<T> validDrawers);
 
     public abstract void cameraRender(Seq<T> validDrawers);
+
 }
