@@ -19,13 +19,9 @@ import java.lang.reflect.*;
 import static mindustry.Vars.*;
 
 public class PowerInfo{
-    private static final Field graphEntityField;
+    private static final Field graphEntityField = MinerUtils.getField(PowerGraph.class, "entity");
 
     private static final Seq<PowerInfo> teamsInfo = new Seq<>();
-
-    static{
-        graphEntityField = MinerUtils.getField(PowerGraph.class, "entity");
-    }
 
     public Team team;
 
