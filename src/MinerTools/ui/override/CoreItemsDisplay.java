@@ -89,6 +89,12 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
             rebuild();
         }).change();
 
+        setting.sliderPref("meanSize", 60, 1, 60, 1, n -> {
+            windowSize = n;
+            setupMeans();
+            return n + "(tick)";
+        }).change();
+
         /* Add coreItems setting for mobile */
         if(mobile){
             var settings = ui.settings.graphics.getSettings();
@@ -100,16 +106,12 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private void setup(){
         override = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
         override.parent.touchable = Touchable.disabled;
-        
-        for(int i = 0; i < means.length; i++){
-            means[i] = new WindowedMean(windowSize);
-        }
 
         // Setup ui
         itemsInfoTable.update(() -> {
             CoreBuild core = Vars.player.team().core();
 
-            if(timer.get(60f)) updateItems();
+            updateItems();
 
             if(core != null){
                 this.core = core;
@@ -131,6 +133,12 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
                 rebuildPlanItems();
             }
         });
+    }
+
+    private void setupMeans(){
+        for(int i = 0; i < means.length; i++){
+            means[i] = new WindowedMean(windowSize);
+        }
     }
 
     public void resetUsed(){
