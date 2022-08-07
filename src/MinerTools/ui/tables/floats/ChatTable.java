@@ -95,7 +95,7 @@ public class ChatTable extends FloatTable{
 
         cont.table(table -> {
             textField = table.field("", fstyle, s -> {
-            }).padTop(15f).width(24f).grow().get();
+            }).padTop(15f).height(24f).grow().get();
 
             textField.setMessageText("Send Message");
             textField.setMaxLength(maxTextLength);
