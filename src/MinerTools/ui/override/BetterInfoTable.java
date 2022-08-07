@@ -25,9 +25,12 @@ import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
 import mindustry.ui.*;
+import mindustry.ui.fragments.*;
 import mindustry.world.*;
 import mindustry.world.blocks.logic.LogicBlock.*;
 import mindustry.world.modules.*;
+
+import java.lang.reflect.*;
 
 import static mindustry.Vars.*;
 
@@ -54,11 +57,15 @@ public class BetterInfoTable extends Table implements OverrideUI{
         }
     },
     buildInfo = new BaseInfoTable<Building>(){
+        final Field nextFlowBuildField = MinerUtils.getField(PlacementFragment.class, "nextFlowBuild");
+
         @Override
         public Building hovered(){
             Tile tile = Vars.world.tileWorld(Core.input.mouseWorldX(), Core.input.mouseWorldY());
 
             if(tile == null) return null;
+
+            MinerUtils.setValue(nextFlowBuildField, Vars.ui.hudfrag.blockfrag, tile.build);
 
             return tile.build;
         }
@@ -356,6 +363,14 @@ public class BetterInfoTable extends Table implements OverrideUI{
             }
         }).growX();
 
+        table.row();
+
+        if(type.logicControllable){
+            /* Unit flag always show */
+            table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
+            table.row();
+        }
+
         if(unit.controller() instanceof LogicAI ai){
             table.row();
 
@@ -367,14 +382,16 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
                 table.add(Blocks.microProcessor.emoji() + Tmp.v1.set(logicBuild)).growX().wrap().left();
             }
-        }
 
-        table.row();
+            if(net.active() && ai.controller != null && ai.controller.lastAccessed != null){
+                table.row();
 
-        if(type.logicControllable){
-            /* Unit flag always show */
-            table.label(() -> Iconc.settings + " " + (long)unit.flag + "").color(Color.lightGray).growX().wrap().left();
+                table.add(Core.bundle.format("lastaccessed", ai.controller.lastAccessed)).growX().wrap().left();
+            }
+        }else if(net.active() && unit.lastCommanded != null){
             table.row();
+
+            table.add(Core.bundle.format("lastcommanded", unit.lastCommanded)).growX().wrap().left();
         }
     }
 
