@@ -38,13 +38,16 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private boolean showPlanInfo;
 
     private final ObjectSet<Item> usedItems = new ObjectSet<>();
-    private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
-
+    private final ObjectSet<UnitType> usedUnits = new ObjectSet<>(); 
+    
+    /** 物品流动更新显示 */
     private int updateHeat;
     private int meanSize;
+    private float updateScl;
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
-
+    
+    /** PlanTable */
     private int lastTotal;
     private final ItemSeq planItems = new ItemSeq();
     private final ObjectIntMap<Block> planBlockCounter = new ObjectIntMap<>(){
@@ -92,6 +95,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
         setting.sliderPref("updateHeat", 60, 5, 600, 5, n -> {
             updateHeat = n;
+            updateScl = 60 / updateHeat;
             return n + "(tick)";
         }).change();
 
@@ -145,7 +149,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
     private void setupMeans(){
         for(int i = 0; i < means.length; i++){
-            means[i] = new WindowedMean(6);
+            means[i] = new WindowedMean(meanSize);
         }
     }
 
@@ -213,7 +217,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         for(Item item : content.items()){
             if(usedItems.contains(item)){
                 Label label = new Label(() -> {
-                    float update = means[item.id].mean();
+                    float update = means[item.id].mean() * updateScl;
                     if(update == 0) return "";
                     return (update < 0 ? "[red]" : "[green]+") + String.format("%.1f", update);
                 });
