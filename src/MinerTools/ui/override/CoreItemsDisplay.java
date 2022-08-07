@@ -93,7 +93,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
             rebuild();
         }).change();
 
-        setting.sliderPref("updateHeat", 60, 5, 600, 5, n -> {
+        setting.sliderPref("updateHeat", 60, 5, 150, 5, n -> {
             updateHeat = n;
             updateScl = 60 / updateHeat;
             return n + "(tick)";
