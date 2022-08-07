@@ -24,7 +24,6 @@ import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 
 public class CoreItemsDisplay extends Table implements OverrideUI{
-    public static int windowSize = 6;
     public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
     private static final Interval timer = new Interval();
 
@@ -41,6 +40,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private final ObjectSet<Item> usedItems = new ObjectSet<>();
     private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
 
+    private int updateHeat = 6;
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
 
@@ -89,8 +89,8 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
             rebuild();
         }).change();
 
-        setting.sliderPref("meanSize", 60, 1, 60, 1, n -> {
-            windowSize = n;
+        setting.sliderPref("updateHeat", 60, 5, 600, 5, n -> {
+            updateHeat = n;
             setupMeans();
             return n + "(tick)";
         }).change();
@@ -137,7 +137,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
     private void setupMeans(){
         for(int i = 0; i < means.length; i++){
-            means[i] = new WindowedMean(windowSize);
+            means[i] = new WindowedMean(updateHeat);
         }
     }
 
