@@ -40,7 +40,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private final ObjectSet<Item> usedItems = new ObjectSet<>();
     private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
 
-    private int updateHeat = 6;
+    private int updateHeat;
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
 
@@ -91,7 +91,6 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
         setting.sliderPref("updateHeat", 60, 5, 600, 5, n -> {
             updateHeat = n;
-            setupMeans();
             return n + "(tick)";
         }).change();
 
@@ -111,7 +110,9 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         itemsInfoTable.update(() -> {
             CoreBuild core = Vars.player.team().core();
 
-            updateItems();
+            if(timer.get(updateHeat)){
+                updateItems();
+            }
 
             if(core != null){
                 this.core = core;
@@ -137,7 +138,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
     private void setupMeans(){
         for(int i = 0; i < means.length; i++){
-            means[i] = new WindowedMean(updateHeat);
+            means[i] = new WindowedMean(6);
         }
     }
 
