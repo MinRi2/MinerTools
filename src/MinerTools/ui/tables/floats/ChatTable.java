@@ -95,7 +95,7 @@ public class ChatTable extends FloatTable{
 
         cont.table(table -> {
             textField = table.field("", fstyle, s -> {
-            }).padTop(15f).grow().get();
+            }).padTop(15f).width(24f).grow().get();
 
             textField.setMessageText("Send Message");
             textField.setMaxLength(maxTextLength);
@@ -107,7 +107,7 @@ public class ChatTable extends FloatTable{
                 textField.keyDown(KeyCode.down, this::historyShiftDown);
             }else{
                 table.table(buttons -> {
-                    buttons.defaults().width(25f).growY();
+                    buttons.defaults().size(36f).growY();
 
                     buttons.button(Icon.modeAttackSmall, clearNonei, this::sendMessage);
                     buttons.button(Icon.copySmall, clearNoneTogglei, this::toggleCopyMode).checked(b -> copyMode);
