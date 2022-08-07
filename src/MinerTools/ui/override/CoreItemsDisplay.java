@@ -41,6 +41,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
 
     private int updateHeat;
+    private int meanSize;
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
 
@@ -92,6 +93,12 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         setting.sliderPref("updateHeat", 60, 5, 600, 5, n -> {
             updateHeat = n;
             return n + "(tick)";
+        }).change();
+
+        setting.sliderPref("meanSize", 6, 1, 15, 1, n -> {
+            meanSize = n;
+            setupMeans();
+            return "" + n;
         }).change();
 
         /* Add coreItems setting for mobile */
