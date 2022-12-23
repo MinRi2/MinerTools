@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.members;
 
 import MinerTools.*;
+import MinerTools.override.*;
 import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
 import arc.*;
@@ -95,6 +96,12 @@ public class TeamsInfo extends Table{
                 .name("stopBuilding").checked(b -> control.input.isBuilding);
                 buttons.button(Icon.distribution, emptyTogglei, () -> enableUpdateConveyor = !enableUpdateConveyor)
                 .name("updateConveyor").checked(b -> enableUpdateConveyor);
+                buttons.button(Icon.play, emptyTogglei, ObserverMode::toggle)
+                .name("observerMode").checked(b -> {
+                    boolean o = ObserverMode.isObserving();
+                    b.getImage().setDrawable(o ? Icon.play : Icon.pause);
+                    return o;
+                });
             }
 
             ImageButton rebuildButton = buttons.button(new TextureRegionDrawable(poly.uiIcon), rclearTransi, 25, MinerFunc::rebuildBlocks)
