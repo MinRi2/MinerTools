@@ -22,9 +22,12 @@ import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.distribution.Conveyor.*;
+import mindustry.world.blocks.distribution.Duct.*;
+import mindustry.world.blocks.distribution.DuctBridge.*;
+import mindustry.world.blocks.distribution.DuctRouter.*;
 import mindustry.world.blocks.distribution.ItemBridge.*;
 import mindustry.world.blocks.distribution.Junction.*;
+import mindustry.world.blocks.distribution.Router.*;
 
 import static MinerTools.content.Contents.*;
 import static arc.Core.*;
@@ -58,30 +61,49 @@ public class MinerFunc{
         /* StackOverflowError */
         if(!updatedBuildings.add(start)) return;
 
-        if(start.block != type){
-            Vars.player.unit().addBuild(new BuildPlan(start.tileX(), start.tileY(), start.rotation, type));
-        }
+        Building build = null;
+        if(start instanceof ChainedBuilding chainedBuild){
+            build = chainedBuild.next();
+        }else if(start instanceof DuctBuild duct){
+            build = duct.next;
+        }else if(start instanceof JunctionBuild junction){
+            build = junction.nearby(junction.rotation);
+        }else if(start instanceof RouterBuild || start instanceof DuctRouterBuild){
+            for(Building building : start.proximity){
+                tryUpdateConveyor(building, type);
+            }
+        }else if(start instanceof DuctBridgeBuild duct){
+            Building other = duct.findLink();
 
-        if(start instanceof ChainedBuilding chainedBuild && chainedBuild.next() != null){
-            tryUpdateConveyor(chainedBuild.next(), type);
-        }else if(start instanceof ConveyorBuild build && build.next != null && build.next.team == build.team){
-            if(build.next instanceof JunctionBuild junction){
-                Building building = junction.nearby(build.rotation);
-
-                if(building != null) tryUpdateConveyor(building, type);
-            }else if(build.next instanceof ItemBridgeBuild bridge){
-                Tile otherTile = Vars.world.tile(bridge.link);
-                ItemBridge block = (ItemBridge)bridge.block;
-
-                if(block.linkValid(bridge.tile, otherTile)){
-                    ItemBridgeBuild other = (ItemBridgeBuild)otherTile.build;
-
-                    for(Building building : other.proximity){
-                        tryUpdateConveyor(building, type);
-                    }
+            if(other != null){
+                for(Building building : other.proximity){
+                    tryUpdateConveyor(building, type);
                 }
             }
+
+            return;
+        }else if(start instanceof ItemBridgeBuild bridge){
+            Tile otherTile = Vars.world.tile(bridge.link);
+            ItemBridge block = (ItemBridge)bridge.block;
+
+            if(block.linkValid(bridge.tile, otherTile)){
+                ItemBridgeBuild other = (ItemBridgeBuild)otherTile.build;
+
+                for(Building building : other.proximity){
+                    tryUpdateConveyor(building, type);
+                }
+            }
+
+            return;
         }
+
+        if(build == null || build.team != start.team){
+            return;
+        }
+
+        Vars.player.unit().addBuild(new BuildPlan(start.tileX(), start.tileY(), start.rotation, type));
+
+        tryUpdateConveyor(build, type);
     }
 
     public static void tryPanToController(){
