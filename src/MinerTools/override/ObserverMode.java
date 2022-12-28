@@ -24,7 +24,7 @@ public class ObserverMode{
 
     public static void mobileObserver(){
         if(Vars.control.input instanceof MobileInput input){
-            if(oldMovement != input.movement){
+            if(oldMovement == null){
                 oldMovement = input.movement;
             }
 
