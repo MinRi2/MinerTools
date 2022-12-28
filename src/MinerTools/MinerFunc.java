@@ -84,19 +84,19 @@ public class MinerFunc{
         }else if(start instanceof JunctionBuild junction){
             if(type instanceof StackConveyor){
                 addPlan(start, type, rotation);
-                return;
             }
 
             build = junction.nearby(rotation);
         }else if(start instanceof RouterBuild || start instanceof DuctRouterBuild || start instanceof SorterBuild || start instanceof OverflowDuctBuild || start instanceof OverflowGateBuild){
             if(type instanceof StackConveyor && !(start instanceof StackRouterBuild)){
                 addPlan(start, type, rotation);
-                return;
             }
 
             for(Building building : start.proximity){
                 tryUpdateConveyor(building, type, start.relativeTo(building));
             }
+            
+            return;
         }else if(start instanceof DuctBridgeBuild duct){
             DuctBridgeBuild other = (DuctBridgeBuild)duct.findLink();
 
