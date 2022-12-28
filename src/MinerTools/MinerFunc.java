@@ -64,43 +64,44 @@ public class MinerFunc{
 
         Block type = Vars.control.input.block;
         if(type != null && type.group == BlockGroup.transportation && target.block.size == type.size){
-            tryUpdateConveyor(target, type);
+            tryUpdateConveyor(target, type, target.rotation);
             updatedBuildings.clear();
         }
     }
 
-    public static void tryUpdateConveyor(Building start, Block type){
+    public static void tryUpdateConveyor(Building start, Block type, int rotation){
         /* StackOverflowError */
         if(!updatedBuildings.add(start)) return;
 
         Building build = null;
         if(start instanceof ConveyorBuild || start instanceof DuctBuild || start instanceof StackConveyorBuild){
-            build = start.nearby(start.rotation);
-            addPlan(start, type);
+            rotation = start.rotation;
+            build = start.nearby(rotation);
+            addPlan(start, type, rotation);
         }else if(start instanceof JunctionBuild junction){
             if(type instanceof StackConveyor){
-                addPlan(start, type);
+                addPlan(start, type, rotation);
+                return;
             }
 
-            build = junction.nearby(junction.rotation);
+            build = junction.nearby(rotation);
         }else if(start instanceof RouterBuild || start instanceof DuctRouterBuild){
             if(type instanceof StackConveyor && !(start instanceof StackRouterBuild)){
-                addPlan(start, type);
+                addPlan(start, type, rotation);
+                return;
             }
 
             for(Building building : start.proximity){
-                tryUpdateConveyor(building, type);
+                tryUpdateConveyor(building, type, start.relativeTo(building));
             }
         }else if(start instanceof DuctBridgeBuild duct){
             DuctBridgeBuild other = (DuctBridgeBuild)duct.findLink();
 
             if(other != null){
-                if(other.findLink() != null){
-                    tryUpdateConveyor(other, type);
-                }else{
-                    for(Building building : other.proximity){
-                        tryUpdateConveyor(building, type);
-                    }
+                tryUpdateConveyor(other, type, start.rotation);
+            }else{
+                for(Building building : start.proximity){
+                    tryUpdateConveyor(building, type, start.relativeTo(building));
                 }
             }
 
@@ -111,13 +112,10 @@ public class MinerFunc{
 
             if(block.linkValid(bridge.tile, otherTile)){
                 ItemBridgeBuild other = (ItemBridgeBuild)otherTile.build;
-
-                if(block.linkValid(other.tile, Vars.world.tile(other.link))){
-                    tryUpdateConveyor(other, type);
+                tryUpdateConveyor(other, type, start.rotation);
                 }else{
-                    for(Building building : other.proximity){
-                        tryUpdateConveyor(building, type);
-                    }
+                for(Building building : start.proximity){
+                    tryUpdateConveyor(building, type, start.relativeTo(building));
                 }
             }
 
@@ -128,11 +126,11 @@ public class MinerFunc{
             return;
         }
 
-        tryUpdateConveyor(build, type);
+        tryUpdateConveyor(build, type, rotation);
     }
 
-    public static void addPlan(Building build, Block type){
-        Vars.player.unit().addBuild(new BuildPlan(build.tileX(), build.tileY(), build.rotation, type));
+    public static void addPlan(Building build, Block type, int rotation){
+        Vars.player.unit().addBuild(new BuildPlan(build.tileX(), build.tileY(), rotation, type));
     }
 
     public static void tryPanToController(){
