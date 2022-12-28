@@ -66,7 +66,7 @@ public class MinerFunc{
         if(target == null) return;
 
         Block type = Vars.control.input.block;
-        if(type != null && type.group == BlockGroup.transportation && target.block.size == type.size){
+        if(type != null && (type instanceof Conveyor || type instanceof StackConveyor || type instanceof Duct || type instanceof Junction) && target.block.size == type.size){
             tryUpdateConveyor(target, type, target.rotation);
             updatedBuildings.clear();
         }
