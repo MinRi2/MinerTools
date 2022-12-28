@@ -20,7 +20,6 @@ import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
-import mindustry.world.blocks.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
 import mindustry.world.blocks.distribution.Duct.*;
 import mindustry.world.blocks.distribution.DuctBridge.*;
@@ -31,6 +30,7 @@ import mindustry.world.blocks.distribution.Junction.*;
 import mindustry.world.blocks.distribution.Router.*;
 import mindustry.world.blocks.distribution.StackConveyor.*;
 import mindustry.world.blocks.distribution.StackRouter.*;
+import mindustry.world.meta.*;
 
 import static MinerTools.content.Contents.*;
 import static arc.Core.*;
@@ -39,6 +39,7 @@ public class MinerFunc{
     public static ObjectSet<Building> updatedBuildings = new ObjectSet<>();
 
     public static boolean enableUpdateConveyor;
+    public static Vec2 lastPos = new Vec2();
 
     private static final ObjectMap<Category, Seq<Block>> catBlockMap = new ObjectMap<>();
 
@@ -52,10 +53,18 @@ public class MinerFunc{
 
     public static void tryUpdateConveyor(){
         Vec2 pos = input.mouseWorld(input.mouseX(), input.mouseY());
+
+        if(pos.equals(lastPos)) return;
+
+        lastPos.set(pos);
+
         Building target = Vars.world.build(World.toTile(pos.x), World.toTile(pos.y));
-        if(Vars.control.input.block instanceof Autotiler && target != null){
-            updatedBuildings.clear();
-            tryUpdateConveyor(target, Vars.control.input.block);
+
+        if(target == null) return;
+
+        Block type = Vars.control.input.block;
+        if(type.group == BlockGroup.transportation && target.block.size == type.size){
+            tryUpdateConveyor(target, type);
             updatedBuildings.clear();
         }
     }
@@ -83,11 +92,15 @@ public class MinerFunc{
                 tryUpdateConveyor(building, type);
             }
         }else if(start instanceof DuctBridgeBuild duct){
-            Building other = duct.findLink();
+            DuctBridgeBuild other = (DuctBridgeBuild)duct.findLink();
 
             if(other != null){
-                for(Building building : other.proximity){
-                    tryUpdateConveyor(building, type);
+                if(other.findLink() != null){
+                    tryUpdateConveyor(other, type);
+                }else{
+                    for(Building building : other.proximity){
+                        tryUpdateConveyor(building, type);
+                    }
                 }
             }
 
@@ -99,8 +112,12 @@ public class MinerFunc{
             if(block.linkValid(bridge.tile, otherTile)){
                 ItemBridgeBuild other = (ItemBridgeBuild)otherTile.build;
 
-                for(Building building : other.proximity){
-                    tryUpdateConveyor(building, type);
+                if(block.linkValid(other.tile, Vars.world.tile(other.link))){
+                    tryUpdateConveyor(other, type);
+                }else{
+                    for(Building building : other.proximity){
+                        tryUpdateConveyor(building, type);
+                    }
                 }
             }
 
