@@ -27,7 +27,10 @@ import mindustry.world.blocks.distribution.DuctRouter.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.ItemBridge.*;
 import mindustry.world.blocks.distribution.Junction.*;
+import mindustry.world.blocks.distribution.OverflowDuct.*;
+import mindustry.world.blocks.distribution.OverflowGate.*;
 import mindustry.world.blocks.distribution.Router.*;
+import mindustry.world.blocks.distribution.Sorter.*;
 import mindustry.world.blocks.distribution.StackConveyor.*;
 import mindustry.world.blocks.distribution.StackRouter.*;
 import mindustry.world.meta.*;
@@ -85,7 +88,7 @@ public class MinerFunc{
             }
 
             build = junction.nearby(rotation);
-        }else if(start instanceof RouterBuild || start instanceof DuctRouterBuild){
+        }else if(start instanceof RouterBuild || start instanceof DuctRouterBuild || start instanceof SorterBuild || start instanceof OverflowDuctBuild || start instanceof OverflowGateBuild){
             if(type instanceof StackConveyor && !(start instanceof StackRouterBuild)){
                 addPlan(start, type, rotation);
                 return;
