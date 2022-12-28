@@ -21,13 +21,16 @@ import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
 import mindustry.world.blocks.*;
-import mindustry.world.blocks.distribution.*;
+import mindustry.world.blocks.distribution.Conveyor.*;
 import mindustry.world.blocks.distribution.Duct.*;
 import mindustry.world.blocks.distribution.DuctBridge.*;
 import mindustry.world.blocks.distribution.DuctRouter.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.ItemBridge.*;
 import mindustry.world.blocks.distribution.Junction.*;
 import mindustry.world.blocks.distribution.Router.*;
+import mindustry.world.blocks.distribution.StackConveyor.*;
+import mindustry.world.blocks.distribution.StackRouter.*;
 
 import static MinerTools.content.Contents.*;
 import static arc.Core.*;
@@ -62,13 +65,20 @@ public class MinerFunc{
         if(!updatedBuildings.add(start)) return;
 
         Building build = null;
-        if(start instanceof ChainedBuilding chainedBuild){
-            build = chainedBuild.next();
-        }else if(start instanceof DuctBuild duct){
-            build = duct.next;
+        if(start instanceof ConveyorBuild || start instanceof DuctBuild || start instanceof StackConveyorBuild){
+            build = start.nearby(start.rotation);
+            addPlan(start, type);
         }else if(start instanceof JunctionBuild junction){
+            if(type instanceof StackConveyor){
+                addPlan(start, type);
+            }
+
             build = junction.nearby(junction.rotation);
         }else if(start instanceof RouterBuild || start instanceof DuctRouterBuild){
+            if(type instanceof StackConveyor && !(start instanceof StackRouterBuild)){
+                addPlan(start, type);
+            }
+
             for(Building building : start.proximity){
                 tryUpdateConveyor(building, type);
             }
@@ -101,9 +111,11 @@ public class MinerFunc{
             return;
         }
 
-        Vars.player.unit().addBuild(new BuildPlan(start.tileX(), start.tileY(), start.rotation, type));
-
         tryUpdateConveyor(build, type);
+    }
+
+    public static void addPlan(Building build, Block type){
+        Vars.player.unit().addBuild(new BuildPlan(build.tileX(), build.tileY(), build.rotation, type));
     }
 
     public static void tryPanToController(){
