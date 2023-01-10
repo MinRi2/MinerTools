@@ -3,6 +3,7 @@ package MinerTools;
 import MinerTools.ai.*;
 import MinerTools.content.*;
 import MinerTools.graphics.*;
+import MinerTools.modules.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.input.*;
@@ -33,7 +34,11 @@ public class MinerTools extends Mod{
 
             MinerVars.init();
 
+            Modules.init();
+
             Renderer.init();
+
+            Modules.load();
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
