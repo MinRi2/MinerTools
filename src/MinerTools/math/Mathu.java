@@ -6,7 +6,7 @@ import arc.util.*;
 public class Mathu{
 
     public static Vec2 getCentroid(float[] points, Vec2 out){
-        int size = points.length / 2;
+        int size = (points.length - 1) / 2;
         if(size == 0){
             return out.set(points[0], points[1]);
         }else if(size == 1){
