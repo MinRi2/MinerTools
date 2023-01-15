@@ -28,18 +28,17 @@ public class SpawnerGroup{
             int pos = spawnerPos.get(i);
             int px = Point2.x(pos), py = Point2.y(pos);
 
-            SpawnerGroup group = new SpawnerGroup().addSpawner(pos);
-            out.set(i, group);
+            SpawnerGroup group = out.get(i);
 
-            for(int j = i + 1; j < size; j++){
-                int otherPos = spawnerPos.get(j);
-                int ox = Point2.x(otherPos), oy = Point2.y(otherPos);
-
+            for(int j = i + 1; j < size; j++)
                 SpawnerGroup otherGroup = out.get(j);
 
                 if(otherGroup == group){
                     continue;
                 }
+                
+                int otherPos = spawnerPos.get(j);
+                int ox = Point2.x(otherPos), oy = Point2.y(otherPos);
 
                 if(Mathf.dst2(px, py, ox, oy) <= maxDst2){
                     group.addGroup(otherGroup);
