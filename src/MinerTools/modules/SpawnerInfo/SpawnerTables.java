@@ -89,7 +89,7 @@ public class SpawnerTables{
             Vec2 v1 = Tmp.v1.set(centroid);
             Vec2 v2 = Tmp.v2.set(worldCenter);
 
-            v2.sub(v1).setLength(length).inv().add(worldCenter);
+            v1.sub(v2).setLength(length).inv().add(centroid);
 
             Vec2 v3 = Core.input.mouseScreen(v2.x, v2.y);
             float startX = v3.x, startY = v3.y;
