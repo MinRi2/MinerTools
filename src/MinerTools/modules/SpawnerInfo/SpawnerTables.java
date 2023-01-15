@@ -86,12 +86,13 @@ public class SpawnerTables{
 
         @Override
         public void draw(){
-            Vec2 v1 = Tmp.v1.set(worldCenter);
-            Vec2 v2 = Tmp.v2.set(centroid);
+            // Vec2 v1 = Tmp.v1.set(worldCenter);
+            // Vec2 v2 = Tmp.v2.set(centroid);
 
-            v2.sub(v1).setLength(length).inv().add(centroid);
+            // v2.sub(v1).setLength(length).inv().add(centroid);
 
-            Vec2 v3 = Core.input.mouseScreen(v2.x, v2.y);
+            // Vec2 v3 = Core.input.mouseScreen(v2.x, v2.y);
+            Vec2 v3 = Core.input.mouseScreen(centroid.x, centroid.y);
             float startX = v3.x, startY = v3.y;
 
             Lines.stroke(3, Pal.accent);
