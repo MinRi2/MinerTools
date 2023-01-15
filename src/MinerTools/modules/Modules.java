@@ -1,5 +1,6 @@
 package MinerTools.modules;
 
+import MinerTools.modules.SpawnerInfo.*;
 import arc.struct.*;
 
 public class Modules{
