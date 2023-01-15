@@ -30,7 +30,7 @@ public class SpawnerGroup{
 
             SpawnerGroup group = out.get(i);
 
-            for(int j = i + 1; j < size; j++)
+            for(int j = i + 1; j < size; j++){
                 SpawnerGroup otherGroup = out.get(j);
 
                 if(otherGroup == group){
@@ -51,12 +51,16 @@ public class SpawnerGroup{
     }
 
     public SpawnerGroup addSpawner(int spawner){
-        spawnerPos.add(spawner);
+        if(!spawnerPos.contains(spawner)){
+            spawnerPos.add(spawner);
+        }
         return this;
     }
 
     public void addGroup(SpawnerGroup other){
-        spawnerPos.addAll(other.spawnerPos);
+        for(int spawner : other.spawnerPos.items){
+            addSpawner(spawner);
+        }
         other.spawnerPos.clear();
     }
 
