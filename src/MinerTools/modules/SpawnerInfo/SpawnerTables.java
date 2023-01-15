@@ -51,6 +51,8 @@ public class SpawnerTables{
         Vars.world.unitWidth() / 2f,
         Vars.world.unitHeight() / 2f
         );
+        
+        rebuild();
     }
 
     private void rebuild(){
