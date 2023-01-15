@@ -41,5 +41,7 @@ public class SpawnCounter{
 
     private void clear(){
         units.clear();
+        totalHealth = 0f;
+        totalShield = 0f;
     }
 }
