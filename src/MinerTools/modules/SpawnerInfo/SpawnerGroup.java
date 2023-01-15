@@ -70,6 +70,8 @@ public class SpawnerGroup{
 
     public Vec2 getCentroid(){
         if(centroid == null){
+            centroid = new Vec2();
+            
             float[] points = new float[spawnerPos.size * 2];
 
             for(int i = 0, size = spawnerPos.size; i < size; i++){
