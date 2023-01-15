@@ -1,5 +1,6 @@
 package MinerTools.modules.SpawnerInfo;
 
+import MinerTools.modules.SpawnerInfo.SpawnerInfo.*;
 import MinerTools.ui.*;
 import arc.*;
 import arc.graphics.g2d.*;
@@ -21,17 +22,16 @@ public class SpawnerTables{
     private final Group uiGroup = new WidgetGroup();
     private final Vec2 worldCenter = new Vec2();
     private int wave;
-    private Seq<SpawnGroup> spawnGroups;
-    private Seq<SpawnerGroup> groundGroups;
-    private Seq<SpawnerGroup> flyerGroups;
+    private GroupStat ground;
+    private GroupStat flyer;
 
-    public void setGroups(Seq<SpawnerGroup> groundGroups, Seq<SpawnerGroup> flyerGroups){
-        this.groundGroups = groundGroups;
-        this.flyerGroups = flyerGroups;
+    public void setGroupStats(GroupStat ground, GroupStat flyer){
+        this.ground = ground;
+        this.flyer = flyer;
     }
 
     public void setup(){
-        uiGroup.touchable = Touchable.childrenOnly;
+        uiGroup.touchable = Touchable.disabled;
         uiGroup.setFillParent(true);
         uiGroup.update(() -> {
             int currentWave = Vars.state.wave - 1;
@@ -45,8 +45,6 @@ public class SpawnerTables{
     }
 
     public void load(){
-        spawnGroups = Vars.state.rules.spawns;
-
         worldCenter.set(
         Vars.world.unitWidth() / 2f,
         Vars.world.unitHeight() / 2f
@@ -58,13 +56,13 @@ public class SpawnerTables{
     private void rebuild(){
         uiGroup.clear();
 
-        setupGroupTables(groundGroups);
-        setupGroupTables(flyerGroups);
+        setupGroupTables(ground);
+        setupGroupTables(flyer);
     }
 
-    private void setupGroupTables(Seq<SpawnerGroup> groups){
-        for(SpawnerGroup group : groups){
-            SpawnerInfoTable table = new SpawnerInfoTable(group);
+    private void setupGroupTables(GroupStat stat){
+        for(SpawnerGroup group : stat.groups){
+            SpawnerInfoTable table = new SpawnerInfoTable(group, stat.spawnGroups);
             uiGroup.addChild(table);
         }
     }
@@ -73,12 +71,14 @@ public class SpawnerTables{
         private static final float length = Vars.tilesize * 5;
 
         private final SpawnerGroup group;
+        private final Seq<SpawnGroup> spawnGroups;
         private final Vec2 centroid;
 
-        public SpawnerInfoTable(SpawnerGroup group){
+        public SpawnerInfoTable(SpawnerGroup group, Seq<SpawnGroup> spawnGroups){
             super((Drawable)null);
 
             this.group = group;
+            this.spawnGroups = spawnGroups;
             centroid = group.getCentroid();
 
             setup();
@@ -89,7 +89,7 @@ public class SpawnerTables{
             Vec2 v1 = Tmp.v1.set(centroid);
             Vec2 v2 = Tmp.v2.set(worldCenter);
 
-            v2.sub(v1).setLength(length).add(worldCenter);
+            v2.sub(v1).setLength(length).inv().add(worldCenter);
 
             Vec2 v3 = Core.input.mouseScreen(v2.x, v2.y);
             float startX = v3.x, startY = v3.y;
@@ -97,8 +97,8 @@ public class SpawnerTables{
             Lines.stroke(3, Pal.accent);
 
             for(int pos : group.spawnerPos.items){
-                float x = Point2.x(pos) * Vars.tilesize,
-                y = Point2.y(pos) * Vars.tilesize;
+                float x = Point2.x(pos) * Vars.tilesize;
+                float y = Point2.y(pos) * Vars.tilesize;
 
                 Vec2 pv = Core.input.mouseScreen(x, y);
 
@@ -111,8 +111,6 @@ public class SpawnerTables{
         }
 
         public void setup(){
-            touchable = Touchable.childrenOnly;
-
             top().left();
 
             table(Styles.black3, this::setupSpawnerInfoTable).growX().row();
@@ -130,8 +128,6 @@ public class SpawnerTables{
         }
 
         private void setupSpawnerInfoTable(Table table){
-            table.touchable = Touchable.disabled;
-
             table.image(Blocks.spawn.uiIcon).size(32);
             table.add("x" + group.spawnerPos.size);
         }
@@ -145,7 +141,7 @@ public class SpawnerTables{
                 t.left();
 
                 t.add(Core.bundle.get("nextWave")).color(Pal.lightishGray).style(Styles.outlineLabel);
-                t.add("" + wave + 1).color(Pal.accent).style(Styles.outlineLabel).padLeft(8);
+                t.add("" + (wave + 1)).color(Pal.accent).style(Styles.outlineLabel).padLeft(8);
             }).growX().row();
 
             table.table(null, unitTable -> {
@@ -184,7 +180,7 @@ public class SpawnerTables{
 
                 t.image(Icon.defense).size(32);
 
-                t.add(Core.bundle.get("nextWave")).color(Pal.lightishGray).style(Styles.outlineLabel);
+                t.add(Core.bundle.get("totalHealth")).color(Pal.lightishGray).style(Styles.outlineLabel);
                 t.add("" + counter.totalHealth).color(Pal.accent).style(Styles.outlineLabel).padLeft(8);
             }).growX().row();
 
@@ -193,7 +189,7 @@ public class SpawnerTables{
 
                 t.image(Icon.commandRally).size(32);
 
-                t.add(Core.bundle.get("nextWave")).color(Pal.lightishGray).style(Styles.outlineLabel);
+                t.add(Core.bundle.get("totalShield")).color(Pal.lightishGray).style(Styles.outlineLabel);
                 t.add("" + counter.totalShield).color(Pal.accent).style(Styles.outlineLabel).padLeft(8);
             }).growX().row();
         }

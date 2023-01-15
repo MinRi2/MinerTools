@@ -43,12 +43,6 @@ public class SpawnerRender{
     public void draw(){
         Draw.z(Layer.overlayUI);
 
-        for(Vec2 spawn : groundSpawners){
-            float spawnX = spawn.x, spawnY = spawn.y;
-
-            Lines.dashCircle(spawnX, spawnY, groundRange);
-        }
-
         for(Vec2 spawn : flyerSpawners){
             float spawnX = spawn.x, spawnY = spawn.y;
 

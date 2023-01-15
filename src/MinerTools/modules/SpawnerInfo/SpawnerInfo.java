@@ -9,6 +9,7 @@ import arc.struct.*;
 import mindustry.*;
 import mindustry.ai.*;
 import mindustry.core.*;
+import mindustry.game.*;
 import mindustry.game.EventType.*;
 
 import java.lang.reflect.*;
@@ -24,8 +25,10 @@ public class SpawnerInfo extends SettingModule{
     int.class, Floatc2.class
     );
 
-    private final GroupStat stat = new GroupStat();
-    private final SpawnerTables fragment = new SpawnerTables();
+    private final GroupStat ground = new GroupStat();
+    private final GroupStat flyer = new GroupStat();
+
+    private final SpawnerTables tables = new SpawnerTables();
     private final SpawnerRender render = new SpawnerRender();
 
     public int groundRange = 0;
@@ -56,29 +59,36 @@ public class SpawnerInfo extends SettingModule{
     public void load(){
         super.load();
 
-        fragment.setup();
+        tables.setup();
+        tables.setGroupStats(ground, flyer);
 
         Events.on(WorldLoadEvent.class, e -> {
-            groundRange = World.toTile(Vars.state.rules.dropZoneRadius);
-
-            loadSpawnerPos();
-
-            render.setRange(groundRange, flayerRange);
-            fragment.setGroups(stat.ground, stat.flyer);
-
-            fragment.load();
+            worldLoad();
         });
 
         Events.run(Trigger.draw, render::draw);
     }
 
-    private void loadSpawnerPos(){
+    private void worldLoad(){
+        ground.clear();
+        flyer.clear();
 
+        groundRange = World.toTile(Vars.state.rules.dropZoneRadius);
+
+        loadSpawnerPos();
+        loadSpawnGroups();
+
+        render.setRange(groundRange, flayerRange);
+
+        tables.load();
+    }
+
+    private void loadSpawnerPos(){
         eachGroundSpawn((spawnX, spawnY) -> {
             tmp.add(Point2.pack(spawnX, spawnY));
         });
 
-        stat.ground = SpawnerGroup.getSpawnerGroups(tmp, groundRange);
+        SpawnerGroup.getSpawnerGroups(ground.groups, tmp, groundRange);
         render.setGroundSpawners(tmp);
 
         tmp.clear();
@@ -87,15 +97,30 @@ public class SpawnerInfo extends SettingModule{
             tmp.add(Point2.pack(spawnX, spawnY));
         });
 
-        stat.flyer = SpawnerGroup.getSpawnerGroups(tmp, flayerRange);
+        SpawnerGroup.getSpawnerGroups(flyer.groups, tmp, flayerRange);
         render.setFlyerSpawners(tmp);
 
         tmp.clear();
     }
 
-    private static class GroupStat{
-        public Seq<SpawnerGroup> ground;
-        public Seq<SpawnerGroup> flyer;
+    private void loadSpawnGroups(){
+        for(SpawnGroup spawnGroup : Vars.state.rules.spawns){
+            if(spawnGroup.type.flying){
+                flyer.spawnGroups.add(spawnGroup);
+            }else{
+                ground.spawnGroups.add(spawnGroup);
+            }
+        }
+    }
+
+    static class GroupStat{
+        public Seq<SpawnerGroup> groups = new Seq<>();
+        public Seq<SpawnGroup> spawnGroups = new Seq<>();
+
+        public void clear(){
+            groups.clear();
+            spawnGroups.clear();
+        }
 
     }
 

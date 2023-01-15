@@ -5,18 +5,17 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.*;
+import mindustry.game.*;
 
 public class SpawnerGroup{
     public final IntSeq spawnerPos = new IntSeq();
     private Vec2 centroid = null;
 
-    public static Seq<SpawnerGroup> getSpawnerGroups(IntSeq rawSpawnerPos, int maxDst){
-        return handleSpawnerPos(rawSpawnerPos, maxDst);
+    public static void getSpawnerGroups(Seq<SpawnerGroup> groups, IntSeq rawSpawnerPos, int maxDst){
+        handleSpawnerPos(groups, rawSpawnerPos, maxDst);
     }
 
-    private static Seq<SpawnerGroup> handleSpawnerPos(IntSeq spawnerPos, int maxDst){
-        Seq<SpawnerGroup> out = new Seq<>();
-
+    private static void handleSpawnerPos(Seq<SpawnerGroup> out, IntSeq spawnerPos, int maxDst){
         for(int spawner : spawnerPos.items){
             out.add(new SpawnerGroup().addSpawner(spawner));
         }
@@ -50,8 +49,6 @@ public class SpawnerGroup{
         }
 
         out.distinct().filter(SpawnerGroup::isValid);
-
-        return out;
     }
 
     public SpawnerGroup addSpawner(int spawner){
