@@ -1,11 +1,14 @@
 package MinerTools.modules.SpawnerInfo;
 
+import arc.*;
+import arc.graphics.*;
 import arc.graphics.g2d.*;
+import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
+import arc.util.*;
+import mindustry.gen.*;
 import mindustry.graphics.*;
-
-import static mindustry.Vars.tilesize;
 
 public class SpawnerRender{
     private final Seq<Vec2> groundSpawners = new Seq<>();
@@ -13,40 +16,59 @@ public class SpawnerRender{
     private float groundRange = -1f;
     private float flyerRange = -1f;
 
-    public void setRange(int groundRange, int flyerRange){
-        this.groundRange = groundRange * tilesize;
-        this.flyerRange = flyerRange * tilesize;
+    private ObjectSet<Building> destroyBuildings = new ObjectSet<>();
+
+    public void setDestroyBuildings(ObjectSet<Building> buildings){
+        destroyBuildings = buildings;
     }
 
-    public void setGroundSpawners(IntSeq spawners){
-        groundSpawners.clear();
-
-        for(int pos : spawners.items){
-            int x = Point2.x(pos), y = Point2.y(pos);
-            float sx = x * tilesize, sy = y * tilesize;
-
-            groundSpawners.add(new Vec2(sx, sy));
-        }
+    public void setRange(float groundRange, float flyerRange){
+        this.groundRange = groundRange;
+        this.flyerRange = flyerRange;
     }
 
-    public void setFlyerSpawners(IntSeq spawners){
-        flyerSpawners.clear();
+    public void setGroundSpawners(Seq<Vec2> spawners){
+        groundSpawners.set(spawners);
+    }
 
-        for(int pos : spawners.items){
-            int x = Point2.x(pos), y = Point2.y(pos);
-            float sx = x * tilesize, sy = y * tilesize;
-
-            flyerSpawners.add(new Vec2(sx, sy));
-        }
+    public void setFlyerSpawners(Seq<Vec2> spawners){
+        flyerSpawners.set(spawners);
     }
 
     public void draw(){
+        drawFlyerRange();
+
+        if(!destroyBuildings.isEmpty()){
+            drawDestroyBuildings();
+        }
+    }
+
+    private void drawFlyerRange(){
         Draw.z(Layer.overlayUI);
 
         for(Vec2 spawn : flyerSpawners){
             float spawnX = spawn.x, spawnY = spawn.y;
 
             Lines.dashCircle(spawnX, spawnY, flyerRange);
+        }
+
+        Draw.reset();
+    }
+
+    private void drawDestroyBuildings(){
+        Draw.z(Layer.overlayUI);
+
+        Draw.color(Color.white, 0.4f);
+        Draw.mixcol(Pal.remove, 0.4f + Mathf.absin(Time.globalTime, 6f, 0.28f));
+
+        Rect bounds = Core.camera.bounds(Tmp.r1);
+        for(Building building : destroyBuildings){
+            if(!bounds.contains(building.x, building.y)){
+                continue;
+            }
+
+            float size = building.hitSize();
+            Fill.rect(building.x, building.y, size, size);
         }
 
         Draw.reset();

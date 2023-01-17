@@ -15,8 +15,10 @@ public class Mathu{
 
             return out.set(v1).mulAdd(v2.sub(v1), 0.5f);
         }else{
-            points[0] += 0.01f;
-            points[1] += 0.01f;
+            points[0] += 1f;
+            points[1] += 1.5f;
+            points[2] += 1.5f;
+            points[3] += 1f;
             return Geometry.polygonCentroid(points, 0, points.length, out);
         }
     }

@@ -17,7 +17,8 @@ import java.lang.reflect.*;
 import static mindustry.Vars.spawner;
 
 public class SpawnerInfo extends SettingModule{
-    private static final IntSeq tmp = new IntSeq();
+    // World Position
+    private static final Seq<Vec2> tmp = new Seq<>();
 
     private static final Method eachFlyerSpawnMethod = MinerUtils.getMethod(
     WaveSpawner.class,
@@ -29,10 +30,11 @@ public class SpawnerInfo extends SettingModule{
     private final GroupStat flyer = new GroupStat();
 
     private final SpawnerTables tables = new SpawnerTables();
+    private final DestroyBuildings destroy = new DestroyBuildings();
     private final SpawnerRender render = new SpawnerRender();
 
-    public int groundRange = 0;
-    public int flayerRange = 6;
+    public float groundRange = 0f;
+    public float flayerRange = 6 * Vars.tilesize;
 
     public SpawnerInfo(){
         super("spawnerInfo");
@@ -52,7 +54,7 @@ public class SpawnerInfo extends SettingModule{
 
     @Override
     public boolean isEnable(){
-        return super.isEnable() && spawner.countSpawns() < 30;
+        return super.isEnable() && spawner.countSpawns() <= 20;
     }
 
     @Override
@@ -62,45 +64,68 @@ public class SpawnerInfo extends SettingModule{
         tables.setup();
         tables.setGroupStats(ground, flyer);
 
+        render.setDestroyBuildings(destroy.getBuildings());
+
         Events.on(WorldLoadEvent.class, e -> {
-            worldLoad();
+            if(isEnable()){
+                Core.app.post(this::worldLoad);
+            }
         });
 
-        Events.run(Trigger.draw, render::draw);
+        Events.on(TilePreChangeEvent.class, e -> {
+            if(isEnable() && e.tile != null){
+                destroy.removeTile(e.tile);
+            }
+        });
+
+        Events.on(TileChangeEvent.class, e -> {
+            if(isEnable() && e.tile != null){
+                destroy.addTile(e.tile);
+            }
+        });
+
+        Events.run(Trigger.draw, () -> {
+            if(isEnable()){
+                render.draw();
+            }
+        });
     }
 
     private void worldLoad(){
         ground.clear();
         flyer.clear();
 
-        groundRange = World.toTile(Vars.state.rules.dropZoneRadius);
+        groundRange = Vars.state.rules.dropZoneRadius;
 
         loadSpawnerPos();
         loadSpawnGroups();
-
+        
+        destroy.setSpawnRange(groundRange);
         render.setRange(groundRange, flayerRange);
 
+        destroy.load();
         tables.load();
     }
 
     private void loadSpawnerPos(){
         eachGroundSpawn((spawnX, spawnY) -> {
-            tmp.add(Point2.pack(spawnX, spawnY));
+            tmp.add(new Vec2(spawnX * Vars.tilesize, spawnY * Vars.tilesize));
         });
 
-        SpawnerGroup.getSpawnerGroups(ground.groups, tmp, groundRange);
+        SpawnerGroup.getSpawnerGroups(ground.groups, tmp, groundRange * 2.5f);
         render.setGroundSpawners(tmp);
 
         tmp.clear();
         eachFlyerSpawn((spawnWorldX, spawnWorldY) -> {
-            int spawnX = World.toTile(spawnWorldX), spawnY = World.toTile(spawnWorldY);
-            tmp.add(Point2.pack(spawnX, spawnY));
+            tmp.add(new Vec2(spawnWorldX, spawnWorldY));
         });
 
-        SpawnerGroup.getSpawnerGroups(flyer.groups, tmp, flayerRange);
+        SpawnerGroup.getSpawnerGroups(flyer.groups, tmp, flayerRange * 2.5f);
         render.setFlyerSpawners(tmp);
 
         tmp.clear();
+        
+        destroy.setSpawners(spawner.getSpawns());
     }
 
     private void loadSpawnGroups(){

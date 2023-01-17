@@ -1,6 +1,8 @@
 package MinerTools.modules.SpawnerInfo;
 
+import arc.math.geom.*;
 import arc.struct.*;
+import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.type.*;
 
@@ -12,11 +14,13 @@ public class SpawnCounter{
     private SpawnCounter(){
     }
 
-    public static SpawnCounter count(Seq<SpawnGroup> spawnGroups, IntSeq spawnerPos, int wave){
+    public static SpawnCounter count(Seq<SpawnGroup> spawnGroups, Seq<Vec2> spawnerPos, int wave){
         counter.clear();
 
-        for(int pos : spawnerPos.items){
+        for(Vec2 worldPos: spawnerPos){
             for(SpawnGroup spawnGroup : spawnGroups){
+                int pos = Point2.pack(World.toTile(worldPos.x), World.toTile(worldPos.y));
+
                 if(!spawnGroup.canSpawn(pos)){
                     continue;
                 }

@@ -42,6 +42,7 @@ public class SpawnerTables{
         });
 
         Vars.ui.hudGroup.addChild(uiGroup);
+        uiGroup.toBack();
     }
 
     public void load(){
@@ -72,36 +73,37 @@ public class SpawnerTables{
 
         private final SpawnerGroup group;
         private final Seq<SpawnGroup> spawnGroups;
-        private final Vec2 centroid;
+        private final Vec2 position = new Vec2();
 
         public SpawnerInfoTable(SpawnerGroup group, Seq<SpawnGroup> spawnGroups){
             super((Drawable)null);
 
             this.group = group;
             this.spawnGroups = spawnGroups;
-            centroid = group.getCentroid();
+
+            initPosition(group.getCentroid());
 
             setup();
         }
 
+        private void initPosition(Vec2 centroid){
+            Vec2 v1 = Tmp.v1.set(worldCenter);
+            Vec2 v2 = Tmp.v2.set(centroid);
+
+            v2.sub(v1).setLength(length).inv().add(centroid);
+
+            position.set(v2);
+        }
+
         @Override
         public void draw(){
-            // Vec2 v1 = Tmp.v1.set(worldCenter);
-            // Vec2 v2 = Tmp.v2.set(centroid);
-
-            // v2.sub(v1).setLength(length).inv().add(centroid);
-
-            // Vec2 v3 = Core.input.mouseScreen(v2.x, v2.y);
-            Vec2 v3 = Core.input.mouseScreen(centroid.x, centroid.y);
+            Vec2 v3 = Core.input.mouseScreen(position.x, position.y);
             float startX = v3.x, startY = v3.y;
 
             Lines.stroke(3, Pal.accent);
 
-            for(int pos : group.spawnerPos.items){
-                float x = Point2.x(pos) * Vars.tilesize;
-                float y = Point2.y(pos) * Vars.tilesize;
-
-                Vec2 pv = Core.input.mouseScreen(x, y);
+            for(Vec2 pos : group.spawnerPos){
+                Vec2 pv = Core.input.mouseScreen(pos.x, pos.y);
 
                 Lines.line(startX, startY, pv.x, pv.y);
             }
@@ -118,11 +120,11 @@ public class SpawnerTables{
 
             table(Styles.black3, this::setupCounterTable).growX().row();
 
-            pane(Styles.noBarPane, this::setupDetailsTable)
-            .width(256).maxHeight(32 * 3.5f).scrollX(false);
+//            pane(Styles.noBarPane, this::setupDetailsTable)
+//            .width(256).maxHeight(32 * 3.5f).scrollX(false);
 
             update(() -> {
-                Vec2 v = Core.input.mouseScreen(centroid.x, centroid.y);
+                Vec2 v = Core.input.mouseScreen(position.x, position.y);
 
                 setPosition(v.x, v.y, Align.top);
             });
@@ -148,7 +150,7 @@ public class SpawnerTables{
             table.table(null, unitTable -> {
                 unitTable.left();
 
-                unitTable.add("总单位").color(Pal.lightishGray).style(Styles.outlineLabel);
+                unitTable.add(Core.bundle.get("totalUnits")).color(Pal.lightishGray).style(Styles.outlineLabel);
 
                 unitTable.table(null, container -> {
                     var map = counter.units;
