@@ -152,7 +152,7 @@ public class MinerFunc{
         var blocks = Vars.state.rules.bannedBlocks.toSeq();
         
         if(units.isEmpty() && blocks.isEmpty()){
-            return
+            return;
         }
         
         if(units.any()){
