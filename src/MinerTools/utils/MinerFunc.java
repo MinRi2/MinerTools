@@ -149,6 +149,12 @@ public class MinerFunc{
         t.touchable = Touchable.disabled;
 
         var units = Vars.state.rules.bannedUnits.toSeq();
+        var blocks = Vars.state.rules.bannedBlocks.toSeq();
+        
+        if(units.isEmpty() && blocks.isEmpty()){
+            return
+        }
+        
         if(units.any()){
             t.table(unitTable -> {
                 var seq = units;
@@ -179,7 +185,6 @@ public class MinerFunc{
             }).left().row();
         }
 
-        var blocks = Vars.state.rules.bannedBlocks.toSeq();
         if(blocks.any()){
             t.table(blockTable -> {
                 var seq = blocks;
