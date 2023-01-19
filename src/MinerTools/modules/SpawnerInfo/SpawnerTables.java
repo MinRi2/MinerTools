@@ -1,5 +1,6 @@
 package MinerTools.modules.SpawnerInfo;
 
+import MinerTools.modules.*;
 import MinerTools.modules.SpawnerInfo.SpawnerInfo.*;
 import MinerTools.ui.*;
 import arc.*;
@@ -14,23 +15,31 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.content.*;
 import mindustry.game.*;
+import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
-public class SpawnerTables{
+public class SpawnerTables extends SettingModule{
     private final Group uiGroup = new WidgetGroup();
     private final Vec2 worldCenter = new Vec2();
     private int wave;
     private GroupStat ground;
     private GroupStat flyer;
 
+    public SpawnerTables(SettingModule parent){
+        super(parent, "spawnerTables");
+    }
+
     public void setGroupStats(GroupStat ground, GroupStat flyer){
         this.ground = ground;
         this.flyer = flyer;
     }
 
-    public void setup(){
+    @Override
+    public void load(){
+        super.load();
+
         uiGroup.touchable = Touchable.disabled;
         uiGroup.setFillParent(true);
         uiGroup.update(() -> {
@@ -43,22 +52,29 @@ public class SpawnerTables{
 
         Vars.ui.hudGroup.addChild(uiGroup);
         uiGroup.toBack();
+        uiGroup.visible(this::isEnable);
     }
 
-    public void load(){
+    public void worldLoad(){
+        if(!isEnable()){
+            return;
+        }
+
         worldCenter.set(
         Vars.world.unitWidth() / 2f,
         Vars.world.unitHeight() / 2f
         );
-        
+
         rebuild();
     }
 
     private void rebuild(){
         uiGroup.clear();
 
-        setupGroupTables(ground);
-        setupGroupTables(flyer);
+        if(isEnable()){
+            setupGroupTables(ground);
+            setupGroupTables(flyer);
+        }
     }
 
     private void setupGroupTables(GroupStat stat){

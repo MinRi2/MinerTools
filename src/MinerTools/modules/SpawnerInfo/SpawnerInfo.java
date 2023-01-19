@@ -1,14 +1,13 @@
 package MinerTools.modules.SpawnerInfo;
 
-import MinerTools.*;
-import MinerTools.modules.AbstractModule.*;
+import MinerTools.modules.*;
+import MinerTools.utils.*;
 import arc.*;
 import arc.func.*;
 import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.ai.*;
-import mindustry.core.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 
@@ -29,15 +28,21 @@ public class SpawnerInfo extends SettingModule{
     private final GroupStat ground = new GroupStat();
     private final GroupStat flyer = new GroupStat();
 
-    private final SpawnerTables tables = new SpawnerTables();
-    private final DestroyBuildings destroy = new DestroyBuildings();
-    private final SpawnerRender render = new SpawnerRender();
+    private final SpawnerTables tables;
+    private final DestroyBuildings destroy;
+    private final SpawnerRange render;
+    private final SpawnerViewer viewer;
 
     public float groundRange = 0f;
     public float flayerRange = 6 * Vars.tilesize;
 
     public SpawnerInfo(){
         super("spawnerInfo");
+        
+        tables = new SpawnerTables(this);
+        destroy = new DestroyBuildings(this);
+        render = new SpawnerRange(this);
+        viewer = new SpawnerViewer(this);
     }
 
     public static void eachGroundSpawn(Intc2 intc2){
@@ -61,32 +66,11 @@ public class SpawnerInfo extends SettingModule{
     public void load(){
         super.load();
 
-        tables.setup();
         tables.setGroupStats(ground, flyer);
-
-        render.setDestroyBuildings(destroy.getBuildings());
 
         Events.on(WorldLoadEvent.class, e -> {
             if(isEnable()){
                 Core.app.post(this::worldLoad);
-            }
-        });
-
-        Events.on(TilePreChangeEvent.class, e -> {
-            if(isEnable() && e.tile != null){
-                destroy.removeTile(e.tile);
-            }
-        });
-
-        Events.on(TileChangeEvent.class, e -> {
-            if(isEnable() && e.tile != null){
-                destroy.addTile(e.tile);
-            }
-        });
-
-        Events.run(Trigger.draw, () -> {
-            if(isEnable()){
-                render.draw();
             }
         });
     }
@@ -94,6 +78,7 @@ public class SpawnerInfo extends SettingModule{
     private void worldLoad(){
         ground.clear();
         flyer.clear();
+        viewer.clear();
 
         groundRange = Vars.state.rules.dropZoneRadius;
 
@@ -103,8 +88,12 @@ public class SpawnerInfo extends SettingModule{
         destroy.setSpawnRange(groundRange);
         render.setRange(groundRange, flayerRange);
 
-        destroy.load();
-        tables.load();
+        viewer.addViewGroup(ground.groups);
+        viewer.addViewGroup(flyer.groups);
+
+        destroy.worldLoad();
+        tables.worldLoad();
+        viewer.worldLoad();
     }
 
     private void loadSpawnerPos(){

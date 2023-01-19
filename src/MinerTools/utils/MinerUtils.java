@@ -1,4 +1,4 @@
-package MinerTools;
+package MinerTools.utils;
 
 import arc.util.*;
 

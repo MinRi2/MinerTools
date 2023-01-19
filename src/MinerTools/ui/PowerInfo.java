@@ -1,6 +1,6 @@
 package MinerTools.ui;
 
-import MinerTools.*;
+import MinerTools.utils.*;
 import arc.*;
 import arc.math.*;
 import arc.struct.*;

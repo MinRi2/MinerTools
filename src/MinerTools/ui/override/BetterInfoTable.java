@@ -4,6 +4,7 @@ import MinerTools.*;
 import MinerTools.content.*;
 import MinerTools.interfaces.*;
 import MinerTools.ui.utils.*;
+import MinerTools.utils.*;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;

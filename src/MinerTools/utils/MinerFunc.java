@@ -1,4 +1,4 @@
-package MinerTools;
+package MinerTools.utils;
 
 import arc.math.*;
 import arc.math.geom.*;
@@ -33,7 +33,6 @@ import mindustry.world.blocks.distribution.Router.*;
 import mindustry.world.blocks.distribution.Sorter.*;
 import mindustry.world.blocks.distribution.StackConveyor.*;
 import mindustry.world.blocks.distribution.StackRouter.*;
-import mindustry.world.meta.*;
 
 import static MinerTools.content.Contents.*;
 import static arc.Core.*;

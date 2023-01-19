@@ -1,6 +1,5 @@
 package MinerTools.ui.tables.members;
 
-import MinerTools.*;
 import MinerTools.override.*;
 import MinerTools.ui.*;
 import MinerTools.ui.utils.*;
@@ -24,8 +23,9 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import MinerTools.utils.*;
 
-import static MinerTools.MinerFunc.*;
+import static MinerTools.utils.MinerFunc.*;
 import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.buildBlocks;
 import static MinerTools.ui.MStyles.rclearTransi;

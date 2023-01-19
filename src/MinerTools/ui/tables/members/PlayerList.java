@@ -1,6 +1,5 @@
 package MinerTools.ui.tables.members;
 
-import MinerTools.*;
 import MinerTools.ui.*;
 import MinerTools.ui.tables.MembersTable.*;
 import arc.*;
@@ -13,6 +12,7 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
+import MinerTools.utils.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;

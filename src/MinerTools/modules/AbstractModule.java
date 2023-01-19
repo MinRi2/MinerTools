@@ -1,48 +1,59 @@
 package MinerTools.modules;
 
-import MinerTools.*;
-import MinerTools.ui.settings.*;
+import arc.struct.*;
+import arc.util.*;
 
-public abstract class AbstractModule implements Module{
+public abstract class AbstractModule<T extends AbstractModule> implements Module{
     protected final String name;
-    private boolean enable = true;
+    protected boolean enable = true;
+
+    protected final T parent;
+    protected final ObjectSet<T> children = new ObjectSet<>();
 
     public AbstractModule(String name){
+        this(null, name);
+    }
+
+    public AbstractModule(T parent, String name){
+        this.parent = parent;
         this.name = name;
+        
+        if(parent != null){
+            parent.addChild(this);
+        }
+    }
+    
+    public void addChild(T child){
+        children.add(child);
     }
 
     @Override
     public boolean isEnable(){
-        return enable;
+        return enable && dependencyEnable();
     }
 
-    @Override
     public void setEnable(boolean enable){
         this.enable = enable;
+
+        if(this.enable){
+            enable();
+        }else{
+            disable();
+        }
     }
 
-    public static abstract class SettingModule extends AbstractModule{
+    public void toggle(){
+        setEnable(!enable);
+    }
 
-        public SettingModule(String name){
-            super(name);
-        }
+    public void enable(){
+    }
 
-        @Override
-        public void load(){
-            setSettings(MinerVars.ui.settings);
-        }
+    public void disable(){
+    }
 
-        protected void setSettings(MSettingsTable settings){
-            settings.game.addCategory("module." + name, categorySetting -> {
-                categorySetting.checkPref("module." + name + ".enable", true, this::setEnable);
-            });
-        }
-
-        @Override
-        public boolean isEnable(){
-            return MinerVars.settings.getBool("module." + name + ".enable", false);
-        }
-
+    protected boolean dependencyEnable(){
+        return parent == null || parent.isEnable();
     }
 
 }

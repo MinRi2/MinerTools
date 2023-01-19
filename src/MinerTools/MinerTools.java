@@ -11,8 +11,9 @@ import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
+import MinerTools.utils.*;
 
-import static MinerTools.MinerFunc.*;
+import static MinerTools.utils.MinerFunc.*;
 import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.updateConveyor;
 import static arc.Core.input;

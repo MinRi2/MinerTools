@@ -2,6 +2,8 @@ package MinerTools.ui.settings;
 
 import MinerTools.*;
 import MinerTools.ui.*;
+import MinerTools.ui.settings.BaseSetting.*;
+import MinerTools.ui.settings.CategorySetting.*;
 import MinerTools.ui.utils.*;
 import arc.*;
 import arc.func.*;
@@ -35,6 +37,17 @@ public class MSettingTable extends Table{
         });
     }
 
+    public CategorySetting addCategory(String name, Cons<CategorySetting> cons, CategoryBuilder builder){
+        CategorySetting category = new CategorySetting(this.name + "." + name);
+        categories.add(category);
+        category.setBuilder(builder);
+
+        cons.get(category);
+
+        rebuild();
+        return category;
+    }
+
     public CategorySetting addCategory(String name, Cons<CategorySetting> cons){
         CategorySetting category = new CategorySetting(this.name + "." + name);
         categories.add(category);
@@ -57,17 +70,7 @@ public class MSettingTable extends Table{
 
         if(categories.any()){
             for(CategorySetting category : categories){
-                table(t -> {
-                    t.button(category.localizedName(), MStyles.clearToggleTranst, category::toggle)
-                     .checked(b -> category.isShown()).growX();
-
-                    t.row();
-
-                    t.table(Tex.pane2, tt -> {
-                        tt.collapser(category, true, category::isShown).padTop(2f).top()
-                          .get().setDuration(0.4f);
-                    }).fillX();
-                }).padTop(5f).fillX().row();
+                table(category::build).padTop(8f).growX().top().row();
             }
         }
     }
@@ -102,131 +105,4 @@ public class MSettingTable extends Table{
         return name;
     }
 
-    public static class CategorySetting extends MSettingTable{
-        private boolean shown = true;
-
-        public CategorySetting(String name){
-            super(null, name);
-        }
-
-        public String localizedName(){
-            return Core.bundle.format("miner-tools.setting.category." + name() + ".name");
-        }
-
-        public void toggle(){
-            shown = !shown;
-        }
-
-        public boolean isShown(){
-            return shown;
-        }
-    }
-
-    public static abstract class BaseSetting{
-        String name, title, describe;
-
-        public BaseSetting(String name){
-            this.name = name;
-            title = bundle.get("miner-tools.setting." + name + ".name");
-            describe = bundle.get("miner-tools.setting." + name + ".describe");
-        }
-
-        public BaseSetting(String name, Object def){
-            this(name);
-
-            MinerVars.settings.put(name, def, true, true);
-        }
-
-        public abstract void add(Table table);
-
-        protected void addDesc(Element element){
-            if(!describe.startsWith("???") && !describe.endsWith("???")){
-                ElementUtils.addTooltip(element, describe, Align.topLeft, true);
-            }
-        }
-
-        protected void putSetting(Object value){
-            MinerVars.settings.put(name, value, false, true);
-        }
-    }
-
-    public static class CheckSetting extends BaseSetting{
-        private CheckBox box;
-
-        boolean def;
-        Boolc changed;
-
-        public CheckSetting(String name, boolean def, Boolc changed){
-            super(name, def);
-            this.def = def;
-            this.changed = changed;
-        }
-
-        @Override
-        public void add(Table table){
-            box = new CheckBox(title);
-
-            box.update(() -> box.setChecked(MinerVars.settings.getBool(name)));
-
-            box.changed(() -> {
-                putSetting(box.isChecked());
-
-                if(changed != null){
-                    changed.get(box.isChecked());
-                }
-            });
-
-            box.left();
-            addDesc(box);
-
-            table.add(box).left().padTop(3f);
-            table.row();
-        }
-
-        public void change(){
-            changed.get(MinerVars.settings.getBool(name));
-        }
-    }
-
-    public static class SliderSetting extends BaseSetting{
-        int def, min, max, step;
-        StringProcessor sp;
-
-        public SliderSetting(String name, int def, int min, int max, int step, StringProcessor s){
-            super(name, def);
-            this.def = def;
-            this.min = min;
-            this.max = max;
-            this.step = step;
-            this.sp = s;
-        }
-
-        @Override
-        public void add(Table table){
-            Slider slider = new Slider(min, max, step, false);
-
-            slider.setValue(MinerVars.settings.getInt(name));
-
-            Label value = new Label("", Styles.outlineLabel);
-            Table content = new Table();
-            content.add(title, Styles.outlineLabel).left().growX().wrap();
-            content.add(value).padLeft(10f).right();
-            content.margin(3f, 33f, 3f, 33f);
-            content.touchable = Touchable.disabled;
-
-            slider.changed(() -> {
-                putSetting((int)slider.getValue());
-                value.setText(sp.get((int)slider.getValue()));
-            });
-
-            slider.change();
-
-            addDesc(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
-            table.row();
-        }
-
-        public void change(){
-            sp.get(MinerVars.settings.getInt(name));
-        }
-    }
 }

@@ -2,6 +2,7 @@ package MinerTools.ui.settings;
 
 import MinerTools.graphics.*;
 import MinerTools.ui.tables.*;
+import arc.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import mindustry.*;
@@ -16,7 +17,7 @@ public class MSettingsTable extends Table implements Addable{
     private MSettingTable show;
     private final Table settingTableCont = new Table();
 
-    public MSettingTable game, graphics, ui;
+    public MSettingTable modules, graphics, ui;
 
     public MSettingsTable(){
         addSettings();
@@ -31,7 +32,7 @@ public class MSettingsTable extends Table implements Addable{
     }
 
     public void addSettings(){
-        game = new MSettingTable(Icon.list, "game"){
+        modules = new MSettingTable(Icon.list, "modules"){
         };
 
         graphics = new MSettingTable(Icon.image, "graphics"){
@@ -88,10 +89,12 @@ public class MSettingsTable extends Table implements Addable{
 
         ui = new MSettingTable(Icon.chat, "ui");
 
-        settingTables.addAll(game, graphics, ui);
+        settingTables.addAll(modules, graphics, ui);
     }
 
     private void setup(){
+        top();
+        
         table(t -> {
             t.table(table -> {
                 table.add("MinerToolsSettings").center();
@@ -112,13 +115,13 @@ public class MSettingsTable extends Table implements Addable{
                         }else{
                             show = null;
                         }
-                    }).grow().checked(b -> show == settingTable);
+                    }).padLeft(4f).size(70f, 68f).checked(b -> show == settingTable);
                 }
-            }).minSize(70f * settingTables.size, 48f).padTop(5f).padBottom(5f);
+            }).pad(5f);
         }).top();
 
         row();
 
-        add(settingTableCont).top();
+        add(settingTableCont).minSize(Core.graphics.getHeight() / 3f).top();
     }
 }

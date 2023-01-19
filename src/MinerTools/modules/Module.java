@@ -6,4 +6,5 @@ public interface Module{
     boolean isEnable();
 
     void setEnable(boolean enable);
+
 }
