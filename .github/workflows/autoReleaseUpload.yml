@@ -23,11 +23,11 @@ jobs:
     - name: Build mod jar
       run: |
         ./gradlew deploy
-        mv build/libs/${{ github.event.repository.name }}.jar build/libs/${{ github.event.repository.name }}-136-${{ env.RELEASE_VERSION }}.jar
+        mv build/libs/${{ github.event.repository.name }}.jar build/libs/${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.jar
 
     - name: Upload
       uses: svenstaro/upload-release-action@v2
       with:
         repo_token: ${{ secrets.TOKEN }}
-        file: build/libs/${{ github.event.repository.name }}-136-${{ env.RELEASE_VERSION }}.jar
+        file: build/libs/${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.jar
         tag: ${{ github.ref }}
