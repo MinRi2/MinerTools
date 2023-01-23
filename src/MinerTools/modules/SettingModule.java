@@ -12,13 +12,17 @@ import mindustry.graphics.*;
 import mindustry.ui.*;
 
 public abstract class SettingModule extends AbstractModule<SettingModule>{
+    public final String enableSettingName;
 
     public SettingModule(String name){
-        super(name);
+        this(null, name);
     }
 
     public SettingModule(SettingModule parent, String name){
         super(parent, name);
+        
+        enableSettingName = name + "Enable";
+        enable = MinerVars.settings.getBool(enableSettingName, true);
     }
 
     @Override
@@ -36,6 +40,18 @@ public abstract class SettingModule extends AbstractModule<SettingModule>{
         for(SettingModule child : children){
             settings.addCategory(child.name, child::setSettings, getBuilder(child));
         }
+    }
+    
+    @Override
+    public void setEnable(boolean enable){
+        super.setEnable(enable);
+        MinerVars.settings.put(enableSettingName, enable, true, true);
+    }
+        
+    @Override
+    public void toggle(){
+        boolean enable = !MinerVars.settings.getBool(enableSettingName, true);
+        setEnable(enable);
     }
 
     private static CategoryBuilder getBuilder(SettingModule module){
