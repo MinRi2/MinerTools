@@ -45,13 +45,13 @@ public abstract class SettingModule extends AbstractModule<SettingModule>{
     @Override
     public void setEnable(boolean enable){
         super.setEnable(enable);
-        MinerVars.settings.put(enableSettingName, enable, true, true);
+        MinerVars.settings.put(enableSettingName, enable, false, true);
     }
         
     @Override
     public void toggle(){
-        boolean enable = !MinerVars.settings.getBool(enableSettingName, true);
-        setEnable(enable);
+        boolean enable = MinerVars.settings.getBool(enableSettingName, true);
+        setEnable(!enable);
     }
 
     private static CategoryBuilder getBuilder(SettingModule module){
