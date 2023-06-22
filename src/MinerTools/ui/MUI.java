@@ -40,13 +40,12 @@ public class MUI{
     // Settings
     public MSettingsTable settings;
 
-    // MinerToolsTable
-    public MinerToolsTable minerToolsTable;
-
     // DraggableTable
 
     // FloatTable
     public ChatTable chat;
+    public ToolsFloatTable toolsTable;
+    public ScriptButtons scriptButtons;
 
     public MUI(){
     }
@@ -55,12 +54,13 @@ public class MUI{
         MStyles.load();
 
         addableTables.addAll(
-        settings = new MSettingsTable(),
-        minerToolsTable = new MinerToolsTable()
+        settings = new MSettingsTable()
         );
 
         floats.addAll(
-        chat = new ChatTable()
+        chat = new ChatTable(),
+        toolsTable = new ToolsFloatTable(),
+        scriptButtons = new ScriptButtons()
         );
 
         overrides.addAll(
@@ -100,7 +100,7 @@ public class MUI{
         }
     }
 
-    public static void showTableAt(Cons<Table> cons){
+    public static void showTableAtMouse(Cons<Table> cons){
         showTableAt(input.mouseX(), input.mouseY(), center, cons);
     }
 

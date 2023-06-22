@@ -1,4 +1,4 @@
-package MinerTools.override;
+package MinerTools.game;
 
 import arc.math.geom.*;
 import mindustry.*;

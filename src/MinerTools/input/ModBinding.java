@@ -1,13 +1,11 @@
 package MinerTools.input;
 
 import arc.KeyBinds.*;
-import arc.input.*;
 import arc.input.InputDevice.*;
+import arc.input.*;
 
 public enum ModBinding implements KeyBind{
-    buildBlocks(KeyCode.l, "MinerTools"),
-    dropItem(KeyCode.h),
-    updateConveyor(KeyCode.altLeft)
+    updateConveyor(KeyCode.altLeft, "MinerTools")
     ;
 
     private final KeybindValue defaultValue;

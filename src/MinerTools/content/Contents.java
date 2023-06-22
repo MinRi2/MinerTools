@@ -1,7 +1,7 @@
 package MinerTools.content;
 
-import MinerTools.override.*;
-import MinerTools.override.stats.*;
+import MinerTools.content.override.*;
+import MinerTools.content.override.stats.*;
 import arc.struct.*;
 import mindustry.type.*;
 import mindustry.world.*;

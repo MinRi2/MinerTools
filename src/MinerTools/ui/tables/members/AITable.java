@@ -48,7 +48,7 @@ public class AITable extends MemberTable{
                 buttons.button(ai.icon, Styles.clearNoneTogglei, 50f, () -> setTarget(ai))
                 .checked(b -> target == ai);
             }
-        }).right().row();
+        }).left().row();
 
         add(displayTable).growX();
     }

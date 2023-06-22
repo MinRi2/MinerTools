@@ -1,4 +1,4 @@
-package MinerTools.override.stats;
+package MinerTools.content.override.stats;
 
 import MinerTools.utils.*;
 import arc.*;

@@ -1,12 +1,8 @@
 package MinerTools.modules.SpawnerInfo;
 
 import MinerTools.math.*;
-import arc.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
-import arc.util.*;
-import mindustry.*;
-import mindustry.game.*;
 
 public class SpawnerGroup{
     public final Seq<Vec2> spawnerPos = new Seq<>();

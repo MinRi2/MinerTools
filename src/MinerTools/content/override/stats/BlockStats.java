@@ -1,6 +1,6 @@
-package MinerTools.override.stats;
+package MinerTools.content.override.stats;
 
-import MinerTools.override.stats.MStats.*;
+import MinerTools.content.override.stats.MStats.*;
 import mindustry.world.*;
 
 public class BlockStats extends StatOverride<Block>{

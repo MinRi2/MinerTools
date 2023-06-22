@@ -14,17 +14,16 @@ import mindustry.core.*;
 import mindustry.entities.*;
 import mindustry.entities.units.*;
 import mindustry.game.*;
-import mindustry.game.Teams.*;
 import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.type.*;
 import mindustry.ui.*;
 import mindustry.world.*;
+import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
 import mindustry.world.blocks.distribution.Duct.*;
 import mindustry.world.blocks.distribution.DuctBridge.*;
 import mindustry.world.blocks.distribution.DuctRouter.*;
-import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.ItemBridge.*;
 import mindustry.world.blocks.distribution.Junction.*;
 import mindustry.world.blocks.distribution.OverflowDuct.*;
@@ -228,17 +227,6 @@ public class MinerFunc{
         t.pack();
         t.act(0.1f);
         scene.add(t);
-    }
-
-    public static void rebuildBlocks(){
-        if(!Vars.player.unit().canBuild()) return;
-
-        int i = 0;
-        for(BlockPlan block : Vars.player.team().data().plans){
-            if(Mathf.len(block.x - Vars.player.tileX(), block.y - Vars.player.tileY()) >= Vars.buildingRange) continue;
-            if(++i > 511) break;
-            Vars.player.unit().addBuild(new BuildPlan(block.x, block.y, block.rotation, Vars.content.block(block.block), block.config));
-        }
     }
 
 }

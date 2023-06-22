@@ -2,20 +2,20 @@ package MinerTools;
 
 import MinerTools.ai.*;
 import MinerTools.content.*;
+import MinerTools.game.*;
 import MinerTools.graphics.*;
 import MinerTools.modules.*;
-import MinerTools.ui.*;
+import MinerTools.utils.*;
 import arc.*;
 import arc.input.*;
 import arc.util.*;
 import mindustry.game.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
-import MinerTools.utils.*;
 
-import static MinerTools.utils.MinerFunc.*;
 import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.updateConveyor;
+import static MinerTools.utils.MinerFunc.*;
 import static arc.Core.input;
 import static mindustry.Vars.*;
 
@@ -43,17 +43,16 @@ public class MinerTools extends Mod{
         });
 
         Events.on(EventType.WorldLoadEvent.class, e -> {
-            Timer.schedule(PowerInfo::load, 1f);
 
             Timer.schedule(MinerFunc::showBannedInfo, 2f);
         });
 
         Events.run(Trigger.update, this::update);
-
-        Timer.schedule(PowerInfo::updateAll, 1f, 3f);
     }
 
     public void update(){
+        PowerInfo.update();
+
         if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
             tryUpdateConveyor();
         }

@@ -36,7 +36,7 @@ public class TeamChanger extends MemberTable{
                 t.label(() -> skipWave + "Wave").padLeft(2f).get().setAlignment(Align.center);
             }).fillX().row();
             skipTable.slider(minSkipWave, maxSkipWave, 1, 0, n -> skipWave = (int)n).growX();
-        }).fillX().row();
+        }).grow().row();
 
         table(black6, t -> {
             int i = 0;

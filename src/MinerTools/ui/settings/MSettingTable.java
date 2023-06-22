@@ -1,24 +1,12 @@
 package MinerTools.ui.settings;
 
-import MinerTools.*;
-import MinerTools.ui.*;
 import MinerTools.ui.settings.BaseSetting.*;
 import MinerTools.ui.settings.CategorySetting.*;
-import MinerTools.ui.utils.*;
-import arc.*;
 import arc.func.*;
-import arc.scene.*;
-import arc.scene.event.*;
 import arc.scene.style.*;
-import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import arc.util.*;
-import mindustry.gen.*;
-import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
-
-import static arc.Core.bundle;
 
 public class MSettingTable extends Table{
     private final Drawable icon;
@@ -103,6 +91,10 @@ public class MSettingTable extends Table{
 
     public String name(){
         return name;
+    }
+
+    public boolean hasSetting(){
+        return settings.any() || categories.any();
     }
 
 }

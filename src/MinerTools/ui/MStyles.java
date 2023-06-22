@@ -2,7 +2,6 @@ package MinerTools.ui;
 
 import arc.graphics.*;
 import arc.scene.style.*;
-import arc.scene.ui.Button.*;
 import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.TextButton.*;
 import arc.scene.ui.TextField.*;
@@ -16,8 +15,7 @@ import static mindustry.ui.Styles.*;
 public class MStyles{
     public static TextureRegionDrawable whiteuiRegion, transAccentDrawable, clearFlatOver;
 
-    public static ButtonStyle clearToggleAccentb, logicVarTogglet, chatb;
-    public static ImageButtonStyle rclearTransi;
+    public static ImageButtonStyle clearToggleAccentb, logicVarTogglet, chatb, rclearTransi;
     public static TextButtonStyle clearPartial2t, clearToggleTranst;
     public static TextFieldStyle noneField;
 
@@ -26,17 +24,17 @@ public class MStyles{
         transAccentDrawable = (TextureRegionDrawable)(whiteuiRegion.tint(Tmp.c1.set(Pal.accent).a(0.55f)));
         clearFlatOver = (TextureRegionDrawable)whiteuiRegion.tint(Color.lightGray.cpy().a(0.45f));
 
-        clearToggleAccentb = new ButtonStyle(){{
+        clearToggleAccentb = new ImageButtonStyle(){{
            checked = transAccentDrawable;
         }};
 
-        logicVarTogglet = new ButtonStyle(){{
+        logicVarTogglet = new ImageButtonStyle(){{
             up = buttonOver;
             down = buttonDown;
             checked = buttonDown;
         }};
 
-        chatb = new ButtonStyle(defaultb){{
+        chatb = new ImageButtonStyle(defaulti){{
             up = black6;
             over = flatOver;
             down = flatDown;

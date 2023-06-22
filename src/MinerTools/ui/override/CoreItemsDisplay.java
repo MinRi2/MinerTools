@@ -252,7 +252,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     private void rebuildPlanItems(){
         planInfoTable.clear();
 
-        if(planItems.total == 0){
+        if(planItems.total == 0 || core == null){
             planInfoTable.background(null);
             return;
         }else{

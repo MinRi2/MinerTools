@@ -67,7 +67,7 @@ public class FloatTable extends DraggableTable implements Addable{
         setupTitle();
         setupCont(cont);
 
-        add(title).fillX().minWidth(250f);
+        add(title).fillX().minWidth(128f);
 
         row();
 
@@ -82,10 +82,10 @@ public class FloatTable extends DraggableTable implements Addable{
     private void setupTitle(){
         title.clearChildren();
 
-        title.add(Core.bundle.get("miner-tools.floats." + name)).padLeft(3f).growX().left();
+        title.add(Core.bundle.get("miner-tools.floats." + name)).padLeft(4f).growX().left();
 
         title.table(buttons -> {
-            buttons.defaults().width(35f).growY().right();
+            buttons.defaults().width(48f).growY().right();
 
             setupButtons(buttons);
 
@@ -99,7 +99,7 @@ public class FloatTable extends DraggableTable implements Addable{
             buttons.button("x", MStyles.clearPartial2t, () -> {
                 MinerVars.settings.put("floats." + name + ".shown", false);
                 remove();
-            }).size(35f);
+            }).size(48f);
         }).growY().right();
     }
 

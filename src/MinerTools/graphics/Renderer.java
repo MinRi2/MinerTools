@@ -6,8 +6,6 @@ import MinerTools.graphics.draw.player.*;
 import MinerTools.graphics.draw.unit.*;
 import MinerTools.graphics.renderer.*;
 import arc.*;
-import arc.graphics.*;
-import arc.graphics.g2d.*;
 import arc.graphics.gl.*;
 import arc.struct.*;
 import mindustry.game.EventType.*;

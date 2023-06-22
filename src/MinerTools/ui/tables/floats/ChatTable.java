@@ -48,7 +48,6 @@ public class ChatTable extends FloatTable{
     private TextFieldStyle fstyle;
 
     private int lastMessageSize;
-    private boolean lastIsBottomEdge;
 
     public ChatTable(){
         super("chat");
@@ -189,7 +188,7 @@ public class ChatTable extends FloatTable{
         var messages = Reflect.<Seq<String>>get(ui.chatfrag, "messages");
         int messageSize = messages.size;
 
-        lastIsBottomEdge = pane.isBottomEdge();
+        boolean lastIsBottomEdge = pane.isBottomEdge();
 
         if(lastMessageSize != messageSize){
             if(messageStacks.isEmpty()){

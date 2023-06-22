@@ -8,8 +8,8 @@ import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.ai.*;
-import mindustry.game.*;
 import mindustry.game.EventType.*;
+import mindustry.game.*;
 
 import java.lang.reflect.*;
 

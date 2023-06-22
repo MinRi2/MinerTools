@@ -2,6 +2,7 @@ package MinerTools.ui.tables.members;
 
 import MinerTools.ui.*;
 import MinerTools.ui.tables.MembersTable.*;
+import MinerTools.utils.*;
 import arc.*;
 import arc.math.geom.*;
 import arc.scene.ui.*;
@@ -12,7 +13,6 @@ import mindustry.game.EventType.*;
 import mindustry.gen.*;
 import mindustry.input.*;
 import mindustry.world.blocks.defense.turrets.Turret.*;
-import MinerTools.utils.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.*;
@@ -83,7 +83,7 @@ public class PlayerList extends MemberTable{
                         return target == player;
                     });
 
-                    info.button(Icon.list, clearNonei, () -> MUI.showTableAt(table -> {
+                    info.button(Icon.list, clearNonei, () -> MUI.showTableAtMouse(table -> {
                         table.background(Tex.buttonOver);
 
                         table.button(Icon.eyeSmall, clearNonei, () -> {
