@@ -17,6 +17,7 @@ import static arc.Core.bundle;
 public class ScriptButtons extends FloatTable{
     private static final String bundleName = "miner-tools.buttons.tooltips";
 
+    private Table buttons;
     private int index = 0;
 
     public ScriptButtons(){
@@ -28,53 +29,62 @@ public class ScriptButtons extends FloatTable{
         super.setupCont(cont);
 
         cont.table(Styles.black3, buttons -> {
-            buttons.defaults().minSize(64f).growX();
-
-            if(Vars.mobile){
-                addScriptButton(buttons, "stopBuilding", Icon.hammer, Styles.emptyTogglei, () -> {
-                    Vars.control.input.isBuilding = !Vars.control.input.isBuilding;
-                }, b -> Vars.control.input.isBuilding);
-
-                addScriptButton(buttons, "updateConveyor", Icon.distribution, Styles.emptyTogglei, () -> {
-                    MinerFunc.enableUpdateConveyor = !MinerFunc.enableUpdateConveyor;
-                }, b -> MinerFunc.enableUpdateConveyor);
-
-                addScriptButton(buttons, "observerMode", Icon.pause, Styles.emptyTogglei,
-                    ObserverMode::toggle, b -> ObserverMode.isObserving());
-            }
-
-            addScriptButton(buttons, "wayzerObserver", Icon.eyeSmall, MStyles.rclearTransi, () -> {
-                Call.sendChatMessage("/ob");
-            });
-
-            addScriptButton(buttons, "quickVoteGameOver", Icon.trashSmall, Styles.clearNonei, () -> {
-                Vars.ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
-                    Call.sendChatMessage("/vote gameover");
-                    Call.sendChatMessage("1");
-                });
-            });
+            this.buttons = buttons;
         }).growX();
+        
+        setupButtons();
+    }
+    
+    private void setupButtons(){
+        buttons.defaults().minSize(80f, 64f).growX();
+
+        if(Vars.mobile){
+            addScriptButton("stopBuilding", Icon.hammer, Styles.clearNoneTogglei, () -> {
+                Vars.control.input.isBuilding = !Vars.control.input.isBuilding;
+            }, b -> !Vars.control.input.isBuilding);
+
+            addScriptButton("updateConveyor", Icon.distribution, Styles.clearNoneTogglei, () -> {
+                MinerFunc.enableUpdateConveyor = !MinerFunc.enableUpdateConveyor;
+            }, b -> MinerFunc.enableUpdateConveyor);
+
+            addScriptButton("observerMode", Icon.pause, Styles.clearNoneTogglei,
+                ObserverMode::toggle, b -> ObserverMode.isObserving());
+        }
+
+        addScriptButton("wayzerObserver", Icon.eyeSmall, MStyles.rclearTransi, () -> {
+            Call.sendChatMessage("/ob");
+        });
+
+        addScriptButton("quickVoteGameOver", Icon.trashSmall, Styles.clearNonei, () -> {
+            Vars.ui.showConfirm("@confirm", "@confirmvotegameover", () -> {
+                Call.sendChatMessage("/vote gameover");
+                Call.sendChatMessage("1");
+            });
+        });
     }
 
-    private Cell<Button> addScriptButton(Table table, String name, Drawable icon, ButtonStyle style,
+    private Cell<Button> addScriptButton(String name, Drawable icon, ButtonStyle style,
                                  Runnable runnable){
-        return addScriptButton(table, name, icon, style, runnable, null);
+        return addScriptButton(name, icon, style, runnable, null);
     }
 
-    private Cell<Button> addScriptButton(Table table, String name, Drawable icon, ButtonStyle style,
+    private Cell<Button> addScriptButton(String name, Drawable icon, ButtonStyle style,
                                  Runnable runnable, Boolf<Button> checked){
-        Cell<Button> cell = table.button(button -> {
-            button.image(icon).grow();
+        Cell<Button> cell = buttons.button(button -> {
+            button.left();
+            
+            button.image(icon);
 
-            button.add(bundle.get(bundleName + "." + name)).padLeft(4f);
+            button.add(bundle.get(bundleName + "." + name))
+            .padLeft(4f).wrap().growX().right();
         }, style, runnable);
 
         if(checked != null){
             cell.checked(checked);
         }
 
-        if(index % 4 == 0){
-            table.row();
+        if(++index % 2 == 0){
+            buttons.row();
         }
 
         return cell;

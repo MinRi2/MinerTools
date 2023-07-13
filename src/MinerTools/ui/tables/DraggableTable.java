@@ -70,7 +70,7 @@ public class DraggableTable extends Table{
 
     public static class DragListener extends InputListener{
         DraggableTable target;
-        float fromx, fromy;
+        float lastX, lastY;
 
         public DragListener(DraggableTable target){
             this.target = target;
@@ -78,8 +78,8 @@ public class DraggableTable extends Table{
 
         @Override
         public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-            fromx = x;
-            fromy = y;
+            lastX = x;
+            lastY = y;
             target.isDragging = true;
             return true;
         }
@@ -88,7 +88,7 @@ public class DraggableTable extends Table{
         public void touchDragged(InputEvent event, float x, float y, int pointer){
             if(!target.isLocked()){
                 Vec2 v = target.localToStageCoordinates(Tmp.v1.set(x, y));
-                target.setPosition(v.x - fromx, v.y - fromy);
+                target.setPosition(v.x - lastX, v.y - lastY);
 
                 target.keepInStage();
 
@@ -96,6 +96,8 @@ public class DraggableTable extends Table{
                     MinerVars.settings.put("ui." + target.name + ".pos" + ".x", target.x);
                     MinerVars.settings.put("ui." + target.name + ".pos" + ".y", target.y);
                 }
+
+                target.keepInStage();
             }
         }
 

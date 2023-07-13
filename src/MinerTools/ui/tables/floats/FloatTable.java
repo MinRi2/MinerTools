@@ -27,16 +27,13 @@ public class FloatTable extends DraggableTable implements Addable{
         setLastPos();
 
         setup();
-
-        update(this::update);
-
+        
         visibility = () -> !state.isMenu() && ui.hudfrag.shown && !ui.minimapfrag.shown();
     }
 
     @Override
     public void addUI(){
         scene.add(this);
-        invalidateHierarchy();
     }
 
     /**
@@ -71,9 +68,9 @@ public class FloatTable extends DraggableTable implements Addable{
 
         row();
 
-        collapser(cont, false, () -> showCont).growX().top().left();
-
-        invalidateHierarchy();
+        collapser(cont, false, () -> showCont).growX();
+        
+        pack();
     }
 
     protected void setupCont(Table cont){
@@ -82,7 +79,7 @@ public class FloatTable extends DraggableTable implements Addable{
     private void setupTitle(){
         title.clearChildren();
 
-        title.add(Core.bundle.get("miner-tools.floats." + name)).padLeft(4f).growX().left();
+        title.add("$miner-tools.floats." + name).padLeft(4f).growX().left();
 
         title.table(buttons -> {
             buttons.defaults().width(48f).growY().right();
@@ -90,7 +87,7 @@ public class FloatTable extends DraggableTable implements Addable{
             setupButtons(buttons);
 
             buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearNoneTogglei, this::toggleLocked).checked(b -> {
-                b.getStyle().imageUp = (isLocked() ? Icon.lockSmall : Icon.lockOpenSmall);
+                b.getImage().setDrawable(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall);
                 return isLocked();
             });
 
@@ -104,11 +101,6 @@ public class FloatTable extends DraggableTable implements Addable{
     }
 
     protected void setupButtons(Table buttons){
-    }
-
-    protected void update(){
-        pack();
-        keepInStage();
     }
 
     private void toggleCont(){

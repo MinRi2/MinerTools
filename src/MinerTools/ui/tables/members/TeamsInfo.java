@@ -74,32 +74,33 @@ public class TeamsInfo extends MemberTable{
 
     @Override
     public void memberRebuild(){
-        clearChildren();
         setup();
     }
 
     private void setup(){
         defaults().growX();
-
-        table(Styles.black3, this::setupTeamInfoTable).update(t -> {
+        
+        background(Styles.black3);
+        
+        update(() -> {
             int teamSize = Vars.state.teams.present.size;
+            
             if(lastTeamSize != teamSize){
                 teamData.set(Vars.state.teams.present);
                 teamData.sort(data -> -data.unitCount);
                 lastTeamSize = teamSize;
 
-                t.clearChildren();
-                setupTeamInfoTable(t);
+                rebuild();
             }
-        }).row();
+        });
     }
-
-    private void setupTeamInfoTable(Table table){
-        table.pane(Styles.noBarPane, t -> {
-            t.top().left();
+    
+    private void rebuild(){
+        clearChildren();
+        
+        pane(Styles.noBarPane, t -> {
             for(Teams.TeamData data : teamData){
-                t.table(container -> {
-                    container.top().left();
+                t.table(container -> {                    
                     addTeamInfoTable(container, data);
                 }).padTop(8f).growX().row();
             }
@@ -108,7 +109,8 @@ public class TeamsInfo extends MemberTable{
 
     private void addTeamInfoTable(Table table, Teams.TeamData data){
         Team team = data.team;
-
+        
+        // some info
         table.table(t -> {
             t.left().top();
             t.defaults().growX();
@@ -145,11 +147,7 @@ public class TeamsInfo extends MemberTable{
                     powerInfoTable.add(new Bar(() -> {
                         float powerBalance = powerInfo[0].getPowerBalance();
                         return Iconc.power + UI.formatAmount((long)powerBalance);
-                    }, () -> team.color, powerInfo[0]::getSatisfaction)).grow().with(b -> {
-                        ElementUtils.addTooltip(b, tooltip -> {
-                            setupPowerInfoDetailsTable(tooltip, powerInfo[0]);
-                        }, true);
-                    });
+                    }, () -> team.color, powerInfo[0]::getSatisfaction)).grow();
 
                     powerInfoTable.button(Icon.info, Styles.clearNonei, () -> {}).size(32).with(b -> {
                         ElementUtils.addTooltip(b, tooltip -> {
@@ -169,7 +167,9 @@ public class TeamsInfo extends MemberTable{
                     }
                 });
             }).growX();
-        }).width(120);
+        }).growX();
+        
+        table.row();
 
         table.table(Tex.whiteui, units -> {
             units.left().top();
@@ -198,7 +198,7 @@ public class TeamsInfo extends MemberTable{
                     rebuildUnits.run();
                 }
             });
-        }).pad(4.0f).color(Pal.darkerGray).grow();
+        }).margin(4.0f).color(Pal.darkerGray).grow();
     }
 }
 

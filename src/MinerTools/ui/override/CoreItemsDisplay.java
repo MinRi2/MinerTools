@@ -217,7 +217,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         for(Item item : content.items()){
             if(usedItems.contains(item)){
                 Label label = new Label(() -> {
-                    float update = means[item.id].mean() * updateScl;
+                    float update = means[item.id].rawMean() * updateScl;
                     if(update == 0) return "";
                     return (update < 0 ? "[red]" : "[green]+") + String.format("%.1f", update);
                 });

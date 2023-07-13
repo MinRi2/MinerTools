@@ -61,11 +61,17 @@ public class ChatTable extends FloatTable{
             Timer.schedule(this::scrollToBottom, 1f);
         });
 
-        Timer.schedule(() ->{
+        Timer.schedule(() -> {
             if(Vars.state.isGame()){
                 messageStacks.add(new MessageStack());
             }
         }, 0f, 60f);
+        
+        update(() -> {
+            if(timer.get(60f)){
+                resetMessages();
+            }
+        });
     }
 
     @Override
@@ -94,7 +100,7 @@ public class ChatTable extends FloatTable{
 
         cont.table(table -> {
             textField = table.field("", fstyle, s -> {
-            }).padTop(15f).height(24f).grow().get();
+            }).padTop(15f).height(32f).grow().get();
 
             textField.setMessageText("Send Message");
             textField.setMaxLength(maxTextLength);
@@ -106,7 +112,7 @@ public class ChatTable extends FloatTable{
                 textField.keyDown(KeyCode.down, this::historyShiftDown);
             }else{
                 table.table(buttons -> {
-                    buttons.defaults().size(36f).growY();
+                    buttons.defaults().size(40f).growY();
 
                     buttons.button(Icon.modeAttackSmall, clearNonei, this::sendMessage);
                     buttons.button(Icon.copySmall, clearNoneTogglei, this::toggleCopyMode).checked(b -> copyMode);
@@ -224,9 +230,7 @@ public class ChatTable extends FloatTable{
     private void addMessage(String msg){
         Label label = new FLabel(msg);
 
-        label.setWrap(true);
-
-        messageTable.add(label).growX().left();
+        messageTable.add(label).labelAlign(Align.left).wrap().growX();
 
         if(desktop){
             /* Ctrl + MouseLeft --> copy the message */
@@ -257,15 +261,6 @@ public class ChatTable extends FloatTable{
             selectMessages.remove(message);
         }else{
             selectMessages.add(message);
-        }
-    }
-
-    @Override
-    protected void update(){
-        super.update();
-
-        if(timer.get(60f)){
-            resetMessages();
         }
     }
 
