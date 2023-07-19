@@ -1,0 +1,21 @@
+{
+	"image": "mcr.microsoft.com/devcontainers/universal:2",
+	"features": {
+		"ghcr.io/devcontainers-contrib/features/gradle-sdkman:2": {
+			"version": "latest",
+			"jdkVersion": "latest",
+			"jdkDistro": "ms"
+		},
+		"ghcr.io/devcontainers-contrib/features/gradleprofiler-sdkman:2": {
+			"version": "latest",
+			"jdkVersion": "latest",
+			"jdkDistro": "ms"
+		},
+		"ghcr.io/akhildevelops/devcontainer-features/android-cli:0": {},
+		"ghcr.io/jarrodcolburn/features/android-sdk:0": {
+			"emulator": true,
+			"platforms": "33",
+			"build-tools": "33.0.2"
+		}
+	}
+}
