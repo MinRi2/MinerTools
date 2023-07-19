@@ -17,5 +17,11 @@
 			"platforms": "33",
 			"build-tools": "33.0.2"
 		}
+		"ghcr.io/devcontainers/features/sshd:1": {
+                    "version": "latest"
+                },
+
+p
+	
 	}
 }
