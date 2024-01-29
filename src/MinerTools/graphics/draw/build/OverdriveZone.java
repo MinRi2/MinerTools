@@ -17,13 +17,13 @@ public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("overdriveZone");
     }
 
     @Override
-    public boolean isValid(OverdriveBuild building){
-        return super.isValid(building) && building.canConsume();
+    public boolean shouldDraw(OverdriveBuild building){
+        return super.shouldDraw(building) && building.canConsume();
     }
 
     @Override
@@ -36,7 +36,7 @@ public class OverdriveZone extends BuildDrawer<OverdriveBuild>{
 
     @Override
     protected void draw(OverdriveBuild build){
-        OverdriveProjector  block = (OverdriveProjector)build.block;
+        OverdriveProjector block = (OverdriveProjector)build.block;
 
         float realRange = block.range + build.phaseHeat * block.phaseRangeBoost;
 

@@ -15,13 +15,13 @@ public class BuildHealthBar extends BuildDrawer<Building>{
     public static float backBarStroke = healthBarStroke + 1.3f, backBarAlpha = healthBarAlpha - 0.25f;
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("buildHealthBar");
     }
 
     @Override
-    public boolean isValid(Building building){
-        return super.isValid(building) && building.team != Team.derelict;
+    public boolean shouldDraw(Building building){
+        return super.shouldDraw(building) && building.team != Team.derelict;
     }
 
     @Override
@@ -33,9 +33,9 @@ public class BuildHealthBar extends BuildDrawer<Building>{
 
         if(build.damaged()){
             MDrawf.drawProgressBar(
-                startX, startY, endX, startY, build.healthf(),
-                backBarStroke, backBarAlpha, build.team.color,
-                healthBarStroke, healthBarAlpha, Pal.health
+            startX, startY, endX, startY, build.healthf(),
+            backBarStroke, backBarAlpha, build.team.color,
+            healthBarStroke, healthBarAlpha, Pal.health
             );
 
             startY += backBarStroke;
@@ -45,9 +45,9 @@ public class BuildHealthBar extends BuildDrawer<Building>{
             ShieldWall block = (ShieldWall)shieldWall.block;
 
             MDrawf.drawProgressBar(
-                startX, startY, endX, startY, shieldWall.shield / block.shieldHealth,
-                backBarStroke, backBarAlpha, shieldWall.team.color,
-                healthBarStroke, healthBarAlpha, Pal.shield
+            startX, startY, endX, startY, shieldWall.shield / block.shieldHealth,
+            backBarStroke, backBarAlpha, shieldWall.team.color,
+            healthBarStroke, healthBarAlpha, Pal.shield
             );
 
             // start += backBarStroke;

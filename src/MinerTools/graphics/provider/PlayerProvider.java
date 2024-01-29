@@ -1,15 +1,15 @@
-package MinerTools.graphics.renderer;
+package MinerTools.graphics.provider;
 
 import MinerTools.graphics.draw.*;
 import arc.struct.*;
 import mindustry.*;
 import mindustry.gen.*;
 
-public class PlayerRender extends BaseRender<PlayerDrawer>{
+public class PlayerProvider extends CameraProvider<PlayerDrawer>{
 
     /* All player*/
     @Override
-    public void globalRender(Seq<PlayerDrawer> validDrawers){
+    public void globalProvide(Seq<PlayerDrawer> validDrawers){
         Groups.player.each(player -> {
             for(PlayerDrawer drawer : validDrawers){
                 drawer.tryDraw(player);
@@ -19,7 +19,7 @@ public class PlayerRender extends BaseRender<PlayerDrawer>{
 
     /* Local player */
     @Override
-    public void cameraRender(Seq<PlayerDrawer> validDrawers){
+    public void cameraProvide(Seq<PlayerDrawer> validDrawers){
         for(PlayerDrawer drawer : validDrawers){
             drawer.tryDraw(Vars.player);
         }

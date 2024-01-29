@@ -7,7 +7,7 @@ import mindustry.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
-public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
+public abstract class BuildDrawer<T extends Building> extends Drawer<T>{
     /* Ids of block */
     private final IntSeq blocks;
 
@@ -39,7 +39,7 @@ public abstract class BuildDrawer<T extends Building> extends BaseDrawer<T>{
     protected abstract void draw(T building);
 
     @Override
-    public boolean isValid(T building){
+    public boolean shouldDraw(T building){
         return building.isValid() && !building.inFogTo(Vars.player.team());
     }
 

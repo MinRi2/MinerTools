@@ -1,4 +1,4 @@
-package MinerTools.graphics.renderer;
+package MinerTools.graphics.provider;
 
 import MinerTools.graphics.draw.*;
 import arc.math.geom.*;
@@ -9,41 +9,36 @@ import mindustry.gen.*;
 
 import static arc.Core.input;
 
-public class SelectRender extends BaseRender<BaseDrawer<?>>{
+public class SelectProvider extends DrawerProvider<Drawer<?>>{
     private final Seq<BuildDrawer<?>> allBuildDrawers = new Seq<>();
     private final Seq<UnitDrawer> allUnitDrawers = new Seq<>();
 
     Seq<BuildDrawer<?>> enableBuildDrawers;
     Seq<UnitDrawer> enableUnitDrawers;
 
-    public SelectRender addBuildDrawers(BuildDrawer<?>... drawers){
+    public SelectProvider addBuildDrawers(BuildDrawer<?>... drawers){
         allBuildDrawers.addAll(drawers);
+        addDrawers(drawers);
         return this;
     }
 
-    public SelectRender addUnitDrawers(UnitDrawer... drawers){
+    public SelectProvider addUnitDrawers(UnitDrawer... drawers){
         allUnitDrawers.addAll(drawers);
+        addDrawers(drawers);
         return this;
     }
 
     @Override
     public void updateEnable(){
-        enableBuildDrawers = allBuildDrawers.select(BaseDrawer::enabled);
-        enableUnitDrawers = allUnitDrawers.select(BaseDrawer::enabled);
+        enableBuildDrawers = allBuildDrawers.select(Drawer::isEnabled);
+        enableUnitDrawers = allUnitDrawers.select(Drawer::isEnabled);
+
+        enableDrawers.clear();
+        enableDrawers.addAll(enableBuildDrawers).add(enableUnitDrawers);
     }
 
     @Override
-    public void updateSetting(){
-        for(var drawer : allBuildDrawers){
-            drawer.readSetting();
-        }
-        for(var drawer : allUnitDrawers){
-            drawer.readSetting();
-        }
-    }
-
-    @Override
-    public void render(){
+    public void provide(){
         Vec2 v = input.mouseWorld();
 
         Building selectBuild = Vars.world.buildWorld(v.x, v.y);
@@ -60,11 +55,5 @@ public class SelectRender extends BaseRender<BaseDrawer<?>>{
             }
         }
     }
-
-    @Override
-    public void globalRender(Seq<BaseDrawer<?>> validDrawers){}
-
-    @Override
-    public void cameraRender(Seq<BaseDrawer<?>> validDrawers){}
 
 }

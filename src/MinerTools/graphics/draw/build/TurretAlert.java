@@ -25,7 +25,7 @@ public class TurretAlert extends BuildDrawer<BaseTurretBuild>{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("turretAlert");
     }
 
@@ -35,8 +35,8 @@ public class TurretAlert extends BuildDrawer<BaseTurretBuild>{
     }
 
     @Override
-    public boolean isValid(BaseTurretBuild baseTurret){
-        if(!super.isValid(baseTurret)) return false;
+    public boolean shouldDraw(BaseTurretBuild baseTurret){
+        if(!super.shouldDraw(baseTurret)) return false;
 
         if(baseTurret.team == player.team()) return false;
 

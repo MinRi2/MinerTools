@@ -9,13 +9,13 @@ import mindustry.gen.*;
 public class BuildSelect extends BuildDrawer<Building>{
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("buildSelectInfo");
     }
 
     @Override
-    public boolean isValid(Building building){
-        return super.isValid(building) && building.team != Vars.player.team();
+    public boolean shouldDraw(Building building){
+        return super.shouldDraw(building) && building.team != Vars.player.team();
     }
 
     @Override

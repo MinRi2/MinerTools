@@ -17,15 +17,11 @@ import static MinerTools.MinerVars.desktop;
 import static MinerTools.input.ModBinding.updateConveyor;
 import static MinerTools.utils.MinerFunc.*;
 import static arc.Core.input;
-import static mindustry.Vars.*;
+import static mindustry.Vars.mobile;
 
 public class MinerTools extends Mod{
 
     public MinerTools(){
-        /* Zoom */
-        renderer.minZoom = 0.4f;
-        renderer.maxZoom = 12f;
-
         // mobile = true; // Only for debug
 
         Events.on(EventType.ContentInitEvent.class, e -> Contents.init());
@@ -37,7 +33,7 @@ public class MinerTools extends Mod{
 
             Modules.init();
 
-            Renderer.init();
+            MRenderer.init();
 
             Modules.load();
         });

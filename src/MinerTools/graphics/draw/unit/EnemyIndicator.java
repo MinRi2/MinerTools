@@ -21,7 +21,6 @@ public class EnemyIndicator extends UnitDrawer{
     private float enemyRadius = defEnemyRadius;
 
     private final Vec2 cameraPos;
-    private Seq<CoreBuild> cores;
 
     public EnemyIndicator(){
         cameraPos = Core.camera.position;
@@ -44,7 +43,7 @@ public class EnemyIndicator extends UnitDrawer{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("enemyUnitIndicator");
     }
 
@@ -54,17 +53,14 @@ public class EnemyIndicator extends UnitDrawer{
     }
 
     @Override
-    public void init(){
-        cores = player.team().cores();
-    }
-
-    @Override
-    public boolean isValid(Unit unit){
-        return super.isValid(unit) && unit.team != player.team() && unit.hasWeapons();
+    public boolean shouldDraw(Unit unit){
+        return super.shouldDraw(unit) && unit.team != player.team() && unit.hasWeapons();
     }
 
     @Override
     protected void draw(Unit unit){
+        Seq<CoreBuild> cores = player.team().cores();
+
         var wCores = cores.select(c -> c.within(unit, enemyRadius));
         if(wCores.isEmpty()) return;
 

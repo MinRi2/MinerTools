@@ -20,7 +20,7 @@ public class UnitInfoBar extends UnitDrawer{
     public static float backBarStroke = healthBarStroke + 1.3f, backBarAlpha = healthBarAlpha - 0.25f;
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("unitInfoBar");
     }
 
@@ -36,9 +36,9 @@ public class UnitInfoBar extends UnitDrawer{
         /* HealthBar */
         if(unit.damaged()){
             MDrawf.drawProgressBar(
-                startX, startY, endX, startY, unit.healthf(),
-                backBarStroke, backBarAlpha, unit.team().color,
-                healthBarStroke, healthBarAlpha, Pal.health
+            startX, startY, endX, startY, unit.healthf(),
+            backBarStroke, backBarAlpha, unit.team().color,
+            healthBarStroke, healthBarAlpha, Pal.health
             );
 
             startY += backBarStroke + 0.5f;
@@ -53,11 +53,11 @@ public class UnitInfoBar extends UnitDrawer{
 
             if(ability instanceof ForceFieldAbility forceFieldAbility){
                 MDrawf.drawProgressBar(
-                    startX, startY, endX, startY, unit.shield / forceFieldAbility.max,
-                    backBarStroke, backBarAlpha, unit.team().color,
-                    healthBarStroke, healthBarAlpha, Pal.shield
+                startX, startY, endX, startY, unit.shield / forceFieldAbility.max,
+                backBarStroke, backBarAlpha, unit.team().color,
+                healthBarStroke, healthBarAlpha, Pal.shield
                 );
-                
+
                 startY += healthBarStroke + 0.5f;
             }
 
@@ -67,9 +67,9 @@ public class UnitInfoBar extends UnitDrawer{
 
         if(!Mathf.zero(unit.drownTime)){
             MDrawf.drawProgressBar(
-                startX, startY, endX, startY, (1f - unit.drownTime),
-                backBarStroke, backBarAlpha, unit.team().color,
-                healthBarStroke, healthBarAlpha, Liquids.water.color
+            startX, startY, endX, startY, (1f - unit.drownTime),
+            backBarStroke, backBarAlpha, unit.team().color,
+            healthBarStroke, healthBarAlpha, Liquids.water.color
             );
 
             startY += healthBarStroke + 0.5f;

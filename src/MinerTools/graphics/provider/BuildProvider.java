@@ -1,4 +1,4 @@
-package MinerTools.graphics.renderer;
+package MinerTools.graphics.provider;
 
 import MinerTools.graphics.draw.*;
 import arc.*;
@@ -9,11 +9,11 @@ import mindustry.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 
-public class BuildRender extends BaseRender<BuildDrawer<?>>{
+public class BuildProvider extends CameraProvider<BuildDrawer<?>>{
 
     @Override
-    public void globalRender(Seq<BuildDrawer<?>> validDrawers){
-        for(TeamData data : Vars.state.teams.getActive()){
+    public void globalProvide(Seq<BuildDrawer<?>> validDrawers){
+        for(TeamData data : Vars.state.teams.present){
             var buildings = data.buildings;
 
             for(Building building : buildings){
@@ -25,10 +25,10 @@ public class BuildRender extends BaseRender<BuildDrawer<?>>{
     }
 
     @Override
-    public void cameraRender(Seq<BuildDrawer<?>> validDrawers){
+    public void cameraProvide(Seq<BuildDrawer<?>> validDrawers){
         Rect bounds = Core.camera.bounds(Tmp.r1);
 
-        for(TeamData data : Vars.state.teams.getActive()){
+        for(TeamData data : Vars.state.teams.present){
             var buildingTree = data.buildingTree;
 
             if(buildingTree == null) continue;

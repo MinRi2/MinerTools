@@ -23,13 +23,13 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("constructBuildInfo");
     }
 
     @Override
-    public boolean isValid(ConstructBuild building){
-        return super.isValid(building) && building.core() != null;
+    public boolean shouldDraw(ConstructBuild building){
+        return super.shouldDraw(building) && building.core() != null;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
             nextPad += MDrawf.drawText(
             stack.item.emoji() + needAmount + "/" + invertAmount + "/" + UI.formatAmount(coreAmount),
             scl, dx, dy, hasItem ? Pal.accent : Pal.remove, Align.left).height;
-            nextPad ++;
+            nextPad++;
         }
 
         Draw.reset();

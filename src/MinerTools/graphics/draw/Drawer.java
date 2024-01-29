@@ -2,36 +2,34 @@ package MinerTools.graphics.draw;
 
 import arc.math.geom.*;
 
-public abstract class BaseDrawer<T extends Position>{
+public abstract class Drawer<T extends Position>{
 
     /* Read some settings */
-    public void readSetting(){}
+    public void readSetting(){
+    }
 
     /* Return true if the drawer is enabled */
-    public boolean enabled(){
+    public boolean isEnabled(){
         return true;
     }
 
-    /* Return true if this drawer is valid in game */
+    /* Return true if the drawer is valid in game */
     public boolean isValid(){
         return true;
     }
 
-    /* Init before draw */
-    public void init(){}
-
-    /* Return true if the type is valid */
-    public boolean isValid(T type){
+    /* Return true if the drawer should draw this type */
+    public boolean shouldDraw(T type){
         return true;
     }
 
     /* Draw Shader */
-    public void drawShader(){};
+    public void drawShader(){
+    }
 
     /* Try to draw */
     public void tryDraw(T type){
-        init();
-        if(isValid(type)) draw(type);
+        if(shouldDraw(type)) draw(type);
     }
 
     /* Draw */

@@ -21,7 +21,7 @@ public class BridgeLinkedList extends BuildDrawer<ItemBridgeBuild>{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("itemBridgeLinksShow");
     }
 

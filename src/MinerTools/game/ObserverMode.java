@@ -5,13 +5,14 @@ import mindustry.*;
 import mindustry.input.*;
 
 public class ObserverMode{
+    public static boolean observing = false;
+    
     private static final Vec2 movement = new Vec2(){
         @Override
         public Vec2 setAngle(float degrees){
             return super.setZero();
         }
     };
-    private static boolean observing = false;
     private static Vec2 oldMovement;
 
     public static void toggle(){

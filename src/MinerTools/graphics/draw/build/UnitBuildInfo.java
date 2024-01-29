@@ -23,7 +23,7 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("unitBuildInfo");
     }
 
@@ -54,9 +54,9 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
         Draw.z(Layer.power + 1f);
 
         float drawX = MDrawf.drawProgressBar(
-            startX, startY, endX, startY, fraction,
-            backBarStroke, backBarAlpha, build.team.color,
-            proBarStroke, proBarAlpha, Pal.accent
+        startX, startY, endX, startY, fraction,
+        backBarStroke, backBarAlpha, build.team.color,
+        proBarStroke, proBarAlpha, Pal.accent
         );
 
         startY += backBarStroke;

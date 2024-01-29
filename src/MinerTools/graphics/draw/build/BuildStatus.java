@@ -11,13 +11,13 @@ import mindustry.graphics.*;
 public class BuildStatus extends BuildDrawer<Building>{
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("buildStatus");
     }
 
     @Override
-    public boolean isValid(Building building){
-        return super.isValid(building) && building.team != Team.derelict && building.team != Vars.player.team();
+    public boolean shouldDraw(Building building){
+        return super.shouldDraw(building) && building.team != Team.derelict && building.team != Vars.player.team();
     }
 
     @Override

@@ -17,13 +17,13 @@ import mindustry.world.blocks.payloads.*;
 public class PayloadDropHint extends PlayerDrawer{
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("payloadDropHint");
     }
 
     @Override
-    public boolean isValid(Player player){
-        return super.isValid(player) && player.unit() instanceof PayloadUnit;
+    public boolean shouldDraw(Player player){
+        return super.shouldDraw(player) && player.unit() instanceof PayloadUnit;
     }
 
     @Override
@@ -120,7 +120,7 @@ public class PayloadDropHint extends PlayerDrawer{
 
             float size = block.size * Vars.tilesize + block.offset;
 
-            int rot = block.rotate ? (int)((unit.rotation + 45f) / 90f) % 4  * 90 : 0;
+            int rot = block.rotate ? (int)((unit.rotation + 45f) / 90f) % 4 * 90 : 0;
 
             Draw.mixcol(!valid ? Pal.breakInvalid : Color.white, (!valid ? 0.4f : 0.24f) + Mathf.absin(Time.globalTime, 6f, 0.28f));
             Draw.alpha(0.8f);

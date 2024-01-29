@@ -23,7 +23,7 @@ public class UnitAlert extends UnitDrawer{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return settings.getBool("unitAlert");
     }
 
@@ -33,9 +33,9 @@ public class UnitAlert extends UnitDrawer{
     }
 
     @Override
-    public boolean isValid(Unit unit){
+    public boolean shouldDraw(Unit unit){
         UnitType type = unit.type;
-        return super.isValid(unit) &&
+        return super.shouldDraw(unit) &&
         (type.hasWeapons()) && // has weapons
         (unit.team != player.team()) && // isEnemy
         (!state.rules.unitAmmo || unit.ammo > 0f) && // hasAmmo

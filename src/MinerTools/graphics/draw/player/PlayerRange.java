@@ -10,7 +10,7 @@ import mindustry.world.blocks.defense.turrets.Turret.*;
 public class PlayerRange extends PlayerDrawer{
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("playerRange");
     }
 

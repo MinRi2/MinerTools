@@ -22,16 +22,18 @@ public class TurretAmmoDisplay extends BuildDrawer<ItemTurretBuild>{
     }
 
     @Override
-    public void readSetting(){}
+    public void readSetting(){
+        super.readSetting();
+    }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("itemTurretAmmoShow");
     }
 
     @Override
-    public boolean isValid(ItemTurretBuild turret){
-        return super.isValid(turret) && turret.ammo.any();
+    public boolean shouldDraw(ItemTurretBuild turret){
+        return super.shouldDraw(turret) && turret.ammo.any();
     }
 
     @Override

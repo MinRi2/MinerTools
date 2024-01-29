@@ -20,13 +20,13 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
     }
 
     @Override
-    public boolean enabled(){
+    public boolean isEnabled(){
         return MinerVars.settings.getBool("unitBuildInfo");
     }
 
     @Override
-    public boolean isValid(UnitAssemblerBuild building){
-        return super.isValid(building) && Math.min(building.powerWarmup, building.sameTypeWarmup) > 0;
+    public boolean shouldDraw(UnitAssemblerBuild building){
+        return super.shouldDraw(building) && Math.min(building.powerWarmup, building.sameTypeWarmup) > 0;
     }
 
     @Override
@@ -45,15 +45,15 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
         Draw.z(Layer.power + 0.3f);
 
         MDrawf.drawProgressBar(
-            startX, startY, endX, startY, fraction,
-            backBarStroke, backBarAlpha, build.team.color,
-            proBarStroke, proBarAlpha, build.team.color
+        startX, startY, endX, startY, fraction,
+        backBarStroke, backBarAlpha, build.team.color,
+        proBarStroke, proBarAlpha, build.team.color
         );
 
         startY += backBarStroke;
 
         float scale = build.timeScale() * Vars.state.rules.unitBuildSpeed(build.team);
-        float time = (1 - fraction)  * build.plan().time / scale;
+        float time = (1 - fraction) * build.plan().time / scale;
 
         float scl = block.size / 8f / 2f / Scl.scl(1f);
         MDrawf.drawText(Strings.autoFixed(time / 60, 1) + "s", scl, startX + size / 2, startY);

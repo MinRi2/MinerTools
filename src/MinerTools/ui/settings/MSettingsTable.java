@@ -76,12 +76,12 @@ public class MSettingsTable extends Table implements Addable{
             }
 
             public static void drawerCheck(MSettingTable table, String name, boolean def){
-                table.checkPref(name, def, b -> Renderer.updateEnable());
+                table.checkPref(name, def, b -> MRenderer.updateEnable());
             }
 
             public static void drawerRadiusSlider(MSettingTable table, String name, int def, int min, int max){
                 table.sliderPref(name, def, min, max, s -> {
-                    Renderer.updateSettings();
+                    MRenderer.updateSettings();
                     return s + "(Tile)";
                 });
             }
@@ -94,7 +94,7 @@ public class MSettingsTable extends Table implements Addable{
 
     private void setup(){
         top();
-        
+
         table(t -> {
             t.table(table -> {
                 table.add("MinerToolsSettings").center();
