@@ -27,7 +27,8 @@ ext{
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--release', '8'], ['encoding', 'UTF-8'])
+        options.compilerArgs.addAll(['--release', '8'])
+        options.encoding('UTF-8')
     }
 }
 
