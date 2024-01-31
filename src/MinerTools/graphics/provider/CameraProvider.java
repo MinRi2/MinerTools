@@ -10,14 +10,12 @@ public abstract class CameraProvider<T extends Drawer<?>> extends DrawerProvider
     @SuppressWarnings("unchecked")
     public final CameraProvider<T> addGlobalDrawers(T... drawers){
         globalDrawers.addAll(drawers);
-        cameraDrawers.addAll(drawers);
         addDrawers(drawers);
         return this;
     }
 
     @SuppressWarnings("unchecked")
     public final CameraProvider<T> addCameraDrawers(T... drawers){
-        cameraDrawers.addAll(drawers);
         cameraDrawers.addAll(drawers);
         addDrawers(drawers);
         return this;
@@ -34,7 +32,7 @@ public abstract class CameraProvider<T extends Drawer<?>> extends DrawerProvider
         }
     }
 
-    public abstract void globalProvide(Seq<T> validDrawers);
+    protected abstract void globalProvide(Seq<T> validDrawers);
 
-    public abstract void cameraProvide(Seq<T> validDrawers);
+    protected abstract void cameraProvide(Seq<T> validDrawers);
 }

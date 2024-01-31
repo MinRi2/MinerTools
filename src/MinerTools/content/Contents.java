@@ -6,8 +6,6 @@ import arc.struct.*;
 import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
-import mindustry.world.blocks.units.*;
-import mindustry.world.blocks.units.UnitFactory.*;
 
 import static mindustry.Vars.content;
 
@@ -15,8 +13,6 @@ public class Contents{
     public static Seq<UnitType> visibleUnits = new Seq<>();
     public static Seq<Block> visibleBlocks = new Seq<>();
     public static Seq<Item> allOres = new Seq<>();
-
-    public static Seq<Seq<UnitType>> linkedUnits = new Seq<>();
 
     public static void init(){
         initBlocks();
@@ -26,8 +22,6 @@ public class Contents{
     private static void initBlocks(){
         visibleBlocks.clear();
         allOres.clear();
-
-        linkedUnits.clear();
 
         for(Block block : content.blocks()){
             if(block.buildVisibility.visible()){
@@ -40,28 +34,6 @@ public class Contents{
 
             if(block instanceof ItemBridge){
                 block.allowConfigInventory = true;
-            }
-
-            if(block instanceof UnitFactory factory){
-                for(UnitPlan plan : factory.plans){
-                    linkedUnits.add(Seq.with(plan.unit));
-                }
-            }
-
-            if(block instanceof Reconstructor reconstructor){
-                for(UnitType[] upgrade : reconstructor.upgrades){
-                    UnitType from = upgrade[0];
-                    UnitType to = upgrade[1];
-
-                    if(from == null || to == null) continue;
-
-                    Seq<UnitType> link = linkedUnits.find(seq -> seq.contains(from));
-
-                    // TODO better system
-                    if(link == null) continue;
-                    
-                    link.add(to);
-                }
             }
 
             Bars.override(block);

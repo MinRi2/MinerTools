@@ -31,10 +31,10 @@ public class ScriptButtons extends FloatTable{
         cont.table(Styles.black3, buttons -> {
             this.buttons = buttons;
         }).growX();
-        
+
         setupButtons();
     }
-    
+
     private void setupButtons(){
         buttons.defaults().minSize(80f, 64f).growX();
 
@@ -48,7 +48,7 @@ public class ScriptButtons extends FloatTable{
             }, b -> MinerFunc.enableUpdateConveyor);
 
             addScriptButton("observerMode", Icon.pause, Styles.clearNoneTogglei,
-                ObserverMode::toggle, b -> ObserverMode.isObserving());
+            MobileObserverMode::toggle, b -> MobileObserverMode.isObserving());
         }
 
         addScriptButton("wayzerObserver", Icon.eyeSmall, MStyles.rclearTransi, () -> {
@@ -64,15 +64,15 @@ public class ScriptButtons extends FloatTable{
     }
 
     private Cell<Button> addScriptButton(String name, Drawable icon, ButtonStyle style,
-                                 Runnable runnable){
+                                         Runnable runnable){
         return addScriptButton(name, icon, style, runnable, null);
     }
 
     private Cell<Button> addScriptButton(String name, Drawable icon, ButtonStyle style,
-                                 Runnable runnable, Boolf<Button> checked){
+                                         Runnable runnable, Boolf<Button> checked){
         Cell<Button> cell = buttons.button(button -> {
             button.left();
-            
+
             button.image(icon);
 
             button.add(bundle.get(bundleName + "." + name))

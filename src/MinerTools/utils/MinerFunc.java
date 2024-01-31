@@ -93,7 +93,7 @@ public class MinerFunc{
             for(Building building : start.proximity){
                 tryUpdateConveyor(building, type, start.relativeTo(building));
             }
-            
+
             return;
         }else if(start instanceof DuctBridgeBuild duct){
             DuctBridgeBuild other = (DuctBridgeBuild)duct.findLink();
@@ -114,7 +114,7 @@ public class MinerFunc{
             if(block.linkValid(bridge.tile, otherTile)){
                 ItemBridgeBuild other = (ItemBridgeBuild)otherTile.build;
                 tryUpdateConveyor(other, type, start.rotation);
-                }else{
+            }else{
                 for(Building building : start.proximity){
                     tryUpdateConveyor(building, type, start.relativeTo(building));
                 }
@@ -149,11 +149,11 @@ public class MinerFunc{
 
         var units = Vars.state.rules.bannedUnits.toSeq();
         var blocks = Vars.state.rules.bannedBlocks.toSeq();
-        
+
         if(units.isEmpty() && blocks.isEmpty()){
             return;
         }
-        
+
         if(units.any()){
             t.table(unitTable -> {
                 var seq = units;
@@ -165,17 +165,15 @@ public class MinerFunc{
                 }
 
                 unitTable.add(fixed + "[accent]Units:[] ").top()
-                 .style(Styles.outlineLabel).labelAlign(Align.left);
+                .style(Styles.outlineLabel).labelAlign(Align.left);
 
                 unitTable.row();
 
                 var finalSeq = seq;
                 unitTable.table(infoTable -> {
-                    for(var linkedUnit : linkedUnits){
-                        for(UnitType type : linkedUnit){
-                            if(finalSeq.contains(type)){
-                                infoTable.image(type.uiIcon).size(Vars.iconSmall).left().padLeft(3f);
-                            }
+                    for(UnitType type : visibleUnits){
+                        if(finalSeq.contains(type)){
+                            infoTable.image(type.uiIcon).size(Vars.iconSmall).left().padLeft(3f);
                         }
 
                         infoTable.row();
@@ -195,7 +193,7 @@ public class MinerFunc{
                 }
 
                 blockTable.add(fixed + "[accent]Blocks:[] ").top()
-                 .style(Styles.outlineLabel).labelAlign(Align.left);
+                .style(Styles.outlineLabel).labelAlign(Align.left);
 
                 blockTable.row();
 
@@ -222,7 +220,7 @@ public class MinerFunc{
             }).left().row();
         }
 
-        t.margin(8f).update(() -> t.setPosition(graphics.getWidth()/2f, graphics.getHeight()/2f, Align.center));
+        t.margin(8f).update(() -> t.setPosition(graphics.getWidth() / 2f, graphics.getHeight() / 2f, Align.center));
         t.actions(Actions.fadeOut(8.5f, Interp.pow5In), Actions.remove());
         t.pack();
         t.act(0.1f);

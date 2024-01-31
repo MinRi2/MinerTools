@@ -54,7 +54,7 @@ public class MStats{
 
         public abstract void tryOverride(Stats stats, T type);
 
-        public abstract void override(Stats stats, Table table, T type);
+        protected abstract void override(Stats stats, Table table, T type);
 
         public final void clearStatValues(Stats stats){
             OrderedMap<StatCat, OrderedMap<Stat, Seq<StatValue>>> map = MinerUtils.getValue(statsMapField, stats);

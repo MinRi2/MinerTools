@@ -34,7 +34,7 @@ public class MRenderer{
         new UnitAssemblerInfo(), new OverdriveZone()
         );
         unitProvider.addGlobalDrawers(new UnitAlert(), new EnemyIndicator()).addCameraDrawers(new UnitInfoBar());
-        playerProvider.addGlobalDrawers(new PlayerRange()).addCameraDrawers(new PayloadDropHint());
+        playerProvider.addGlobalDrawers(new PlayerRange()).addLocalDrawers(new PayloadDropHint());
         selectProvider.addBuildDrawers(new ConstructBlockInfo(), new BuildSelect(), new BridgeLinkedList());
 
         providers.addAll(buildProvider, unitProvider, playerProvider, selectProvider);
