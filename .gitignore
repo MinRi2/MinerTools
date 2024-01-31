@@ -156,4 +156,4 @@ gradle-app.setting
 Thumbs.db
 android/libs/
 
-build.bat
+test.shell
