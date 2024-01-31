@@ -11,7 +11,7 @@ repositories{
 }
 
 java{
-    targetCompatibility = 8
+    targetCompatibility = JavaVersion.VERSION_1_8
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
@@ -27,7 +27,7 @@ ext{
 //java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--target', '8'], ['--source', '17'])
+        // options.compilerArgs.addAll(['--release', '8'])
     }
 }
 
