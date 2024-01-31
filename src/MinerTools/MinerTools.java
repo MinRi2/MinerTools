@@ -23,7 +23,6 @@ public class MinerTools extends Mod{
 
     public MinerTools(){
         // mobile = true; // Only for debug
-
         Events.on(EventType.ContentInitEvent.class, e -> Contents.init());
 
         Events.on(EventType.ClientLoadEvent.class, e -> {

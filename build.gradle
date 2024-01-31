@@ -21,7 +21,9 @@ ext{
     jabelVersion = "93fde537c7"
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
-    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT")
+    sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT") ?: "D:/Sdk"
+
+    modDir = "${System.getenv("APPDATA")}\\Mindustry\\mods"
 }
 
 //java 8 backwards compatibility flag
@@ -96,6 +98,13 @@ task deploy(type: Jar){
         delete{
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
+            delete "$modDir/${project.archivesBaseName}.jar"
+        }
+
+        copy{
+            from "$buildDir/libs/"
+            into "$modDir/"
+            include "${project.archivesBaseName}.jar"
         }
     }
 }
