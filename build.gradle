@@ -11,7 +11,7 @@ repositories{
 }
 
 java{
-    targetCompatibility = 16
+    targetCompatibility = 8
     sourceCompatibility = JavaVersion.VERSION_17
 }
 
