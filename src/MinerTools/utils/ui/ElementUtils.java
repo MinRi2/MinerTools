@@ -1,4 +1,4 @@
-package MinerTools.ui.utils;
+package MinerTools.utils.ui;
 
 import arc.func.*;
 import arc.math.geom.*;
@@ -56,7 +56,8 @@ public class ElementUtils{
             }
 
             @Override
-            public void exit(InputEvent event, float x, float y, int pointer, Element toActor){}
+            public void exit(InputEvent event, float x, float y, int pointer, Element toActor){
+            }
 
             @Override
             protected void setContainerPosition(Element element, float x, float y){
@@ -112,5 +113,18 @@ public class ElementUtils{
      */
     public static Element hitUnTouchable(Element e, float x, float y){
         return x >= e.translation.x && x < e.getWidth() + e.translation.x && y >= e.translation.y && y < e.getHeight() + e.translation.y ? e : null;
+    }
+
+    public static Rect getBound(Element element, Rect out){
+        return out.set(element.x, element.y, element.getWidth(), element.getHeight());
+    }
+
+    public static Rect getBoundScene(Element element, Rect out){
+        Vec2 sceneCoordinate = element.localToStageCoordinates(Tmp.v1.set(0, 0));
+        return out.set(sceneCoordinate.x, sceneCoordinate.y, element.getWidth(), element.getHeight());
+    }
+
+    public static Vec2 getOriginPosition(Element element, Vec2 out){
+        return out.set(element.localToStageCoordinates(Tmp.v1.set(0, 0)));
     }
 }
