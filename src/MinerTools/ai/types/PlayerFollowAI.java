@@ -11,13 +11,11 @@ import mindustry.gen.*;
 import mindustry.ui.*;
 
 public class PlayerFollowAI extends PlayerAI{
-    private int lastPlayerSize;
-
-    private Player follow;
-
     /* display */
-    private Table playerSelect;
-    private ScrollPane pane;
+    private final Table playerSelect;
+    private final ScrollPane pane;
+    private int lastPlayerSize;
+    private Player follow;
 
     public PlayerFollowAI(){
         super(new TextureRegionDrawable(UnitTypes.oct.uiIcon));

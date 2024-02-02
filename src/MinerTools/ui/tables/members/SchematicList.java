@@ -23,12 +23,10 @@ import static mindustry.ui.Styles.*;
 public class SchematicList extends MemberTable{
     public static float imageSize = 85f;
 
-    private Table schematicsTable = new Table(black3);
-
+    private final Table schematicsTable = new Table(black3);
+    private final Seq<String> selectedTags = new Seq<>();
     private int selectedCount;
-
-    private Seq<String> tags = new Seq<>(), selectedTags = new Seq<>();
-
+    private Seq<String> tags = new Seq<>();
     private Field tagsField;
 
 

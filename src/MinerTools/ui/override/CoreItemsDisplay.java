@@ -24,31 +24,14 @@ import static MinerTools.MinerVars.desktop;
 import static mindustry.Vars.*;
 
 public class CoreItemsDisplay extends Table implements OverrideUI{
-    public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
     private static final Interval timer = new Interval();
-
-    /* For override */
-    private Table override;
-
-    private int columns;
-
+    public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
     private final Table itemsInfoTable = new Table();
     private final Table planInfoTable = new Table();
-
-    private boolean showPlanInfo;
-
     private final ObjectSet<Item> usedItems = new ObjectSet<>();
-    private final ObjectSet<UnitType> usedUnits = new ObjectSet<>(); 
-    
-    /** 物品流动更新显示 */
-    private int updateHeat;
-    private int meanSize;
-    private float updateScl;
+    private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
-    
-    /** PlanTable */
-    private int lastTotal;
     private final ItemSeq planItems = new ItemSeq();
     private final ObjectIntMap<Block> planBlockCounter = new ObjectIntMap<>(){
         @Override
@@ -56,7 +39,16 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
             super.put(key, get(key) + value);
         }
     };
-
+    /* For override */
+    private Table override;
+    private int columns;
+    private boolean showPlanInfo;
+    /** 物品流动更新显示 */
+    private int updateHeat;
+    private int meanSize;
+    private float updateScl;
+    /** PlanTable */
+    private int lastTotal;
     private CoreBuild core;
 
     public CoreItemsDisplay(){
@@ -227,7 +219,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
                 itemsInfoTable.stack(new Table(t -> t.image(item.uiIcon).size(iconSize)), label);
 
-                itemsInfoTable.label(() -> "" + UI.formatAmount(core.items.get(item))).padRight(3f).minWidth(labelMinWidth).left();
+                itemsInfoTable.label(() -> UI.formatAmount(core.items.get(item))).padRight(3f).minWidth(labelMinWidth).left();
 
                 if(++i % columns == 0){
                     itemsInfoTable.row();

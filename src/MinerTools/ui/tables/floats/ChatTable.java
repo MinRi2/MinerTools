@@ -66,7 +66,7 @@ public class ChatTable extends FloatTable{
                 messageStacks.add(new MessageStack());
             }
         }, 0f, 60f);
-        
+
         update(() -> {
             if(timer.get(60f)){
                 resetMessages();
@@ -177,7 +177,8 @@ public class ChatTable extends FloatTable{
 
             t.row();
 
-            t.table(MStyles.clearFlatOver, s -> {}).update(selectsTable -> {
+            t.table(MStyles.clearFlatOver, s -> {
+            }).update(selectsTable -> {
                 selectsTable.clearChildren();
 
                 if(selectMessages.isEmpty()) return;
@@ -292,7 +293,7 @@ public class ChatTable extends FloatTable{
     public static class MessageStack{
         public static SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 
-        private Date date = new Date();
+        private final Date date = new Date();
         public Seq<String> messages = new Seq<>();
 
         public int addMessage(String msg){
