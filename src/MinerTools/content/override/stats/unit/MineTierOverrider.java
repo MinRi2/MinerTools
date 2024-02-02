@@ -47,10 +47,12 @@ public class MineTierOverrider extends StatAdder<UnitType>{
             for(Block block : getMineBlocks(type)){
                 t.table(Styles.grayPanel, oreTable -> {
                     oreTable.left();
-                    
+
                     oreTable.image(block.uiIcon).scaling(Scaling.fit).size(Vars.iconXLarge).padLeft(4f);
 
                     oreTable.table(info -> {
+                        info.defaults().left();
+
                         info.add(block.localizedName).color(Pal.lightishGray);
 
                         info.row();
