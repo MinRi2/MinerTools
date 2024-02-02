@@ -13,7 +13,7 @@ import mindustry.gen.*;
 import mindustry.type.*;
 import mindustry.world.*;
 
-import static MinerTools.content.Contents.allOres;
+import static MinerTools.content.MContents.allOres;
 import static mindustry.Vars.*;
 
 public class PlayerMinerAI extends PlayerAI{

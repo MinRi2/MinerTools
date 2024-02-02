@@ -9,7 +9,7 @@ import mindustry.*;
 import mindustry.game.Teams.*;
 import mindustry.gen.*;
 
-public class BuildProvider extends CameraProvider<BuildDrawer<?>>{
+public class BuildProvider extends CameraProvider<BuildDrawer<? extends Building>>{
 
     @Override
     public void globalProvide(Seq<BuildDrawer<?>> validDrawers){
@@ -17,7 +17,7 @@ public class BuildProvider extends CameraProvider<BuildDrawer<?>>{
             var buildings = data.buildings;
 
             for(Building building : buildings){
-                for(BuildDrawer<?> drawer : validDrawers){
+                for(BuildDrawer<? extends Building> drawer : validDrawers){
                     drawer.tryDraw(building);
                 }
             }

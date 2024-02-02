@@ -20,7 +20,7 @@ import mindustry.world.blocks.units.Reconstructor.*;
 import mindustry.world.blocks.units.UnitFactory.*;
 import mindustry.world.consumers.*;
 
-public class Bars{
+public class MBars{
 
     public static void override(Block block){
         block.addBar("health", e -> new Bar(

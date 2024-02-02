@@ -3,7 +3,6 @@ package MinerTools.modules.SpawnerInfo;
 import MinerTools.modules.*;
 import MinerTools.ui.settings.*;
 import MinerTools.utils.*;
-import MinerTools.utils.PanRequests.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.*;
@@ -53,12 +52,12 @@ public class SpawnerViewer extends SettingModule{
             alwaysShow = b;
         }).change();
     }
-    
+
     public void worldLoad(){
         if(!isEnable()){
             return;
         }
-        
+
         if(preview){
             Timer.schedule(this::view, 0.75f);
         }
@@ -67,14 +66,13 @@ public class SpawnerViewer extends SettingModule{
     public void view(){
         isViewing = true;
 
-        PanRequests.markCamera();
+        CameraUtils.mark();
 
         for(SpawnerGroup group : viewGroups){
-            PanRequests.panWait(group.getCentroid(), 0.55f);
+            CameraUtils.panWait(group.getCentroid(), 0.55f);
         }
 
-        PanRequest request = PanRequests.panToLastMark();
-        request.setFinished(() -> {
+        CameraUtils.panToLastMark().onFinished(() -> {
             isViewing = false;
         });
     }

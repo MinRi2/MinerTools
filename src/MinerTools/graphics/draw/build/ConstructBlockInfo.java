@@ -5,13 +5,11 @@ import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
 import arc.scene.ui.layout.*;
-import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
 import mindustry.graphics.*;
 import mindustry.type.*;
-import mindustry.world.*;
 import mindustry.world.blocks.*;
 import mindustry.world.blocks.ConstructBlock.*;
 import mindustry.world.blocks.storage.CoreBlock.*;
@@ -19,7 +17,7 @@ import mindustry.world.blocks.storage.CoreBlock.*;
 public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
 
     public ConstructBlockInfo(){
-        super(getConsBlock());
+        super(block -> block instanceof ConstructBlock);
     }
 
     @Override
@@ -63,11 +61,6 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
         }
 
         Draw.reset();
-    }
-
-    public static IntSeq getConsBlock(){
-        ConstructBlock[] cons = Reflect.get(ConstructBlock.class, "consBlocks");
-        return new Seq<Block>().addAll(cons).mapInt(block -> block.id);
     }
 
 }

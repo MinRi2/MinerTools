@@ -2,10 +2,10 @@ package MinerTools;
 
 import MinerTools.ai.*;
 import MinerTools.content.*;
+import MinerTools.content.override.*;
 import MinerTools.game.*;
 import MinerTools.graphics.*;
 import MinerTools.modules.*;
-import MinerTools.utils.*;
 import arc.*;
 import arc.input.*;
 import arc.util.*;
@@ -23,11 +23,12 @@ public class MinerTools extends Mod{
 
     public MinerTools(){
         // mobile = true; // Only for debug
-        Events.on(EventType.ContentInitEvent.class, e -> Contents.init());
+        Events.on(EventType.ContentInitEvent.class, e -> MContents.init());
 
         Events.on(EventType.ClientLoadEvent.class, e -> {
-            Timer.schedule(Updater::checkUpdate, 8);
+            Timer.schedule(Updater::checkUpdate, 3);
 
+            MStats.init();
             MinerVars.init();
 
             Modules.init();
@@ -35,11 +36,6 @@ public class MinerTools extends Mod{
             MRenderer.init();
 
             Modules.load();
-        });
-
-        Events.on(EventType.WorldLoadEvent.class, e -> {
-
-            Timer.schedule(MinerFunc::showBannedInfo, 2f);
         });
 
         Events.run(Trigger.update, this::update);

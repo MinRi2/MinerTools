@@ -3,18 +3,16 @@ package MinerTools;
 import MinerTools.input.*;
 import MinerTools.io.*;
 import MinerTools.ui.*;
-import arc.*;
 import arc.KeyBinds.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.*;
-import mindustry.ui.dialogs.SettingsMenuDialog.SettingsTable.*;
 
 import static arc.Core.*;
 import static mindustry.Vars.maxSchematicSize;
 
 public class MinerVars{
+    public static final String modSymbol = "[yellow][M]";
+
     public static MSettings settings;
     public static MUI ui;
 
@@ -34,48 +32,7 @@ public class MinerVars{
         settings.init();
         ui.init();
 
-        betterUIScaleSetting();
         betterSchemeSize();
-    }
-
-    public static void betterUIScaleSetting(){
-        if(Core.settings.has("_uiscale")){
-            MinerVars.settings.put("_uiscale", Core.settings.getInt("_uiscale"));
-            Core.settings.remove("_uiscale");
-        }
-
-        int[] lastUiScale = {Core.settings.getInt("uiscale", 100)};
-        int index = Vars.ui.settings.graphics.getSettings().indexOf(setting -> setting.name.equals("uiscale"));
-
-        final boolean[] shouldChange = {false};
-
-        Core.settings.put("uiscale", MinerVars.settings.getInt("_uiscale", 100));
-        Core.settings.put("uiscalechanged", false);
-
-        if(index != -1){
-            Vars.ui.settings.graphics.getSettings().add(new Setting("rebuildListener"){
-                @Override
-                public void add(SettingsTable table){
-                    shouldChange[0] = false;
-                }
-            });
-
-            Vars.ui.settings.graphics.getSettings().set(index, new SliderSetting("uiscale", 100, 25, 300, 1, s -> {
-                if(shouldChange[0]){
-                    //if the user changed their UI scale, but then put it back, don't consider it 'changed'
-                    Core.settings.put("uiscalechanged", s != lastUiScale[0]);
-                }else{
-                    shouldChange[0] = true;
-                }
-
-                MinerVars.settings.put("_uiscale", s, false, true);
-
-                return s + "%";
-            }));
-        }
-        Vars.ui.settings.graphics.rebuild();
-
-        Scl.setProduct(MinerVars.settings.getInt("_uiscale", 100) / 100f);
     }
 
     public static void betterSchemeSize(){

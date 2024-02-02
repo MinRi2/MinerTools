@@ -22,11 +22,17 @@ public class Updater{
 
             if(version.equals(mod.meta.version)) return;
 
-            ui.showCustomConfirm("@miner-tools.updater.name",
-            Core.bundle.format("miner-tools.updater.info", mod.meta.version, version),
-            "@miner-tools.updater.load", "@ok", () -> {
-                Reflect.invoke(ModsDialog.class, ui.mods, "githubImportJavaMod", new Object[]{repo, null}, String.class, String.class);
-            }, () -> {});
-        }, e -> {});
+            Core.app.post(() -> confirmUpdate(version));
+        }, e -> {
+        });
+    }
+
+    private static void confirmUpdate(String version){
+        ui.showCustomConfirm("@miner-tools.updater.name",
+        Core.bundle.format("miner-tools.updater.info", mod.meta.version, version),
+        "@miner-tools.updater.load", "@ok", () -> {
+            Reflect.invoke(ModsDialog.class, ui.mods, "githubImportJavaMod", new Object[]{repo, null}, String.class, String.class);
+        }, () -> {
+        });
     }
 }

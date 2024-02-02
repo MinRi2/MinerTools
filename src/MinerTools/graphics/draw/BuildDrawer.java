@@ -1,38 +1,27 @@
 package MinerTools.graphics.draw;
 
-import MinerTools.content.*;
 import arc.func.*;
-import arc.struct.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 
 public abstract class BuildDrawer<T extends Building> extends Drawer<T>{
-    /* Ids of block */
-    private final IntSeq blocks;
+    private final Boolf<Block> shouldDrawBlock;
 
     public BuildDrawer(){
-        this((IntSeq)null);
+        this(block -> true);
     }
 
-    public BuildDrawer(IntSeq blocks){
-        this.blocks = blocks;
+    public BuildDrawer(Boolf<Block> shouldDrawBlock){
+        this.shouldDrawBlock = shouldDrawBlock;
     }
 
-    public BuildDrawer(Seq<Block> blocks){
-        this(blocks.mapInt(block -> block.id));
-    }
-
-    public BuildDrawer(Boolf<Block> predicate){
-        this(Contents.visibleBlocks.select(predicate));
-    }
-
-    @Override
     @SuppressWarnings("unchecked")
-    public void tryDraw(Building building){
-        if(blocks != null && !blocks.contains(building.block.id)) return;
+    @Override
+    public void tryDraw(Building type){
+        if(!shouldDrawBlock.get(type.block)) return;
 
-        super.tryDraw((T)building);
+        super.tryDraw((T)type);
     }
 
     @Override
