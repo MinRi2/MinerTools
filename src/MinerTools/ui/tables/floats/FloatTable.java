@@ -41,12 +41,6 @@ public class FloatTable extends DraggableTable implements Addable{
         ui.hudGroup.addChild(this);
     }
 
-    @Override
-    public boolean remove(){
-        MUI.showInfoToastAt(getX(Align.center), getTop() + 8, Core.bundle.get("miner-tools.floats.reshow-hint"), 2, Align.bottom);
-        return super.remove();
-    }
-
     /**
      * 在rebuildCont方法执行前初始化变量
      */
@@ -90,7 +84,7 @@ public class FloatTable extends DraggableTable implements Addable{
     private void setupTitle(){
         title.clearChildren();
 
-        title.add(Core.bundle.get("@miner-tools.floats." + name, "unnamed")).padLeft(4f).growX().left();
+        title.add(Core.bundle.get("miner-tools.floats." + name, "unnamed")).padLeft(4f).growX().left();
 
         title.table(buttons -> {
             buttons.defaults().width(48f).growY().right();
@@ -110,9 +104,14 @@ public class FloatTable extends DraggableTable implements Addable{
 
             buttons.button("x", MStyles.clearPartial2t, () -> {
                 MinerVars.settings.put("floats." + name + ".shown", false);
-                remove();
+                removeManually();
             }).size(48f);
         }).growY().right();
+    }
+
+    private void removeManually(){
+        MUI.showInfoToastAt(getX(Align.center), getTop() + 8, Core.bundle.get("miner-tools.floats.reshow-hint"), 2, Align.bottom);
+        remove();
     }
 
     protected void setupButtons(Table buttons){
