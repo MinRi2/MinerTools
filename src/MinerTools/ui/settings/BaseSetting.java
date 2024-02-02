@@ -1,7 +1,7 @@
 package MinerTools.ui.settings;
 
 import MinerTools.*;
-import MinerTools.ui.utils.*;
+import MinerTools.utils.ui.*;
 import arc.*;
 import arc.func.*;
 import arc.scene.*;
@@ -38,14 +38,13 @@ public abstract class BaseSetting{
     }
 
     protected void putSetting(Object value){
-            MinerVars.settings.put(name, value, false, true);
-        }
+        MinerVars.settings.put(name, value, false, true);
+    }
 
     public static class CheckSetting extends BaseSetting{
-        private CheckBox box;
-
         boolean def;
         Boolc changed;
+        private CheckBox box;
 
         public CheckSetting(String name, boolean def, Boolc changed){
             super(name, def);

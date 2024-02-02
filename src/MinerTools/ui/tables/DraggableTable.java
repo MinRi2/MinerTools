@@ -35,7 +35,7 @@ public class DraggableTable extends Table{
     }
 
     public void setLastPos(){
-        if(name != null && !name.equals("")){
+        if(name != null && !name.isEmpty()){
             float x = MinerVars.settings.getFloat("ui." + name + ".pos" + ".x");
             float y = MinerVars.settings.getFloat("ui." + name + ".pos" + ".y");
             setPosition(x, y);

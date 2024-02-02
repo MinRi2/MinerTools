@@ -9,70 +9,70 @@ import arc.struct.*;
 import mindustry.*;
 import mindustry.ui.*;
 
-public abstract class MembersTable extends Table {
-    private Table container;
-    private MemberTable showMember;
+public class MembersTable extends Table{
     private final Seq<MemberTable> members = new Seq<>();
     MembersBuilder builder;
+    private Table container;
+    private MemberTable showMember;
 
-    public MembersTable() {
+    public MembersTable(){
         this(MembersBuilder.defaultBuilder);
     }
 
-    public MembersTable(MembersBuilder builder) {
+    public MembersTable(MembersBuilder builder){
         this.builder = builder;
 
         left().top();
     }
 
-    public void addMember(MemberTable... members) {
+    public void addMember(MemberTable... members){
         this.members.addAll(members);
     }
 
-    public void setContainer(Table container) {
+    public void setContainer(Table container){
         this.container = container;
     }
 
-    public void setMember(MemberTable member) {
+    public void setMember(MemberTable member){
         container.clear();
         showMember = member;
-        if (member != null) {
+        if(member != null){
             container.add(member).grow().padRight(2.0f);
             member.memberRebuild();
         }
     }
 
-    public boolean memberShowing() {
+    public boolean memberShowing(){
         return showMember != null;
     }
 
-    public boolean memberShowing(MemberTable memberTable) {
+    public boolean memberShowing(MemberTable memberTable){
         return showMember == memberTable;
     }
 
-    public Seq<MemberTable> getMembers() {
+    public Seq<MemberTable> getMembers(){
         return members;
     }
 
-    public void rebuildMembers() {
+    public void rebuildMembers(){
         builder.build(this);
     }
 
-    public static interface MembersBuilder extends TableBuilder<MembersTable> {
+    public static interface MembersBuilder extends TableBuilder<MembersTable>{
         MembersBuilder defaultBuilder = table -> {
             Seq<MemberTable> members = table.getMembers();
 
             table.pane(Styles.noBarPane, buttons -> {
                 buttons.background(Styles.black3);
-                for (MemberTable member : members) {
-                    if (!member.canShown()) continue;
+                for(MemberTable member : members){
+                    if(!member.canShown()) continue;
 
                     member.left().top();
 
                     buttons.button(member.icon, MStyles.clearToggleAccentb, () -> {
-                        if (table.memberShowing(member)) {
+                        if(table.memberShowing(member)){
                             table.setMember(null);
-                        } else {
+                        }else{
                             table.setMember(member);
                         }
                     }).padTop(4.0f).size(32.0f).checked(b -> table.memberShowing(member)).row();
@@ -83,20 +83,20 @@ public abstract class MembersTable extends Table {
         };
     }
 
-    public static class MemberTable extends Table {
+    public static class MemberTable extends Table{
         public boolean desktopOnly = false;
         public boolean mobileOnly = false;
         public Drawable icon;
 
-        public MemberTable(Drawable icon) {
+        public MemberTable(Drawable icon){
             this.icon = icon;
         }
 
-        public boolean canShown() {
+        public boolean canShown(){
             return !(this.mobileOnly && !Vars.mobile || this.desktopOnly && !MinerVars.desktop);
         }
 
-        public void memberRebuild() {
+        public void memberRebuild(){
         }
     }
 

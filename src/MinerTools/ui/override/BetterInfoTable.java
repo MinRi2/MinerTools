@@ -2,8 +2,8 @@ package MinerTools.ui.override;
 
 import MinerTools.*;
 import MinerTools.interfaces.*;
-import MinerTools.ui.utils.*;
 import MinerTools.utils.*;
+import MinerTools.utils.ui.*;
 import arc.*;
 import arc.func.*;
 import arc.graphics.*;
