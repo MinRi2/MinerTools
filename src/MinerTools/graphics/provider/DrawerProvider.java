@@ -28,8 +28,8 @@ public abstract class DrawerProvider<T extends Drawer<?>>{
         }
     }
 
-    public void drawShader(Seq<T> validDrawers){
-        for(T drawer : validDrawers){
+    public final void drawShader(){
+        for(T drawer : drawers){
             drawer.drawShader();
         }
     }

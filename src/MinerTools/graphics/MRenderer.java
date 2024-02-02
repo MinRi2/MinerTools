@@ -6,21 +6,14 @@ import MinerTools.graphics.draw.player.*;
 import MinerTools.graphics.draw.unit.*;
 import MinerTools.graphics.provider.*;
 import arc.*;
-import arc.graphics.gl.*;
 import arc.struct.*;
 import mindustry.game.EventType.*;
 
-import static mindustry.Vars.renderer;
-
 public class MRenderer{
-    public static FrameBuffer effectBuffer;
-
     private static final Seq<DrawerProvider<?>> providers = new Seq<>();
 
     public static void init(){
         MShaders.init();
-
-        effectBuffer = renderer.effectBuffer;
 
         BuildProvider buildProvider = new BuildProvider();
         UnitProvider unitProvider = new UnitProvider();
@@ -46,6 +39,7 @@ public class MRenderer{
         Events.run(Trigger.draw, () -> {
             for(DrawerProvider<?> provider : providers){
                 provider.provide();
+                provider.drawShader();
             }
         });
     }
