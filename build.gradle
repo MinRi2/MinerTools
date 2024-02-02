@@ -85,6 +85,14 @@ jar{
     from("assets/"){
         include "**"
     }
+
+    doLast{
+        copy{
+            from "$buildDir/libs/"
+            into "$modDir/"
+            include "${project.archivesBaseName}Desktop.jar"
+        }
+    }
 }
 
 task deploy(type: Jar){
@@ -98,13 +106,6 @@ task deploy(type: Jar){
         delete{
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
-            delete "$modDir/${project.archivesBaseName}.jar"
-        }
-
-        copy{
-            from "$buildDir/libs/"
-            into "$modDir/"
-            include "${project.archivesBaseName}.jar"
         }
     }
 }
