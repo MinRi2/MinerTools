@@ -138,9 +138,9 @@ public class FloatTable extends SavedTable implements Addable{
         }else{
             bodyCont.clear();
 
-            ElementUtils.getBoundsOnParent(this, lastBounds);
+            ElementUtils.getBoundsOnScene(this, lastBounds);
 
-            Vec2 v = ElementUtils.getOriginPosition(title, Tmp.v1);
+            Vec2 v = ElementUtils.getOriginOnScene(title, Tmp.v1);
             setPosition(v.x, v.y);
             pack();
         }
@@ -150,6 +150,6 @@ public class FloatTable extends SavedTable implements Addable{
 
     @Override
     protected void onResized(float deltaWidth, float deltaHeight){
-        ElementUtils.getBoundsOnParent(this, lastBounds);
+        ElementUtils.getBoundsOnScene(this, lastBounds);
     }
 }

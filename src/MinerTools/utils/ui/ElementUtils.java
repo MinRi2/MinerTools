@@ -142,7 +142,7 @@ public class ElementUtils{
         return out.set(element.x, element.y, element.getWidth(), element.getHeight());
     }
 
-    public static void getBoundsOnParent(Element element, Rect out){
+    public static Rect getBoundsOnScene(Element element, Rect out){
         Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
         element.localToStageCoordinates(v.set(0, 0));
 
@@ -150,6 +150,8 @@ public class ElementUtils{
 
         v.setZero();
         Pools.free(v);
+
+        return out;
     }
 
     /**
@@ -158,7 +160,7 @@ public class ElementUtils{
      * @param out 输出坐标
      * @return 返回输出坐标
      */
-    public static Vec2 getOriginPosition(Element element, Vec2 out){
+    public static Vec2 getOriginOnScene(Element element, Vec2 out){
         return out.set(element.localToStageCoordinates(Tmp.v1.set(0, 0)));
     }
 

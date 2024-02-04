@@ -32,11 +32,17 @@ public class ElementOperator{
     private static final Seq<Element> vanillaElements = new Seq<>();
     // 可操作的表
     private static final Seq<OperableTable> operableTables = new Seq<>();
+
+    // 当前对齐的线，用于绘制 (Scene坐标系)
+    private static final ObjectSet<Float> verticalLines = new ObjectSet<>();
+    private static final ObjectSet<Float> horizontalLines = new ObjectSet<>();
+
     // 大小边框所占比例(中间是拖拽)
     private static final float resizeBorderRatio = 2f / 10f;
+    // 距离小于此值时对齐
+    private static final float alignBorder = 4f;
 
     public static boolean operating = false;
-
     // 操作目标元素
     private static Element target;
     private static PuppetElement puppet;
@@ -73,6 +79,11 @@ public class ElementOperator{
         vanillaElements.addAll(mainStack, wavesTable, minimap, position, coreInfoWrapper);
     }
 
+    private static void clearAlignLines(){
+        verticalLines.clear();
+        horizontalLines.clear();
+    }
+
     private static void init(){
         background = new OperatorBackground();
         puppet = new OperatorPuppet();
@@ -95,6 +106,8 @@ public class ElementOperator{
 
                 updateEdge(x, y);
 
+                clearAlignLines();
+
                 return true;
             }
 
@@ -103,11 +116,18 @@ public class ElementOperator{
                 float deltaX = dragX - startX;
                 float deltaY = dragY - startY;
 
+                clearAlignLines();
+
                 if(dragMode){
                     updateDragMode(deltaX, deltaY);
                 }else if(resizeMode){
                     updateResizeMode(deltaX, deltaY, lastWidth, lastHeight);
                 }
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, KeyCode button){
+                clearAlignLines();
             }
         });
 
@@ -116,7 +136,7 @@ public class ElementOperator{
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
                 Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
-                Vec2 scenePos = background.localToStageCoordinates(v.set(x, y));
+                Vec2 scenePos = hitter.localToStageCoordinates(v.set(x, y));
 
                 OperableTable operableTable = operableTables.find(o -> {
                     if(!o.visible || !o.hasParent()){
@@ -176,11 +196,17 @@ public class ElementOperator{
 
         puppet.setTarget(target);
 
+        clearAlignLines();
+
         show();
     }
 
     private static boolean operable(Element element){
         return element != null && element.visible && element.hasParent();
+    }
+
+    private static boolean alizable(Element element){
+        return element != null && element != target && element.visible;
     }
 
     private static void show(){
@@ -245,11 +271,7 @@ public class ElementOperator{
             consumer.onDragged(deltaX, deltaY);
         }
 
-        updateDragAlign(deltaX, deltaY);
-    }
-
-    private static void updateDragAlign(float deltaX, float deltaY){
-
+        updateDragAlign();
     }
 
     private static void updateResizeMode(float deltaX, float deltaY, float lastWidth, float lastHeight){
@@ -305,12 +327,137 @@ public class ElementOperator{
             consumer.onResized(deltaX, deltaY);
         }
 
-        updateResizeAlign(deltaX, deltaY);
+        updateResizeAlign();
+    }
+
+    private static void updateDragAlign(){
+        for(Element element : vanillaElements){
+            if(alizable(element)){
+                updateDragAlign(element);
+            }
+        }
+
+        for(OperableTable table : operableTables){
+            if(alizable(table)){
+                updateDragAlign(table);
+            }
+        }
+    }
+
+    private static void updateDragAlign(Element element){
+        Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+
+        ElementUtils.getOriginOnScene(puppet, v);
+        float x = v.x, y = v.y;
+        float w = puppet.getWidth(), h = puppet.getHeight();
+
+        ElementUtils.getOriginOnScene(element, v);
+        float ex = v.x, ey = v.y;
+        float ew = element.getWidth(), eh = element.getHeight();
+
+        float left = x, right = x + w;
+        float bottom = y, top = y + h;
+
+        float eleft = ex, eright = ex + ew;
+        float ebottom = ey, etop = ey + eh;
+
+        float alignX = x, alignY = y;
+        int alignFrom = 0, alignTo = 0;
+
+        if(Math.abs(left - eleft) <= alignBorder){ // 左边往左边贴
+            alignX = eleft;
+
+            if(!verticalLines.contains(eleft)) verticalLines.add(eleft);
+
+            alignFrom |= Align.left;
+            alignTo |= Align.left;
+        }else if(Math.abs(right - eleft) <= alignBorder){ // 右边往左边贴
+            alignX = eleft - w;
+
+            if(!verticalLines.contains(eleft)) verticalLines.add(eleft);
+
+            alignFrom |= Align.right;
+            alignTo |= Align.left;
+        }
+
+        if(Math.abs(left - eright) <= alignBorder){ // 左边往右边贴
+            alignX = eright;
+            if(!verticalLines.contains(eright)) verticalLines.add(eright);
+
+            alignFrom |= Align.left;
+            alignTo |= Align.right;
+        }else if(Math.abs(right - eright) <= alignBorder){ // 右边往右边贴
+            alignX = eright - w;
+
+            verticalLines.add(eright);
+
+            alignFrom |= Align.right;
+            alignTo |= Align.right;
+        }
+
+        if(Math.abs(bottom - ebottom) <= alignBorder){ // 下边往下边贴
+            alignY = ebottom;
+
+            horizontalLines.add(ebottom);
+
+            alignFrom |= Align.bottom;
+            alignTo |= Align.bottom;
+        }else if(Math.abs(top - ebottom) <= alignBorder){ // 上边往下边贴
+            alignY = ebottom - h;
+
+            horizontalLines.add(ebottom);
+
+            alignFrom |= Align.top;
+            alignTo |= Align.bottom;
+        }
+
+        if(Math.abs(bottom - etop) <= alignBorder){ // 下边往上边贴
+            alignY = etop;
+
+            horizontalLines.add(etop);
+
+            alignFrom |= Align.bottom;
+            alignTo |= Align.top;
+        }else if(Math.abs(top - etop) <= alignBorder){ // 上边往上边贴
+            alignY = etop - h;
+
+            horizontalLines.add(etop);
+
+            alignFrom |= Align.top;
+            alignTo |= Align.top;
+        }
+
+        puppet.parent.stageToLocalCoordinates(v.set(alignX, alignY));
+        puppet.setPosition(v.x, v.y);
+
+        if(consumer != null){
+            consumer.onSnapped(element, alignFrom, alignTo);
+
+            if(consumer.keepInStage){
+                puppet.keepInStage();
+            }
+        }
+
+        v.setZero();
+        Pools.free(v);
+    }
+
+    private static void updateResizeAlign(){
+//        for(Element element : vanillaElements){
+//            if(alizable(element)){
+//                updateDragAlign(element);
+//            }
+//        }
+//
+//        for(OperableTable table : operableTables){
+//            if(alizable(table)){
+//                updateDragAlign(table);
+//            }
+//        }
     }
 
     // TODO
-    private static void updateResizeAlign(float deltaX, float deltaY){
-
+    private static void updateResizeAlign(Element element){
     }
 
     private static class OperatorPuppet extends PuppetElement{
@@ -378,7 +525,7 @@ public class ElementOperator{
             setFillParent(true);
         }
 
-        private static void drawOperableTable(float x, float y, float width, float height){
+        private void drawOperableTable(float x, float y, float width, float height){
             float halfWidth = width / 2, halfHeight = height / 2;
             float halfX = x + halfWidth, halfY = y + halfHeight;
 
@@ -392,9 +539,23 @@ public class ElementOperator{
             Draw.reset();
         }
 
-        private static void drawVanillaElement(float x, float y, float width, float height){
+        private void drawVanillaElement(float x, float y, float width, float height){
             // 边框
             Drawf.dashRect(Color.sky, x, y, width, height);
+
+            Draw.reset();
+        }
+
+        private void drawAlignLines(){
+            Draw.color(Pal.accent, 0.8f);
+
+            for(float x : verticalLines){
+                Lines.line(x, 0, x, height);
+            }
+
+            for(float y : horizontalLines){
+                Lines.line(0, y, width, y);
+            }
 
             Draw.reset();
         }
@@ -413,7 +574,7 @@ public class ElementOperator{
 
             for(OperableTable table : operableTables){
                 if(table.operable()){
-                    ElementUtils.getOriginPosition(table, pos);
+                    ElementUtils.getOriginOnScene(table, pos);
                     stageToLocalCoordinates(pos);
 
                     drawOperableTable(pos.x, pos.y, table.getWidth(), table.getHeight());
@@ -422,12 +583,14 @@ public class ElementOperator{
 
             for(Element element : vanillaElements){
                 if(operable(element)){
-                    ElementUtils.getOriginPosition(element, pos);
+                    ElementUtils.getOriginOnScene(element, pos);
                     stageToLocalCoordinates(pos);
 
                     drawVanillaElement(pos.x, pos.y, element.getWidth(), element.getHeight());
                 }
             }
+
+            drawAlignLines();
 
             pos.setZero();
             Pools.free(pos);
@@ -452,16 +615,10 @@ public class ElementOperator{
     }
 
     public static class OperateCons{
-        public final boolean alizable;
         public final boolean keepInStage;
 
-        public OperateCons(boolean alizable, boolean keepInStage){
-            this.alizable = alizable;
+        public OperateCons(boolean keepInStage){
             this.keepInStage = keepInStage;
-        }
-
-        public boolean alizable(){
-            return alizable;
         }
 
         public void onDragged(float deltaX, float deltaY){
@@ -470,7 +627,7 @@ public class ElementOperator{
         public void onResized(float deltaX, float deltaY){
         }
 
-        public void onSnapped(Element snap, Align align){
+        public void onSnapped(Element snap, int alignFrom, int alignTo){
         }
 
         public void onReleased(){
@@ -480,16 +637,8 @@ public class ElementOperator{
     public static class OperableTable extends Table{
         private final OperateCons cons;
 
-        public OperableTable(boolean alizable){
-            this(alizable, true);
-        }
-
-        public OperableTable(boolean alizable, boolean keepInStage){
-            cons = new OperateCons(alizable, keepInStage){
-                @Override
-                public boolean alizable(){
-                    return super.alizable() && OperableTable.this.visible;
-                }
+        public OperableTable(boolean keepInStage){
+            cons = new OperateCons(keepInStage){
 
                 @Override
                 public void onDragged(float deltaX, float deltaY){
@@ -507,8 +656,8 @@ public class ElementOperator{
                 }
 
                 @Override
-                public void onSnapped(Element snap, Align align){
-                    OperableTable.this.onSnapped(snap, align);
+                public void onSnapped(Element snap, int alignFrom, int alignTo){
+                    OperableTable.this.onSnapped(snap, alignFrom, alignTo);
                 }
             };
 
@@ -532,7 +681,7 @@ public class ElementOperator{
         protected void onReleased(){
         }
 
-        protected void onSnapped(Element snap, Align align){
+        protected void onSnapped(Element snap, int alignFrom, int alignTo){
         }
 
         public boolean operating(){
@@ -544,7 +693,6 @@ public class ElementOperator{
         private final DebounceTask savePositionTask = new DebounceTask(1f, () -> {
             MinerVars.settings.put(name + ".pos.x", x);
             MinerVars.settings.put(name + ".pos.y", y);
-            Log.info("save pos");
         }), saveSizeTask = new DebounceTask(1f, () -> {
             MinerVars.settings.put(name + ".size.width", width);
             MinerVars.settings.put(name + ".size.height", height);
@@ -553,7 +701,8 @@ public class ElementOperator{
         private boolean savePosition, saveSize;
 
         public SavedTable(String name, boolean savePosition, boolean saveSize){
-            super(true, true);
+            super(true);
+
             this.name = name;
 
             this.savePosition = savePosition;
