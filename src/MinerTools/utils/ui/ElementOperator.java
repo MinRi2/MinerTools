@@ -289,6 +289,7 @@ public class ElementOperator{
         float deltaWidth = width - lastWidth;
         float deltaHeight = height - lastHeight;
 
+        // 木偶元素坐标与Scene坐标系下的相同
         float x = puppet.x;
         float y = puppet.y;
 
@@ -305,14 +306,14 @@ public class ElementOperator{
             y += deltaY;
         }
         if(Align.isRight(touchEdge)){
-            deltaX -= deltaWidth; // 防止宽增的影响
+            deltaX -= deltaWidth; // 防止宽增的坐标影响
             if(width + deltaX < minWidth) deltaX = minWidth - width;
             if(keepInStage && x + width + deltaX > maxWidth)
                 deltaX = maxWidth - x - width;
             width += deltaX;
         }
         if(Align.isTop(touchEdge)){
-            deltaY -= deltaHeight; // 防止高增的影响
+            deltaY -= deltaHeight; // 防止高增的坐标影响
             if(height + deltaY < minHeight) deltaY = minHeight - height;
             if(keepInStage && y + height + deltaY > maxHeight)
                 deltaY = maxHeight - y - height;
@@ -345,19 +346,21 @@ public class ElementOperator{
     }
 
     private static void updateDragAlign(Element element){
-        Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
-
-        ElementUtils.getOriginOnScene(puppet, v);
-        float x = v.x, y = v.y;
+        // 木偶元素坐标与Scene坐标系下的相同
+        float x = puppet.x, y = puppet.y;
         float w = puppet.getWidth(), h = puppet.getHeight();
 
+        // 对齐元素坐标不一定等于Scene坐标系下的，先做转换
+        Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
         ElementUtils.getOriginOnScene(element, v);
         float ex = v.x, ey = v.y;
         float ew = element.getWidth(), eh = element.getHeight();
 
+        // 木偶元素边界
         float left = x, right = x + w;
         float bottom = y, top = y + h;
 
+        // 对齐元素边界
         float eleft = ex, eright = ex + ew;
         float ebottom = ey, etop = ey + eh;
 
@@ -427,15 +430,10 @@ public class ElementOperator{
             alignTo |= Align.top;
         }
 
-        puppet.parent.stageToLocalCoordinates(v.set(alignX, alignY));
-        puppet.setPosition(v.x, v.y);
+        puppet.setPosition(alignX, alignY);
 
         if(consumer != null){
             consumer.onSnapped(element, alignFrom, alignTo);
-
-            if(consumer.keepInStage){
-                puppet.keepInStage();
-            }
         }
 
         v.setZero();
@@ -443,21 +441,122 @@ public class ElementOperator{
     }
 
     private static void updateResizeAlign(){
-//        for(Element element : vanillaElements){
-//            if(alizable(element)){
-//                updateDragAlign(element);
-//            }
-//        }
-//
-//        for(OperableTable table : operableTables){
-//            if(alizable(table)){
-//                updateDragAlign(table);
-//            }
-//        }
+        for(Element element : vanillaElements){
+            if(alizable(element)){
+                updateResizeAlign(element);
+            }
+        }
+
+        for(OperableTable table : operableTables){
+            if(alizable(table)){
+                updateResizeAlign(table);
+            }
+        }
     }
 
-    // TODO
     private static void updateResizeAlign(Element element){
+        // 木偶元素坐标与Scene坐标系下的相同
+        float x = puppet.x, y = puppet.y;
+        float w = puppet.getWidth(), h = puppet.getHeight();
+
+        // 对齐元素坐标不一定等于Scene坐标系下的，先做转换
+        Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+        ElementUtils.getOriginOnScene(element, v);
+        float ex = v.x, ey = v.y;
+        float ew = element.getWidth(), eh = element.getHeight();
+
+        // 木偶元素边界
+        float left = x, right = x + w;
+        float bottom = y, top = y + h;
+
+        // 对齐元素边界
+        float eleft = ex, eright = ex + ew;
+        float ebottom = ey, etop = ey + eh;
+
+        float alignX = x, alignY = y;
+        float alignWidth = w, alignHeight = h;
+        int alignFrom = 0, alignTo = 0;
+
+        if(Align.isRight(touchEdge)){
+            alignFrom |= Align.right;
+
+            if(Math.abs(right - eleft) <= alignBorder){ // 右边往左边贴
+                alignWidth = eleft - left;
+
+                verticalLines.add(eleft);
+
+                alignTo |= Align.left;
+            }else if(Math.abs(right - eright) <= alignBorder){ // 右边往右边贴
+                alignWidth = eright - left;
+
+                verticalLines.add(eright);
+
+                alignTo |= Align.right;
+            }
+        }else if(Align.isLeft(touchEdge)){
+            alignFrom |= Align.left;
+
+            if(Math.abs(left - eleft) <= alignBorder){ // 左边往左边贴
+                alignX = eleft;
+                alignWidth = eleft - right;
+
+                verticalLines.add(eleft);
+
+                alignTo |= Align.left;
+            }else if(Math.abs(left - eright) <= alignBorder){ // 左边往右边贴
+                alignX = eright;
+                alignWidth = right - eright;
+
+                verticalLines.add(eright);
+
+                alignTo |= Align.right;
+            }
+        }
+
+        if(Align.isTop(touchEdge)){
+            alignFrom |= Align.top;
+
+            if(Math.abs(top - ebottom) <= alignBorder){ // 上边往下边贴
+                alignHeight = ebottom - bottom;
+
+                horizontalLines.add(ebottom);
+
+                alignTo |= Align.bottom;
+            }else if(Math.abs(top - etop) <= alignBorder){ // 上边贴上边
+                alignHeight = etop - bottom;
+
+                horizontalLines.add(etop);
+
+                alignTo |= Align.top;
+            }
+        }else if(Align.isBottom(touchEdge)){
+            alignFrom |= Align.bottom;
+
+            if(Math.abs(bottom - ebottom) <= alignBorder){ // 下边贴下边
+                alignY = ebottom;
+                alignHeight = top - ebottom;
+
+                horizontalLines.add(ebottom);
+
+                alignFrom |= Align.bottom;
+            }else if(Math.abs(bottom - etop) <= alignBorder){ // 下边贴上边
+                alignY = etop;
+                alignHeight = top - etop;
+
+                horizontalLines.add(etop);
+
+                alignTo |= Align.top;
+            }
+        }
+
+        puppet.setBounds(alignX, alignY, alignWidth, alignHeight);
+
+        if(consumer != null){
+            consumer.onSnapped(element, alignFrom, alignTo);
+        }
+
+        v.setZero();
+        Pools.free(v);
     }
 
     private static class OperatorPuppet extends PuppetElement{
