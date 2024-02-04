@@ -14,22 +14,18 @@ import arc.util.*;
 import mindustry.gen.*;
 
 import static mindustry.Vars.*;
-import static mindustry.ui.Styles.*;
+import static mindustry.ui.Styles.black6;
 
-public class FloatTable extends OperableTable implements Addable{
-    private final Rect lastBound = new Rect();
+public class FloatTable extends SavedTable implements Addable{
+    private final Rect lastBounds = new Rect();
 
     public Table title, body;
-    public boolean showCont = true;
+    public boolean showBody = true;
 
     private Table bodyCont;
 
     public FloatTable(String name){
-        this(name, true);
-    }
-
-    public FloatTable(String name, boolean alizable){
-        super(alizable);
+        super(name, true, true);
 
         this.name = name;
 
@@ -51,8 +47,8 @@ public class FloatTable extends OperableTable implements Addable{
     protected void init(){
         title = new Table(black6);
         body = new Table();
-        
-        body.setFillParent(true);
+
+        body.top();
 
         addSettings();
     }
@@ -75,13 +71,14 @@ public class FloatTable extends OperableTable implements Addable{
         setupTitle();
         setupBody(body);
 
-        add(title).growX().minWidth(128f);
+        add(title).growX();
 
         row();
 
         table(t -> {
             bodyCont = t;
-            bodyCont.add(body).grow();
+
+            rebuildBodyCont();
         }).grow();
 
         pack();
@@ -100,15 +97,15 @@ public class FloatTable extends OperableTable implements Addable{
 
             setupButtons(buttons);
 
-            buttons.button(Icon.editSmall, clearNoneTogglei, this::operate).checked(b -> operating());
+            buttons.button(Icon.editSmall, MStyles.clearToggleAccentb, this::operate).checked(b -> operating());
 
             RotatedImage image = new RotatedImage(Icon.downSmall, 180);
-            buttons.button(Icon.downSmall, clearNonei, () -> {
+            buttons.button(Icon.downSmall, MStyles.clearToggleAccentb, () -> {
                 toggleCont();
-                image.rotate(showCont ? 0 : 1, 0.5f, Interp.pow2Out);
+                image.rotate(showBody ? 0 : 1, 0.5f, Interp.pow2Out);
             }).with(b -> b.replaceImage(image));
 
-            buttons.button("x", MStyles.clearPartial2t, () -> {
+            buttons.button("x", MStyles.clearAccentt, () -> {
                 MinerVars.settings.put("floats." + name + ".shown", false);
                 removeManually();
             }).size(48f);
@@ -123,26 +120,36 @@ public class FloatTable extends OperableTable implements Addable{
     protected void setupButtons(Table buttons){
     }
 
-    private void toggleCont(){
-        showCont = !showCont;
+    private void rebuildBodyCont(){
+        bodyCont.clearChildren();
 
-        if(showCont){
+        if(showBody){
+            bodyCont.add(body).grow();
+        }
+    }
+
+    private void toggleCont(){
+        showBody = !showBody;
+
+        if(showBody){
             bodyCont.add(body).grow();
 
-            setBounds(lastBound.x, lastBound.y, lastBound.width, lastBound.height);
+            setBounds(lastBounds.x, lastBounds.y, lastBounds.width, lastBounds.height);
         }else{
-            bodyCont.removeChild(body);
+            bodyCont.clear();
 
-            invalidate();
-
-            ElementUtils.getBoundScene(this, lastBound);
+            ElementUtils.getBoundsOnParent(this, lastBounds);
 
             Vec2 v = ElementUtils.getOriginPosition(title, Tmp.v1);
             setPosition(v.x, v.y);
             pack();
         }
 
-        Core.app.post(this::keepInStage);
+        keepInStage();
     }
 
+    @Override
+    protected void onResized(float deltaWidth, float deltaHeight){
+        ElementUtils.getBoundsOnParent(this, lastBounds);
+    }
 }

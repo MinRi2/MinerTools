@@ -62,7 +62,7 @@ public class MembersTable extends Table{
 
             Seq<MemberTable> members = table.getMembers();
 
-            table.pane(Styles.noBarPane, buttons -> {
+            table.table(buttons -> {
                 buttons.background(Styles.black3);
                 for(MemberTable member : members){
                     if(!member.canShown()) continue;

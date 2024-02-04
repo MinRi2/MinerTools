@@ -9,6 +9,7 @@ import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import arc.util.pooling.*;
 import mindustry.ui.*;
 
 import static arc.Core.bundle;
@@ -137,13 +138,18 @@ public class ElementUtils{
         table.row();
     }
 
-    public static Rect getBound(Element element, Rect out){
+    public static Rect getBounds(Element element, Rect out){
         return out.set(element.x, element.y, element.getWidth(), element.getHeight());
     }
 
-    public static Rect getBoundScene(Element element, Rect out){
-        Vec2 sceneCoordinate = element.localToStageCoordinates(Tmp.v1.set(0, 0));
-        return out.set(sceneCoordinate.x, sceneCoordinate.y, element.getWidth(), element.getHeight());
+    public static void getBoundsOnParent(Element element, Rect out){
+        Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+        element.localToStageCoordinates(v.set(0, 0));
+
+        out.set(v.x, v.y, element.getWidth(), element.getHeight());
+
+        v.setZero();
+        Pools.free(v);
     }
 
     /**

@@ -1,6 +1,8 @@
 package MinerTools.utils.ui;
 
+import MinerTools.*;
 import MinerTools.ui.*;
+import MinerTools.utils.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -9,9 +11,11 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
+import arc.scene.style.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
 import arc.util.*;
+import arc.util.pooling.*;
 import mindustry.*;
 import mindustry.game.EventType.*;
 import mindustry.gen.*;
@@ -36,6 +40,7 @@ public class ElementOperator{
     // 操作目标元素
     private static Element target;
     private static PuppetElement puppet;
+    private static Element hitter;
     private static @Nullable OperateCons consumer;
     private static OperatorBackground background;
     private static boolean initialized;
@@ -71,15 +76,19 @@ public class ElementOperator{
     private static void init(){
         background = new OperatorBackground();
         puppet = new OperatorPuppet();
+        hitter = new Element();
 
-        background.add(puppet);
+        background.addChild(hitter);
+        background.addChild(puppet);
 
         puppet.addListener(new InputListener(){
             float lastX, lastY;
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                Vec2 v = puppet.localToStageCoordinates(Tmp.v1.set(x, y));
+                Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+                puppet.localToStageCoordinates(v.set(x, y));
+
                 lastX = v.x;
                 lastY = v.y;
 
@@ -90,7 +99,8 @@ public class ElementOperator{
 
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer){
-                Vec2 v = puppet.localToStageCoordinates(Tmp.v1.set(x, y));
+                Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+                puppet.localToStageCoordinates(v.set(x, y));
 
                 float deltaX = v.x - lastX;
                 float deltaY = v.y - lastY;
@@ -103,12 +113,18 @@ public class ElementOperator{
 
                 lastX = v.x;
                 lastY = v.y;
+
+                v.setZero();
+                Pools.free(v);
             }
         });
-        background.addListener(new ClickListener(){
+
+        hitter.setFillParent(true);
+        hitter.addListener(new InputListener(){
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                Vec2 scenePos = background.localToStageCoordinates(Tmp.v1.set(x, y));
+                Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+                Vec2 scenePos = background.localToStageCoordinates(v.set(x, y));
 
                 OperableTable operableTable = operableTables.find(o -> {
                     if(!o.visible || !o.hasParent()){
@@ -121,10 +137,13 @@ public class ElementOperator{
 
                 if(operableTable != null && operableTable != target){
                     operableTable.operate();
-                }else if(Core.scene.hit(scenePos.x, scenePos.y, false) == background){
+                }else if(Core.scene.hit(scenePos.x, scenePos.y, false) == hitter){
                     // Scene will make touch focus on background. So hide next frame.
                     Core.app.post(ElementOperator::hide);
                 }
+
+                v.setZero();
+                Pools.free(v);
 
                 return true;
             }
@@ -234,11 +253,11 @@ public class ElementOperator{
             consumer.onDragged(deltaX, deltaY);
         }
 
-        updateDragAlign();
+        updateDragAlign(deltaX, deltaY);
     }
 
     // TODO
-    private static void updateDragAlign(){
+    private static void updateDragAlign(float deltaX, float deltaY){
     }
 
     private static void updateResizeMode(float deltaX, float deltaY){
@@ -354,12 +373,11 @@ public class ElementOperator{
 
     }
 
-    private static class OperatorBackground extends Table{
+    private static class OperatorBackground extends WidgetGroup{
+        private Drawable background;
 
         public OperatorBackground(){
-            super(Styles.black5);
-
-            touchable = Touchable.enabled;
+            background = Styles.black6;
             setFillParent(true);
         }
 
@@ -386,11 +404,19 @@ public class ElementOperator{
 
         @Override
         public void draw(){
+            // Draw background
+            Scene stage = getScene();
+            Draw.color(color.r, color.g, color.b, color.a * parentAlpha);
+            background.draw(x, y, stage.getWidth(), stage.getHeight());
+            Draw.reset();
+
             super.draw();
+
+            Vec2 pos = Pools.obtain(Vec2.class, Vec2::new);
 
             for(OperableTable table : operableTables){
                 if(table.operable()){
-                    Vec2 pos = ElementUtils.getOriginPosition(table, Tmp.v1);
+                    ElementUtils.getOriginPosition(table, pos);
                     stageToLocalCoordinates(pos);
 
                     drawOperableTable(pos.x, pos.y, table.getWidth(), table.getHeight());
@@ -399,12 +425,15 @@ public class ElementOperator{
 
             for(Element element : vanillaElements){
                 if(operable(element)){
-                    Vec2 pos = ElementUtils.getOriginPosition(element, Tmp.v1);
+                    ElementUtils.getOriginPosition(element, pos);
                     stageToLocalCoordinates(pos);
 
                     drawVanillaElement(pos.x, pos.y, element.getWidth(), element.getHeight());
                 }
             }
+
+            pos.setZero();
+            Pools.free(pos);
         }
 
         public void show(){
@@ -471,8 +500,8 @@ public class ElementOperator{
                 }
 
                 @Override
-                public void onResized(float deltaX, float deltaY){
-                    OperableTable.this.onResized(deltaX, deltaY);
+                public void onResized(float deltaWidth, float deltaHeight){
+                    OperableTable.this.onResized(deltaWidth, deltaHeight);
                 }
 
                 @Override
@@ -497,10 +526,10 @@ public class ElementOperator{
             return ElementOperator.operable(this);
         }
 
-        protected void onDragged(float x, float y){
+        protected void onDragged(float deltaX, float deltaY){
         }
 
-        protected void onResized(float width, float height){
+        protected void onResized(float deltaWidth, float deltaHeight){
         }
 
         protected void onReleased(){
@@ -511,6 +540,57 @@ public class ElementOperator{
 
         public boolean operating(){
             return target == this;
+        }
+    }
+
+    public static class SavedTable extends OperableTable{
+        private final DebounceTask savePositionTask = new DebounceTask(1f, () -> {
+            MinerVars.settings.put(name + ".pos.x", x);
+            MinerVars.settings.put(name + ".pos.y", y);
+            Log.info("save pos");
+        }), saveSizeTask = new DebounceTask(1f, () -> {
+            MinerVars.settings.put(name + ".size.width", width);
+            MinerVars.settings.put(name + ".size.height", height);
+        });
+        
+        private boolean savePosition, saveSize;
+
+        public SavedTable(String name, boolean savePosition, boolean saveSize){
+            super(true, true);
+            this.name = name;
+
+            this.savePosition = savePosition;
+            this.saveSize = saveSize;
+
+            if(savePosition){
+                readPosition();
+            }
+
+            if(saveSize){
+                readSize();
+            }
+        }
+
+        protected void readPosition(){
+            float x = MinerVars.settings.get(name + ".pos.x", this.x);
+            float y = MinerVars.settings.get(name + ".pos.y", this.y);
+            setPosition(x, y);
+        }
+
+        protected void readSize(){
+            float width = MinerVars.settings.get(name + ".size.width", this.width);
+            float height = MinerVars.settings.get(name + ".size.height", this.height);
+            setSize(width, height);
+        }
+
+        @Override
+        protected void onDragged(float deltaX, float deltaY){
+            savePositionTask.run();
+        }
+
+        @Override
+        protected void onResized(float deltaWidth, float deltaHeight){
+            saveSizeTask.run();
         }
     }
 }

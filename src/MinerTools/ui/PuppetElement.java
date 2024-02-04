@@ -1,7 +1,6 @@
 package MinerTools.ui;
 
 import arc.scene.*;
-import arc.util.*;
 
 public class PuppetElement extends Element{
     private Element target;
@@ -9,14 +8,7 @@ public class PuppetElement extends Element{
     public void setTarget(Element target){
         this.target = target;
 
-        Log.info("Before");
-        Log.info("Puppet: (@, @)", x, y);
-        Log.info("Target: (@, @)", target.x, target.y);
         updateState();
-
-        Log.info("After");
-        Log.info("Puppet: (@, @)", x, y);
-        Log.info("Target: (@, @)", target.x, target.y);
     }
 
     private void setPositionInternal(float x, float y){
@@ -99,6 +91,16 @@ public class PuppetElement extends Element{
     @Override
     public float getPrefHeight(){
         return target.getPrefHeight();
+    }
+
+    @Override
+    public float getMinWidth(){
+        return target.getMinWidth();
+    }
+
+    @Override
+    public float getMinHeight(){
+        return target.getMinHeight();
     }
 
     @Override
