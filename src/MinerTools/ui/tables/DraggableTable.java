@@ -96,8 +96,6 @@ public class DraggableTable extends Table{
                     MinerVars.settings.put("ui." + target.name + ".pos" + ".x", target.x);
                     MinerVars.settings.put("ui." + target.name + ".pos" + ".y", target.y);
                 }
-
-                target.keepInStage();
             }
         }
 

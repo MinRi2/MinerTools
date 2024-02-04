@@ -93,12 +93,12 @@ public class ChatTable extends FloatTable{
     }
 
     @Override
-    protected void setupCont(Table cont){
-        cont.add(pane).grow().minWidth(350f).maxHeight(170f).scrollX(false);
+    protected void setupBody(Table body){
+        body.add(pane).grow().minWidth(350f).maxHeight(170f).scrollX(false);
 
-        cont.row();
+        body.row();
 
-        cont.table(table -> {
+        body.table(table -> {
             textField = table.field("", fstyle, s -> {
             }).padTop(15f).height(32f).grow().get();
 

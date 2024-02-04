@@ -12,20 +12,33 @@ import mindustry.ui.*;
 
 public class AITable extends MemberTable{
     private final PlayerAI[] ais = new PlayerAI[]{new PlayerMinerAI(), new PlayerFollowAI()};
-    private PlayerAI target;
-
     private final Table displayTable = new Table(Styles.black6);
+    private PlayerAI target;
 
     public AITable(){
         super(Icon.android);
-
-        rebuild();
 
         /* 重构DisplayTable以适配ContentLoader */
         Events.on(EventType.ContentInitEvent.class, e -> {
             /* 延时1s执行,等待MinerVars.allOres的初始化 */
             Timer.schedule(this::rebuildDisplayTable, 1);
         });
+    }
+
+    @Override
+    public void memberRebuild(){
+        clear();
+
+        table(Styles.black6, buttons -> {
+            buttons.defaults().size(55f);
+
+            for(PlayerAI ai : ais){
+                buttons.button(ai.icon, Styles.clearNoneTogglei, 50f, () -> setTarget(ai))
+                .checked(b -> target == ai);
+            }
+        }).left().row();
+
+        add(displayTable).growX();
     }
 
     private void setTarget(PlayerAI ai){
@@ -38,19 +51,6 @@ public class AITable extends MemberTable{
         }
 
         rebuildDisplayTable();
-    }
-
-    private void rebuild(){
-        table(Styles.black6, buttons -> {
-            buttons.defaults().size(55f);
-
-            for(PlayerAI ai : ais){
-                buttons.button(ai.icon, Styles.clearNoneTogglei, 50f, () -> setTarget(ai))
-                .checked(b -> target == ai);
-            }
-        }).left().row();
-
-        add(displayTable).growX();
     }
 
     private void rebuildDisplayTable(){

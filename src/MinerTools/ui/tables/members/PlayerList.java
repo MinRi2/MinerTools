@@ -20,12 +20,9 @@ import static mindustry.ui.Styles.*;
 
 public class PlayerList extends MemberTable{
     public static float buttonSize = 45f;
-
-    private int lastSize;
     private final Seq<Player> players = new Seq<>();
-
     private final Table playersTable = new Table(black3);
-
+    private int lastSize;
     private Player target;
 
     public PlayerList(){
@@ -108,11 +105,7 @@ public class PlayerList extends MemberTable{
     }
 
     private void panToPlayer(Player player){
-        if(control.input instanceof DesktopInput input){
-            input.panning = true;
-        }
-
-        camera.position.set(player);
+        CameraUtils.pan(player);
     }
 
     private void setTarget(Player player){

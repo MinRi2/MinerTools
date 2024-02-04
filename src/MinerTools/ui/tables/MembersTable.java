@@ -21,8 +21,6 @@ public class MembersTable extends Table{
 
     public MembersTable(MembersBuilder builder){
         this.builder = builder;
-
-        left().top();
     }
 
     public void addMember(MemberTable... members){
@@ -58,8 +56,10 @@ public class MembersTable extends Table{
         builder.build(this);
     }
 
-    public static interface MembersBuilder extends TableBuilder<MembersTable>{
+    public interface MembersBuilder extends TableBuilder<MembersTable>{
         MembersBuilder defaultBuilder = table -> {
+            table.left().top();
+
             Seq<MemberTable> members = table.getMembers();
 
             table.pane(Styles.noBarPane, buttons -> {

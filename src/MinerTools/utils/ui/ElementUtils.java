@@ -1,6 +1,8 @@
 package MinerTools.utils.ui;
 
+import MinerTools.ui.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.math.geom.*;
 import arc.scene.*;
 import arc.scene.event.*;
@@ -85,7 +87,7 @@ public class ElementUtils{
     /**
      * hit但是无视是否可点击
      */
-    public static Element hitUnTouchable(Group group, float x, float y){
+    public static Element hit(Group group, float x, float y){
         Vec2 point = Tmp.v1;
         Element[] childrenArray = group.getChildren().items;
         for(int i = group.getChildren().size - 1; i >= 0; i--){
@@ -97,9 +99,9 @@ public class ElementUtils{
             Element hit;
 
             if(child instanceof Group g){
-                hit = hitUnTouchable(g, point.x, point.y);
+                hit = hit(g, point.x, point.y);
             }else{
-                hit = hitUnTouchable(child, point.x, point.y);
+                hit = hit(child, point.x, point.y);
             }
 
             if(hit != null) return hit;
@@ -111,8 +113,28 @@ public class ElementUtils{
     /**
      * hit但是无视是否可点击
      */
-    public static Element hitUnTouchable(Element e, float x, float y){
+    public static Element hit(Element e, float x, float y){
         return x >= e.translation.x && x < e.getWidth() + e.translation.x && y >= e.translation.y && y < e.getHeight() + e.translation.y ? e : null;
+    }
+
+    /**
+     * 仅判断点击是否落在元素内部
+     */
+    public static boolean isOverlays(Element e, float x, float y){
+        return x >= e.translation.x && x < e.getWidth() + e.translation.x && y >= e.translation.y && y < e.getHeight() + e.translation.y;
+    }
+
+    /**
+     * 添加标题
+     * @param table 添加标题的表
+     * @param title 添加的标题内容
+     * @param color 背景颜色1
+     */
+    public static void addTitle(Table table, String title, Color color){
+        table.table(MStyles.getColoredRegion(color), t -> {
+            t.add(title).style(Styles.outlineLabel);
+        }).margin(8f).growX();
+        table.row();
     }
 
     public static Rect getBound(Element element, Rect out){
@@ -124,7 +146,14 @@ public class ElementUtils{
         return out.set(sceneCoordinate.x, sceneCoordinate.y, element.getWidth(), element.getHeight());
     }
 
+    /**
+     * 获取元素原点(左下角)在Scene坐标系下的坐标
+     * @param element 获取的元素
+     * @param out 输出坐标
+     * @return 返回输出坐标
+     */
     public static Vec2 getOriginPosition(Element element, Vec2 out){
         return out.set(element.localToStageCoordinates(Tmp.v1.set(0, 0)));
     }
+
 }

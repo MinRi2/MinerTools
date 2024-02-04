@@ -25,7 +25,7 @@ public class MStyles{
         clearFlatOver = (TextureRegionDrawable)whiteuiRegion.tint(Color.lightGray.cpy().a(0.45f));
 
         clearToggleAccentb = new ImageButtonStyle(){{
-           checked = transAccentDrawable;
+            checked = transAccentDrawable;
         }};
 
         logicVarTogglet = new ImageButtonStyle(){{
@@ -60,5 +60,9 @@ public class MStyles{
         noneField = new TextFieldStyle(defaultField){{
             background = none;
         }};
+    }
+
+    public static TextureRegionDrawable getColoredRegion(Color color){
+        return (TextureRegionDrawable)whiteuiRegion.tint(color);
     }
 }

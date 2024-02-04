@@ -25,10 +25,10 @@ public class ScriptButtons extends FloatTable{
     }
 
     @Override
-    protected void setupCont(Table cont){
-        super.setupCont(cont);
+    protected void setupBody(Table body){
+        super.setupBody(body);
 
-        cont.table(Styles.black3, buttons -> {
+        body.table(Styles.black3, buttons -> {
             this.buttons = buttons;
         }).growX();
 

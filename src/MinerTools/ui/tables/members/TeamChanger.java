@@ -19,10 +19,12 @@ public class TeamChanger extends MemberTable{
 
     public TeamChanger(){
         super(Icon.editor);
-        rebuild();
     }
 
-    private void rebuild(){
+    @Override
+    public void memberRebuild(){
+        clear();
+
         table(black3, skipTable -> {
             skipTable.table(t -> {
                 t.button(play, 36, () -> {
@@ -57,4 +59,5 @@ public class TeamChanger extends MemberTable{
             }
         }).grow();
     }
+
 }

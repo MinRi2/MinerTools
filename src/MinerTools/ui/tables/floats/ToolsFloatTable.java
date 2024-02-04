@@ -17,14 +17,14 @@ public class ToolsFloatTable extends FloatTable{
 
         toolsTable = new MembersTable();
 
-        toolsTable.addMember(new TeamsInfo(), new TeamChanger(), new PlayerList(), new SchematicList(), new AITable());
+        toolsTable.addMember(new TeamsInfo(), new TeamChanger(), new PlayerList(), new AITable());
         toolsTable.rebuildMembers();
     }
 
     @Override
-    protected void setupCont(Table cont){
-        super.setupCont(cont);
-        cont.add(toolsTable).grow();
+    protected void setupBody(Table body){
+        super.setupBody(body);
+        body.add(toolsTable).grow();
     }
 }
 

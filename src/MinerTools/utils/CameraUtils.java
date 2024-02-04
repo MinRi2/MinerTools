@@ -50,13 +50,13 @@ public class CameraUtils{
         addTask(wait);
     }
 
-    public static PanRequest pan(Vec2 pos, float speed, Interp interp){
+    public static PanRequest pan(Position pos, float speed, Interp interp){
         PanRequest request = new PanRequest(pos, speed, interp);
         addTask(request);
         return request;
     }
 
-    public static PanRequest pan(Vec2 pos){
+    public static PanRequest pan(Position pos){
         PanRequest request = new PanRequest(pos);
         addTask(request);
         return request;
@@ -118,11 +118,11 @@ public class CameraUtils{
         private @Nullable RequestCons requestUpdater;
         private @Nullable Runnable finished;
 
-        public PanRequest(Vec2 pos){
+        public PanRequest(Position pos){
             set(pos);
         }
 
-        public PanRequest(Vec2 pos, float speed, Interp interp){
+        public PanRequest(Position pos, float speed, Interp interp){
             set(pos, speed, interp);
         }
 
@@ -163,11 +163,11 @@ public class CameraUtils{
             return this;
         }
 
-        public PanRequest set(Vec2 pos){
+        public PanRequest set(Position pos){
             return set(pos, 0.02f, Interp.pow3Out);
         }
 
-        public PanRequest set(Vec2 pos, float speed, Interp interp){
+        public PanRequest set(Position pos, float speed, Interp interp){
             this.pos.set(pos);
             this.speed = speed;
             this.interp = interp;

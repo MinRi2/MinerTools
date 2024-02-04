@@ -1,13 +1,11 @@
 package MinerTools.ui;
 
-import MinerTools.*;
 import MinerTools.interfaces.*;
 import MinerTools.ui.override.CoreItemsDisplay;
 import MinerTools.ui.override.*;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
 import MinerTools.ui.tables.floats.*;
-import MinerTools.utils.ui.*;
 import arc.func.*;
 import arc.math.*;
 import arc.scene.*;
@@ -124,18 +122,6 @@ public class MUI{
         );
 
         addUI();
-
-        if(MinerVars.desktop){
-            scene.root.clicked(() -> {
-                if(input.ctrl()){
-                    Element hit = ElementUtils.hitUnTouchable(scene.root, input.mouseX(), input.mouseY());
-
-                    if(hit instanceof Label label){
-                        setClipboardText(label.getText().toString());
-                    }
-                }
-            });
-        }
     }
 
     public void addUI(){

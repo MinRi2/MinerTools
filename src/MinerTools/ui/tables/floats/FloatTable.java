@@ -4,11 +4,11 @@ import MinerTools.*;
 import MinerTools.ui.*;
 import MinerTools.ui.settings.*;
 import MinerTools.ui.tables.*;
+import MinerTools.utils.ui.ElementOperator.*;
 import MinerTools.utils.ui.*;
 import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
-import arc.scene.actions.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.gen.*;
@@ -16,20 +16,24 @@ import mindustry.gen.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
 
-public class FloatTable extends DraggableTable implements Addable{
-    private final Vec2 lastTitlePosition = new Vec2();
+public class FloatTable extends OperableTable implements Addable{
+    private final Rect lastBound = new Rect();
 
-    private Table title, cont;
+    public Table title, body;
+    public boolean showCont = true;
 
-    private boolean showCont = true;
+    private Table bodyCont;
 
     public FloatTable(String name){
-        super(name, true);
+        this(name, true);
+    }
+
+    public FloatTable(String name, boolean alizable){
+        super(alizable);
+
+        this.name = name;
 
         init();
-
-        setDraggier(title);
-        setLastPos();
 
         setup();
 
@@ -46,7 +50,9 @@ public class FloatTable extends DraggableTable implements Addable{
      */
     protected void init(){
         title = new Table(black6);
-        cont = new Table();
+        body = new Table();
+        
+        body.setFillParent(true);
 
         addSettings();
     }
@@ -67,18 +73,21 @@ public class FloatTable extends DraggableTable implements Addable{
 
     private void setup(){
         setupTitle();
-        setupCont(cont);
+        setupBody(body);
 
         add(title).growX().minWidth(128f);
 
         row();
 
-        collapser(cont, () -> showCont).growX();
+        table(t -> {
+            bodyCont = t;
+            bodyCont.add(body).grow();
+        }).grow();
 
         pack();
     }
 
-    protected void setupCont(Table cont){
+    protected void setupBody(Table body){
     }
 
     private void setupTitle(){
@@ -91,10 +100,7 @@ public class FloatTable extends DraggableTable implements Addable{
 
             setupButtons(buttons);
 
-            buttons.button(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall, clearNoneTogglei, this::toggleLocked).checked(b -> {
-                b.getImage().setDrawable(isLocked() ? Icon.lockSmall : Icon.lockOpenSmall);
-                return isLocked();
-            });
+            buttons.button(Icon.editSmall, clearNoneTogglei, this::operate).checked(b -> operating());
 
             RotatedImage image = new RotatedImage(Icon.downSmall, 180);
             buttons.button(Icon.downSmall, clearNonei, () -> {
@@ -121,21 +127,22 @@ public class FloatTable extends DraggableTable implements Addable{
         showCont = !showCont;
 
         if(showCont){
-            ElementUtils.getOriginPosition(cont, lastTitlePosition);
-            Core.app.post(() -> moveToSmooth(lastTitlePosition.x, lastTitlePosition.y - cont.getPrefHeight()));
+            bodyCont.add(body).grow();
+
+            setBounds(lastBound.x, lastBound.y, lastBound.width, lastBound.height);
         }else{
-            ElementUtils.getOriginPosition(title, lastTitlePosition);
-            Core.app.post(() -> moveToSmooth(lastTitlePosition.x, lastTitlePosition.y));
+            bodyCont.removeChild(body);
+
+            invalidate();
+
+            ElementUtils.getBoundScene(this, lastBound);
+
+            Vec2 v = ElementUtils.getOriginPosition(title, Tmp.v1);
+            setPosition(v.x, v.y);
+            pack();
         }
 
-        Core.app.post(() -> {
-            pack();
-            keepInStage();
-        });
-    }
-
-    private void moveToSmooth(float x, float y){
-        actions(Actions.moveTo(x, y, 0.5f, Interp.smooth));
+        Core.app.post(this::keepInStage);
     }
 
 }

@@ -26,19 +26,19 @@ import static mindustry.Vars.*;
 public class CoreItemsDisplay extends Table implements OverrideUI{
     private static final Interval timer = new Interval();
     public static float iconSize = (desktop ? iconMed : iconSmall), fontScale = 0.95f, labelMinWidth = 50f;
+
     private final Table itemsInfoTable = new Table();
     private final Table planInfoTable = new Table();
+
     private final ObjectSet<Item> usedItems = new ObjectSet<>();
     private final ObjectSet<UnitType> usedUnits = new ObjectSet<>();
+
     private final int[] lastUpdateItems = new int[content.items().size];
     private final WindowedMean[] means = new WindowedMean[content.items().size];
+
     private final ItemSeq planItems = new ItemSeq();
-    private final ObjectIntMap<Block> planBlockCounter = new ObjectIntMap<>(){
-        @Override
-        public void put(Block key, int value){
-            super.put(key, get(key) + value);
-        }
-    };
+    private final ObjectIntMap<Block> planBlockCounter = new ObjectIntMap<>();
+
     /* For override */
     private Table override;
     private int columns;
@@ -87,7 +87,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
 
         setting.sliderPref("updateHeat", 60, 5, 150, 5, n -> {
             updateHeat = n;
-            updateScl = 60 / updateHeat;
+            updateScl = 60f / updateHeat;
             return n + "(tick)";
         }).change();
 
@@ -176,7 +176,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
         control.input.allPlans().each(plan -> {
             if(plan.block.requirements.length == 0) return;
 
-            planBlockCounter.put(plan.block, 1);
+            planBlockCounter.increment(plan.block, 1);
 
             float mul = plan.breaking ? (breakMultiplier * (1 - plan.progress)) : (buildCostMultiplier * (1 - plan.progress));
 
