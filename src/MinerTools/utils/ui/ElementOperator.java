@@ -82,15 +82,16 @@ public class ElementOperator{
         background.addChild(puppet);
 
         puppet.addListener(new InputListener(){
-            float lastX, lastY;
+            float startX, startY; // 开始触碰元素的坐标（元素坐标系）
+            float lastWidth, lastHeight;
 
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, KeyCode button){
-                Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
-                puppet.localToStageCoordinates(v.set(x, y));
+                startX = x;
+                startY = y;
 
-                lastX = v.x;
-                lastY = v.y;
+                lastWidth = puppet.getWidth();
+                lastHeight = puppet.getHeight();
 
                 updateEdge(x, y);
 
@@ -98,24 +99,15 @@ public class ElementOperator{
             }
 
             @Override
-            public void touchDragged(InputEvent event, float x, float y, int pointer){
-                Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
-                puppet.localToStageCoordinates(v.set(x, y));
-
-                float deltaX = v.x - lastX;
-                float deltaY = v.y - lastY;
+            public void touchDragged(InputEvent event, float dragX, float dragY, int pointer){
+                float deltaX = dragX - startX;
+                float deltaY = dragY - startY;
 
                 if(dragMode){
                     updateDragMode(deltaX, deltaY);
                 }else if(resizeMode){
-                    updateResizeMode(deltaX, deltaY);
+                    updateResizeMode(deltaX, deltaY, lastWidth, lastHeight);
                 }
-
-                lastX = v.x;
-                lastY = v.y;
-
-                v.setZero();
-                Pools.free(v);
             }
         });
 
@@ -256,11 +248,11 @@ public class ElementOperator{
         updateDragAlign(deltaX, deltaY);
     }
 
-    // TODO
     private static void updateDragAlign(float deltaX, float deltaY){
+
     }
 
-    private static void updateResizeMode(float deltaX, float deltaY){
+    private static void updateResizeMode(float deltaX, float deltaY, float lastWidth, float lastHeight){
         boolean keepInStage = consumer != null && consumer.keepInStage;
 
         float width = puppet.getWidth();
@@ -271,6 +263,9 @@ public class ElementOperator{
 
         float maxWidth = puppet.getScene().getWidth();
         float maxHeight = puppet.getScene().getHeight();
+
+        float deltaWidth = width - lastWidth;
+        float deltaHeight = height - lastHeight;
 
         float x = puppet.x;
         float y = puppet.y;
@@ -288,12 +283,14 @@ public class ElementOperator{
             y += deltaY;
         }
         if(Align.isRight(touchEdge)){
+            deltaX -= deltaWidth; // 防止宽增的影响
             if(width + deltaX < minWidth) deltaX = minWidth - width;
             if(keepInStage && x + width + deltaX > maxWidth)
                 deltaX = maxWidth - x - width;
             width += deltaX;
         }
         if(Align.isTop(touchEdge)){
+            deltaY -= deltaHeight; // 防止高增的影响
             if(height + deltaY < minHeight) deltaY = minHeight - height;
             if(keepInStage && y + height + deltaY > maxHeight)
                 deltaY = maxHeight - y - height;
@@ -308,11 +305,11 @@ public class ElementOperator{
             consumer.onResized(deltaX, deltaY);
         }
 
-        updateResizeAlign();
+        updateResizeAlign(deltaX, deltaY);
     }
 
     // TODO
-    private static void updateResizeAlign(){
+    private static void updateResizeAlign(float deltaX, float deltaY){
 
     }
 
@@ -374,7 +371,7 @@ public class ElementOperator{
     }
 
     private static class OperatorBackground extends WidgetGroup{
-        private Drawable background;
+        public Drawable background;
 
         public OperatorBackground(){
             background = Styles.black6;
@@ -552,7 +549,7 @@ public class ElementOperator{
             MinerVars.settings.put(name + ".size.width", width);
             MinerVars.settings.put(name + ".size.height", height);
         });
-        
+
         private boolean savePosition, saveSize;
 
         public SavedTable(String name, boolean savePosition, boolean saveSize){
