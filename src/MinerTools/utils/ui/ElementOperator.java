@@ -47,8 +47,10 @@ public class ElementOperator{
     private static Element target;
     private static PuppetElement puppet;
     private static Element hitter;
+
     private static @Nullable OperateCons consumer;
     private static OperatorBackground background;
+
     private static boolean initialized;
     private static int touchEdge;
     private static boolean dragMode, resizeMode;
@@ -150,7 +152,7 @@ public class ElementOperator{
                 if(operableTable != null && operableTable != target){
                     operableTable.operate();
                 }else if(Core.scene.hit(scenePos.x, scenePos.y, false) == hitter){
-                    // Scene will make touch focus on background. So hide next frame.
+                    // Scene会将触摸焦点转移到背景上, 下一帧再隐藏
                     Core.app.post(ElementOperator::hide);
                 }
 
@@ -230,7 +232,7 @@ public class ElementOperator{
         background.hide();
     }
 
-    // x,y: Local coordinate.
+    // x, y: 元素坐标
     private static void updateEdge(float x, float y){
         float width = puppet.getWidth(), height = puppet.getHeight();
         float borderX = width * resizeBorderRatio, borderY = height * resizeBorderRatio;
@@ -306,14 +308,14 @@ public class ElementOperator{
             y += deltaY;
         }
         if(Align.isRight(touchEdge)){
-            deltaX -= deltaWidth; // 防止宽增的坐标影响
+            deltaX -= deltaWidth; // 消除宽增的坐标影响
             if(width + deltaX < minWidth) deltaX = minWidth - width;
             if(keepInStage && x + width + deltaX > maxWidth)
                 deltaX = maxWidth - x - width;
             width += deltaX;
         }
         if(Align.isTop(touchEdge)){
-            deltaY -= deltaHeight; // 防止高增的坐标影响
+            deltaY -= deltaHeight; // 消除高增的坐标影响
             if(height + deltaY < minHeight) deltaY = minHeight - height;
             if(keepInStage && y + height + deltaY > maxHeight)
                 deltaY = maxHeight - y - height;
@@ -370,14 +372,14 @@ public class ElementOperator{
         if(Math.abs(left - eleft) <= alignBorder){ // 左边往左边贴
             alignX = eleft;
 
-            if(!verticalLines.contains(eleft)) verticalLines.add(eleft);
+            verticalLines.add(eleft);
 
             alignFrom |= Align.left;
             alignTo |= Align.left;
         }else if(Math.abs(right - eleft) <= alignBorder){ // 右边往左边贴
             alignX = eleft - w;
 
-            if(!verticalLines.contains(eleft)) verticalLines.add(eleft);
+            verticalLines.add(eleft);
 
             alignFrom |= Align.right;
             alignTo |= Align.left;
@@ -385,7 +387,8 @@ public class ElementOperator{
 
         if(Math.abs(left - eright) <= alignBorder){ // 左边往右边贴
             alignX = eright;
-            if(!verticalLines.contains(eright)) verticalLines.add(eright);
+
+            verticalLines.add(eright);
 
             alignFrom |= Align.left;
             alignTo |= Align.right;

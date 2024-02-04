@@ -3,6 +3,11 @@ package MinerTools.utils;
 import arc.util.*;
 import arc.util.Timer.*;
 
+/**
+ * 函数防抖
+ * 一段时间后执行，若期间再次执行，重置倒计时
+ * @author minri2
+ */
 public class DebounceTask{
     private final float delay;
     private final Runnable runnable;
