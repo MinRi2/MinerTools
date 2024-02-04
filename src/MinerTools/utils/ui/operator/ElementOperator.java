@@ -1,8 +1,7 @@
-package MinerTools.utils.ui;
+package MinerTools.utils.ui.operator;
 
-import MinerTools.*;
 import MinerTools.ui.*;
-import MinerTools.utils.*;
+import MinerTools.utils.ui.*;
 import arc.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
@@ -28,10 +27,10 @@ import mindustry.ui.*;
  * @author minri2
  */
 public class ElementOperator{
-    // 原版可对齐的元素
-    private static final Seq<Element> vanillaElements = new Seq<>();
     // 可操作的表
-    private static final Seq<OperableTable> operableTables = new Seq<>();
+    static final Seq<OperableTable> operableTables = new Seq<>();
+    // 原版可对齐的元素
+    static final Seq<Element> vanillaElements = new Seq<>();
 
     // 当前对齐的线，用于绘制 (Scene坐标系)
     private static final ObjectSet<Float> verticalLines = new ObjectSet<>();
@@ -43,17 +42,15 @@ public class ElementOperator{
     private static final float alignBorder = 4f;
 
     public static boolean operating = false;
+    public static boolean dragMode, resizeMode;
     // 操作目标元素
     private static Element target;
     private static PuppetElement puppet;
     private static Element hitter;
-
     private static @Nullable OperateCons consumer;
     private static OperatorBackground background;
-
     private static boolean initialized;
     private static int touchEdge;
-    private static boolean dragMode, resizeMode;
 
     static{
         Events.on(ResetEvent.class, e -> getVanillaElements());
@@ -203,11 +200,15 @@ public class ElementOperator{
         show();
     }
 
-    private static boolean operable(Element element){
+    public static boolean operating(Element element){
+        return target == element;
+    }
+
+    public static boolean operable(Element element){
         return element != null && element.visible && element.hasParent();
     }
 
-    private static boolean alizable(Element element){
+    public static boolean alizable(Element element){
         return element != null && element != target && element.visible;
     }
 
@@ -369,6 +370,8 @@ public class ElementOperator{
         float alignX = x, alignY = y;
         int alignFrom = 0, alignTo = 0;
 
+        boolean aligned = false;
+
         if(Math.abs(left - eleft) <= alignBorder){ // 左边往左边贴
             alignX = eleft;
 
@@ -376,6 +379,8 @@ public class ElementOperator{
 
             alignFrom |= Align.left;
             alignTo |= Align.left;
+
+            aligned = true;
         }else if(Math.abs(right - eleft) <= alignBorder){ // 右边往左边贴
             alignX = eleft - w;
 
@@ -383,6 +388,8 @@ public class ElementOperator{
 
             alignFrom |= Align.right;
             alignTo |= Align.left;
+
+            aligned = true;
         }
 
         if(Math.abs(left - eright) <= alignBorder){ // 左边往右边贴
@@ -392,6 +399,8 @@ public class ElementOperator{
 
             alignFrom |= Align.left;
             alignTo |= Align.right;
+
+            aligned = true;
         }else if(Math.abs(right - eright) <= alignBorder){ // 右边往右边贴
             alignX = eright - w;
 
@@ -399,6 +408,8 @@ public class ElementOperator{
 
             alignFrom |= Align.right;
             alignTo |= Align.right;
+
+            aligned = true;
         }
 
         if(Math.abs(bottom - ebottom) <= alignBorder){ // 下边往下边贴
@@ -408,6 +419,8 @@ public class ElementOperator{
 
             alignFrom |= Align.bottom;
             alignTo |= Align.bottom;
+
+            aligned = true;
         }else if(Math.abs(top - ebottom) <= alignBorder){ // 上边往下边贴
             alignY = ebottom - h;
 
@@ -415,6 +428,8 @@ public class ElementOperator{
 
             alignFrom |= Align.top;
             alignTo |= Align.bottom;
+
+            aligned = true;
         }
 
         if(Math.abs(bottom - etop) <= alignBorder){ // 下边往上边贴
@@ -424,6 +439,8 @@ public class ElementOperator{
 
             alignFrom |= Align.bottom;
             alignTo |= Align.top;
+
+            aligned = true;
         }else if(Math.abs(top - etop) <= alignBorder){ // 上边往上边贴
             alignY = etop - h;
 
@@ -431,12 +448,14 @@ public class ElementOperator{
 
             alignFrom |= Align.top;
             alignTo |= Align.top;
+
+            aligned = true;
         }
 
         puppet.setPosition(alignX, alignY);
 
-        if(consumer != null){
-            consumer.onSnapped(element, alignFrom, alignTo);
+        if(consumer != null && aligned){
+            consumer.onAligned(element, alignFrom, alignTo);
         }
 
         v.setZero();
@@ -480,6 +499,8 @@ public class ElementOperator{
         float alignWidth = w, alignHeight = h;
         int alignFrom = 0, alignTo = 0;
 
+        boolean aligned = false;
+
         if(Align.isRight(touchEdge)){
             alignFrom |= Align.right;
 
@@ -489,12 +510,14 @@ public class ElementOperator{
                 verticalLines.add(eleft);
 
                 alignTo |= Align.left;
+                aligned = true;
             }else if(Math.abs(right - eright) <= alignBorder){ // 右边往右边贴
                 alignWidth = eright - left;
 
                 verticalLines.add(eright);
 
                 alignTo |= Align.right;
+                aligned = true;
             }
         }else if(Align.isLeft(touchEdge)){
             alignFrom |= Align.left;
@@ -506,6 +529,7 @@ public class ElementOperator{
                 verticalLines.add(eleft);
 
                 alignTo |= Align.left;
+                aligned = true;
             }else if(Math.abs(left - eright) <= alignBorder){ // 左边往右边贴
                 alignX = eright;
                 alignWidth = right - eright;
@@ -513,6 +537,7 @@ public class ElementOperator{
                 verticalLines.add(eright);
 
                 alignTo |= Align.right;
+                aligned = true;
             }
         }
 
@@ -525,12 +550,14 @@ public class ElementOperator{
                 horizontalLines.add(ebottom);
 
                 alignTo |= Align.bottom;
+                aligned = true;
             }else if(Math.abs(top - etop) <= alignBorder){ // 上边贴上边
                 alignHeight = etop - bottom;
 
                 horizontalLines.add(etop);
 
                 alignTo |= Align.top;
+                aligned = true;
             }
         }else if(Align.isBottom(touchEdge)){
             alignFrom |= Align.bottom;
@@ -542,6 +569,7 @@ public class ElementOperator{
                 horizontalLines.add(ebottom);
 
                 alignFrom |= Align.bottom;
+                aligned = true;
             }else if(Math.abs(bottom - etop) <= alignBorder){ // 下边贴上边
                 alignY = etop;
                 alignHeight = top - etop;
@@ -549,13 +577,14 @@ public class ElementOperator{
                 horizontalLines.add(etop);
 
                 alignTo |= Align.top;
+                aligned = true;
             }
         }
 
         puppet.setBounds(alignX, alignY, alignWidth, alignHeight);
 
-        if(consumer != null){
-            consumer.onSnapped(element, alignFrom, alignTo);
+        if(consumer != null && aligned){
+            consumer.onAligned(element, alignFrom, alignTo);
         }
 
         v.setZero();
@@ -713,132 +742,6 @@ public class ElementOperator{
             }
 
             remove();
-        }
-    }
-
-    public static class OperateCons{
-        public final boolean keepInStage;
-
-        public OperateCons(boolean keepInStage){
-            this.keepInStage = keepInStage;
-        }
-
-        public void onDragged(float deltaX, float deltaY){
-        }
-
-        public void onResized(float deltaX, float deltaY){
-        }
-
-        public void onSnapped(Element snap, int alignFrom, int alignTo){
-        }
-
-        public void onReleased(){
-        }
-    }
-
-    public static class OperableTable extends Table{
-        private final OperateCons cons;
-
-        public OperableTable(boolean keepInStage){
-            cons = new OperateCons(keepInStage){
-
-                @Override
-                public void onDragged(float deltaX, float deltaY){
-                    OperableTable.this.onDragged(deltaX, deltaY);
-                }
-
-                @Override
-                public void onResized(float deltaWidth, float deltaHeight){
-                    OperableTable.this.onResized(deltaWidth, deltaHeight);
-                }
-
-                @Override
-                public void onReleased(){
-                    OperableTable.this.onReleased();
-                }
-
-                @Override
-                public void onSnapped(Element snap, int alignFrom, int alignTo){
-                    OperableTable.this.onSnapped(snap, alignFrom, alignTo);
-                }
-            };
-
-            operableTables.add(this);
-        }
-
-        public void operate(){
-            ElementOperator.operate(this, cons);
-        }
-
-        public boolean operable(){
-            return ElementOperator.operable(this);
-        }
-
-        protected void onDragged(float deltaX, float deltaY){
-        }
-
-        protected void onResized(float deltaWidth, float deltaHeight){
-        }
-
-        protected void onReleased(){
-        }
-
-        protected void onSnapped(Element snap, int alignFrom, int alignTo){
-        }
-
-        public boolean operating(){
-            return target == this;
-        }
-    }
-
-    public static class SavedTable extends OperableTable{
-        private final DebounceTask savePositionTask = new DebounceTask(1f, () -> {
-            MinerVars.settings.put(name + ".pos.x", x);
-            MinerVars.settings.put(name + ".pos.y", y);
-        }), saveSizeTask = new DebounceTask(1f, () -> {
-            MinerVars.settings.put(name + ".size.width", width);
-            MinerVars.settings.put(name + ".size.height", height);
-        });
-
-        private boolean savePosition, saveSize;
-
-        public SavedTable(String name, boolean savePosition, boolean saveSize){
-            super(true);
-
-            this.name = name;
-
-            this.savePosition = savePosition;
-            this.saveSize = saveSize;
-
-            if(savePosition){
-                readPosition();
-            }
-
-            if(saveSize){
-                readSize();
-            }
-        }
-
-        protected void readPosition(){
-            float x = MinerVars.settings.get(name + ".pos.x", this.x);
-            float y = MinerVars.settings.get(name + ".pos.y", this.y);
-            setPosition(x, y);
-        }
-
-        protected void readSize(){
-            float width = MinerVars.settings.get(name + ".size.width", this.width);
-            float height = MinerVars.settings.get(name + ".size.height", this.height);
-            setSize(width, height);
-        }
-
-        @Override
-        protected void onDragged(float deltaX, float deltaY){
-            savePositionTask.run();
-        }
-
-        @Override
-        protected void onResized(float deltaWidth, float deltaHeight){
-            saveSizeTask.run();
         }
     }
 }

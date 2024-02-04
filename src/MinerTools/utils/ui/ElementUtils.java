@@ -164,4 +164,15 @@ public class ElementUtils{
         return out.set(element.localToStageCoordinates(Tmp.v1.set(0, 0)));
     }
 
+    /**
+     * 将元素坐标系转换到目标坐标系
+     * @param local 当前坐标系
+     * @param target 目标坐标系
+     * @param pos 转换点/输出点
+     */
+    public static void localToTargetCoordinate(Element local, Element target, Vec2 pos){
+        local.localToStageCoordinates(pos);
+        target.stageToLocalCoordinates(pos);
+    }
+
 }
