@@ -498,7 +498,7 @@ public class ElementOperator{
 
             if(Math.abs(left - eleft) <= alignBorder){ // 左边往左边贴
                 alignX = eleft;
-                alignWidth = eleft - right;
+                alignWidth = right - eleft;
 
                 verticalLines.add(eleft);
 
