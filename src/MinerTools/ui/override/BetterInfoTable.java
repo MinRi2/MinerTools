@@ -130,13 +130,14 @@ public class BetterInfoTable extends Table implements OverrideUI{
             });
         }},
         new BuildInfoTable(){{
-            addBuilders(new BuildBuilder(build -> build.items != null && build.items.any()){
+            addBuilders(
+            /* Items */ new BuildBuilder(build -> build.items != null && build.items.any()){
                 @Override
                 protected void build(Table table, Building build){
                     ItemModule items = build.items;
 
                     table.table(Tex.pane, t -> {
-                        t.table(Tex.whiteui, tt -> tt.add("Items")).color(Color.gray).growX().row();
+                        ElementUtils.addTitle(t, "Items", Color.gray);
 
                         t.table(itemsTable -> {
                             final int[] index = {0};

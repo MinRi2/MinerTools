@@ -11,7 +11,9 @@ import static arc.Core.*;
 import static mindustry.Vars.maxSchematicSize;
 
 public class MinerVars{
+    public static final String modName = "miner-tools";
     public static final String modSymbol = "[yellow][M]";
+    public static final float worldDots = Vars.tilesize / 64f;
 
     public static MSettings settings;
     public static MUI ui;

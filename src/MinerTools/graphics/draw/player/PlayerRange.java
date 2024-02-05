@@ -16,7 +16,7 @@ public class PlayerRange extends PlayerDrawer{
 
     @Override
     protected void draw(Player player){
-        Draw.z(Layer.flyingUnitLow - 1f);
+        Draw.z(Layer.flyingUnitLow - 0.1f);
 
         Unit unit = player.unit();
 

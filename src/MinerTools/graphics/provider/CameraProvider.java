@@ -7,6 +7,9 @@ public abstract class CameraProvider<T extends Drawer<?>> extends DrawerProvider
     private final Seq<T> globalDrawers = new Seq<>();
     private final Seq<T> cameraDrawers = new Seq<>();
 
+    private Seq<T> enableGlobalDrawers;
+    private Seq<T> enableCameraDrawers;
+
     @SuppressWarnings("unchecked")
     public final CameraProvider<T> addGlobalDrawers(T... drawers){
         globalDrawers.addAll(drawers);
@@ -22,13 +25,22 @@ public abstract class CameraProvider<T extends Drawer<?>> extends DrawerProvider
     }
 
     @Override
+    public void updateEnable(){
+        enableGlobalDrawers = globalDrawers.select(Drawer::isEnabled);
+        enableCameraDrawers = cameraDrawers.select(Drawer::isEnabled);
+
+        enableDrawers.clear();
+        enableDrawers.addAll(enableGlobalDrawers).addAll(enableCameraDrawers);
+    }
+
+    @Override
     public void provide(){
         if(globalDrawers.any()){
-            globalProvide(globalDrawers.select(Drawer::isValid));
+            globalProvide(enableGlobalDrawers.select(Drawer::isValid));
         }
 
         if(cameraDrawers.any()){
-            cameraProvide(cameraDrawers.select(Drawer::isValid));
+            cameraProvide(enableCameraDrawers.select(Drawer::isValid));
         }
     }
 

@@ -10,7 +10,7 @@ import mindustry.game.Teams.*;
 import mindustry.gen.*;
 
 public class UnitProvider extends CameraProvider<UnitDrawer>{
-
+    
     @Override
     public void globalProvide(Seq<UnitDrawer> validDrawers){
         for(TeamData data : Vars.state.teams.present){

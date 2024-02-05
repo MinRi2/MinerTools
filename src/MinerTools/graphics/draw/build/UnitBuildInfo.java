@@ -5,7 +5,6 @@ import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.*;
 import arc.graphics.g2d.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
@@ -61,7 +60,7 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
 
         startY += backBarStroke;
 
-        float scl = block.size / 8f / 2f / Scl.scl(1f);
+        float scl = block.size * MinerVars.worldDots / 2f;
 
         MDrawf.drawText(Strings.autoFixed(conTime / 60f, 1) + "s", scl, drawX, startY, Color.white, Align.center);
 

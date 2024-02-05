@@ -4,7 +4,6 @@ import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.core.*;
@@ -39,7 +38,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
 
         ConstructBlock block = (ConstructBlock)c.block;
         float buildCostMultiplier = Vars.state.rules.buildCostMultiplier;
-        float scl = block.size / 8f / 2f / Scl.scl(1f);
+        float scl = block.size * MinerVars.worldDots / 2f;
 
         MDrawf.drawText(Strings.autoFixed(c.progress * 100, 2) + "%", scl, c.x, c.y + block.size * Vars.tilesize / 2f, Pal.accent, Align.center);
 

@@ -9,6 +9,9 @@ public class PlayerProvider extends DrawerProvider<PlayerDrawer>{
     private final Seq<PlayerDrawer> globalDrawers = new Seq<>();
     private final Seq<PlayerDrawer> localDrawers = new Seq<>();
 
+    private Seq<PlayerDrawer> enableGlobalDrawers;
+    private Seq<PlayerDrawer> enableLocalDrawers;
+
     public final PlayerProvider addGlobalDrawers(PlayerDrawer... drawers){
         globalDrawers.addAll(drawers);
         addDrawers(drawers);
@@ -22,13 +25,22 @@ public class PlayerProvider extends DrawerProvider<PlayerDrawer>{
     }
 
     @Override
+    public void updateEnable(){
+        enableGlobalDrawers = globalDrawers.select(Drawer::isEnabled);
+        enableLocalDrawers = localDrawers.select(Drawer::isEnabled);
+
+        enableDrawers.clear();
+        enableDrawers.addAll(enableGlobalDrawers).addAll(enableLocalDrawers);
+    }
+
+    @Override
     public void provide(){
         if(globalDrawers.any()){
-            globalProvide(globalDrawers.select(Drawer::isValid));
+            globalProvide(enableGlobalDrawers.select(Drawer::isValid));
         }
 
         if(localDrawers.any()){
-            playerProvide(localDrawers.select(Drawer::isValid));
+            playerProvide(enableLocalDrawers.select(Drawer::isValid));
         }
     }
 
