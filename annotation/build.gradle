@@ -1,0 +1,12 @@
+plugins{
+    id 'java'
+}
+
+repositories{
+    mavenCentral()
+}
+
+dependencies{
+    compileOnly 'com.google.auto.service:auto-service:1.0-rc2'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc2'
+}

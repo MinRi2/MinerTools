@@ -155,3 +155,6 @@ gradle-app.setting
 .DS_Store
 Thumbs.db
 android/libs/
+
+## Annotation Processor
+/annotation/build

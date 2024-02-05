@@ -1,4 +1,6 @@
-if (JavaVersion.current().ordinal() < JavaVersion.VERSION_17.ordinal())
+if(JavaVersion.current().ordinal() < JavaVersion.VERSION_17.ordinal())
     throw new IllegalStateException("this project require minium JDK version is 17, current: " + JavaVersion.current())
 
 rootProject.name = "MinerTools"
+include 'annotation'
+
