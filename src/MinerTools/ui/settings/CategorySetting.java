@@ -37,10 +37,6 @@ public class CategorySetting extends MSettingTable{
         return shown;
     }
 
-    public void setBuilder(CategoryBuilder builder){
-        this.builder = builder;
-    }
-
     public void build(Table container){
         builder.build(container, this);
     }

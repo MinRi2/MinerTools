@@ -25,17 +25,6 @@ public class MSettingTable extends Table{
         });
     }
 
-    public CategorySetting addCategory(String name, Cons<CategorySetting> cons, CategoryBuilder builder){
-        CategorySetting category = new CategorySetting(this.name + "." + name);
-        categories.add(category);
-        category.setBuilder(builder);
-
-        cons.get(category);
-
-        rebuild();
-        return category;
-    }
-
     public CategorySetting addCategory(String name, Cons<CategorySetting> cons){
         CategorySetting category = new CategorySetting(this.name + "." + name);
         categories.add(category);
@@ -47,11 +36,20 @@ public class MSettingTable extends Table{
         return category;
     }
 
+    public void addCategory(String name, Cons<CategorySetting> cons, CategoryBuilder builder){
+        CategorySetting category = new CategorySetting(this.name + "." + name, builder);
+        categories.add(category);
+
+        cons.get(category);
+
+        rebuild();
+    }
+
     protected void rebuild(){
         clearChildren();
 
         for(BaseSetting setting : settings){
-            setting.add(this);
+            setting.setup(this);
         }
 
         row();
