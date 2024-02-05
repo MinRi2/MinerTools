@@ -18,6 +18,7 @@ import static mindustry.ui.Styles.black6;
 
 public class FloatTable extends SavedTable implements Addable{
     private final Rect lastBounds = new Rect();
+    private final boolean removable;
 
     public Table title, body;
     public boolean showBody = true;
@@ -25,13 +26,21 @@ public class FloatTable extends SavedTable implements Addable{
     private Table bodyCont;
 
     public FloatTable(String name){
+        this(name, true);
+    }
+
+    public FloatTable(String name, boolean removable){
         super(name, true, true);
 
         this.name = name;
+        this.removable = removable;
 
         init();
 
         setup();
+
+        readPosition();
+        readSize();
 
         visibility = () -> !state.isMenu() && ui.hudfrag.shown && !ui.minimapfrag.shown();
     }
@@ -39,6 +48,7 @@ public class FloatTable extends SavedTable implements Addable{
     @Override
     public void addUI(){
         ui.hudGroup.addChild(this);
+        ResizeAdjuster.add(this);
     }
 
     /**
@@ -58,13 +68,15 @@ public class FloatTable extends SavedTable implements Addable{
     }
 
     protected void addSettings(MSettingTable uiSettings){
-        uiSettings.checkPref("floats." + name + ".shown", true, b -> {
-            if(b){
-                addUI();
-            }else{
-                remove();
-            }
-        }).change();
+        if(removable){
+            uiSettings.checkPref("floats." + name + ".shown", true, b -> {
+                if(b){
+                    addUI();
+                }else{
+                    remove();
+                }
+            }).change();
+        }
     }
 
     private void setup(){
@@ -93,11 +105,12 @@ public class FloatTable extends SavedTable implements Addable{
         title.add(Core.bundle.get("miner-tools.floats." + name, "unnamed")).padLeft(4f).growX().left();
 
         title.table(buttons -> {
-            buttons.defaults().width(48f).growY().right();
+            buttons.defaults().size(48f).growY().right();
 
             setupButtons(buttons);
 
-            buttons.button(Icon.editSmall, MStyles.clearToggleAccentb, this::operate).checked(b -> operating());
+            buttons.button(Icon.editSmall, MStyles.clearToggleAccentb, this::operate)
+            .checked(b -> operating()).disabled(b -> !operable());
 
             RotatedImage image = new RotatedImage(Icon.downSmall, 180);
             buttons.button(Icon.downSmall, MStyles.clearToggleAccentb, () -> {
@@ -105,10 +118,13 @@ public class FloatTable extends SavedTable implements Addable{
                 image.rotate(showBody ? 0 : 1, 0.5f, Interp.pow2Out);
             }).with(b -> b.replaceImage(image));
 
-            buttons.button("x", MStyles.clearAccentt, () -> {
-                MinerVars.settings.put("floats." + name + ".shown", false);
-                removeManually();
-            }).size(48f);
+            if(removable){
+                buttons.button("x", MStyles.clearAccentt, () -> {
+                    MinerVars.settings.put("floats." + name + ".shown", false);
+                    removeManually();
+                });
+            }
+
         }).growY().right();
     }
 
@@ -150,6 +166,7 @@ public class FloatTable extends SavedTable implements Addable{
 
     @Override
     protected void onResized(float deltaWidth, float deltaHeight){
+        super.onResized(deltaWidth, deltaHeight);
         ElementUtils.getBoundsOnScene(this, lastBounds);
     }
 }

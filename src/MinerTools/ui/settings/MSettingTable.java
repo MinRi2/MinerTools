@@ -2,6 +2,7 @@ package MinerTools.ui.settings;
 
 import MinerTools.ui.settings.BaseSetting.*;
 import MinerTools.ui.settings.CategorySetting.*;
+import arc.*;
 import arc.func.*;
 import arc.scene.style.*;
 import arc.scene.ui.layout.*;
@@ -10,14 +11,15 @@ import mindustry.ui.dialogs.SettingsMenuDialog.*;
 
 public class MSettingTable extends Table{
     private final Drawable icon;
-    private final String name;
 
-    private final Seq<BaseSetting> settings = new Seq<>();
+    private final Seq<BaseSetting<?>> settings = new Seq<>();
     private final Seq<CategorySetting> categories = new Seq<>();
 
     public MSettingTable(Drawable icon, String name){
         this.icon = icon;
         this.name = name;
+
+        top();
     }
 
     public CategorySetting addCategory(String name){
@@ -48,15 +50,17 @@ public class MSettingTable extends Table{
     protected void rebuild(){
         clearChildren();
 
-        for(BaseSetting setting : settings){
-            setting.setup(this);
-        }
+        defaults().growX();
 
-        row();
+        for(BaseSetting<?> setting : settings){
+            table(setting::setup);
+            row();
+        }
 
         if(categories.any()){
             for(CategorySetting category : categories){
-                table(category::build).padTop(8f).growX().top().row();
+                table(category::build).padTop(8f);
+                row();
             }
         }
     }
@@ -88,7 +92,7 @@ public class MSettingTable extends Table{
     }
 
     public String name(){
-        return name;
+        return Core.bundle.get("miner-tools.setting." + name + ".name", name);
     }
 
     public boolean hasSetting(){

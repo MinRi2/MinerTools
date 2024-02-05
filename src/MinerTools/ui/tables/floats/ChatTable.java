@@ -94,7 +94,7 @@ public class ChatTable extends FloatTable{
 
     @Override
     protected void setupBody(Table body){
-        body.add(pane).grow().minWidth(350f).maxHeight(170f).scrollX(false);
+        body.add(pane).grow().minHeight(160f).growY().scrollX(false);
 
         body.row();
 
@@ -155,7 +155,7 @@ public class ChatTable extends FloatTable{
 
                 table.table(MStyles.clearFlatOver, messages -> {
                     for(String msg : messageStack.messages){
-                        messages.button(msg, MStyles.clearToggleTranst, () -> addSelectMessage(msg))
+                        messages.button(msg, MStyles.toggleTranst, () -> addSelectMessage(msg))
                         .checked(b -> selectMessages.contains(msg, true)).growX().left().padTop(2f)
                         .get().getLabel().setAlignment(Align.left);
 

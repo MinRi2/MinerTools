@@ -17,38 +17,9 @@ public abstract class SettingModule extends AbstractModule<SettingModule>{
 
     public SettingModule(SettingModule parent, String name){
         super(parent, name);
-        
+
         enableSettingName = name + "Enable";
         enable = MinerVars.settings.getBool(enableSettingName, true);
-    }
-
-    @Override
-    public void load(){
-        if(parent == null){
-            MinerVars.ui.settings.modules.addCategory(name, this::setSettings, getBuilder(this));
-        }
-
-        for(SettingModule child : children){
-            child.load();
-        }
-    }
-
-    public void setSettings(MSettingTable settings){
-        for(SettingModule child : children){
-            settings.addCategory(child.name, child::setSettings, getBuilder(child));
-        }
-    }
-    
-    @Override
-    public void setEnable(boolean enable){
-        super.setEnable(enable);
-        MinerVars.settings.put(enableSettingName, enable, false, true);
-    }
-        
-    @Override
-    public void toggle(){
-        boolean enable = MinerVars.settings.getBool(enableSettingName, true);
-        setEnable(!enable);
     }
 
     private static CategoryBuilder getBuilder(SettingModule module){
@@ -61,7 +32,7 @@ public abstract class SettingModule extends AbstractModule<SettingModule>{
                     button.label(() -> {
                         return module.isEnable() ? Core.bundle.get("enabled") : Core.bundle.get("disabled");
                     }).growX().right().style(Styles.outlineLabel);
-                }, MStyles.clearToggleTranst, module::toggle)
+                }, MStyles.toggleTranst, module::toggle)
                 .minWidth(150f).height(32f).checked(b -> module.isEnable()).growX();
 
                 if(hasSetting){
@@ -83,5 +54,34 @@ public abstract class SettingModule extends AbstractModule<SettingModule>{
                 }).growX().padLeft(12f);
             }
         };
+    }
+
+    @Override
+    public void load(){
+        if(parent == null){
+            MinerVars.ui.settings.modules.addCategory(name, this::setSettings, getBuilder(this));
+        }
+
+        for(SettingModule child : children){
+            child.load();
+        }
+    }
+
+    public void setSettings(MSettingTable settings){
+        for(SettingModule child : children){
+            settings.addCategory(child.name, child::setSettings, getBuilder(child));
+        }
+    }
+
+    @Override
+    public void setEnable(boolean enable){
+        super.setEnable(enable);
+        MinerVars.settings.put(enableSettingName, enable, false, true);
+    }
+
+    @Override
+    public void toggle(){
+        boolean enable = MinerVars.settings.getBool(enableSettingName, true);
+        setEnable(!enable);
     }
 }

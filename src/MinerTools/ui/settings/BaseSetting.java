@@ -1,21 +1,25 @@
 package MinerTools.ui.settings;
 
 import MinerTools.*;
+import MinerTools.ui.*;
 import MinerTools.utils.ui.*;
-import arc.*;
 import arc.func.*;
+import arc.graphics.*;
 import arc.scene.*;
 import arc.scene.event.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.graphics.*;
 import mindustry.ui.*;
 import mindustry.ui.dialogs.SettingsMenuDialog.*;
 
 import static arc.Core.bundle;
 
-public abstract class BaseSetting{
-    String name, title, describe;
+public abstract class BaseSetting<T>{
+    protected String name, title, describe;
+
+    protected T defaultValue;
 
     public BaseSetting(String name){
         this.name = name;
@@ -23,10 +27,10 @@ public abstract class BaseSetting{
         describe = bundle.get("miner-tools.setting." + name + ".describe", "");
     }
 
-    public BaseSetting(String name, Object def){
+    public BaseSetting(String name, T defaultValue){
         this(name);
 
-        MinerVars.settings.put(name, def, true, true);
+        MinerVars.settings.put(name, defaultValue, true, true);
     }
 
     public abstract void setup(Table table);
@@ -37,65 +41,67 @@ public abstract class BaseSetting{
         }
     }
 
-    protected void setValue(Object value){
+    protected T getValue(){
+        return MinerVars.settings.get(name, defaultValue);
+    }
+
+    protected void setValue(T value){
         MinerVars.settings.put(name, value, false, true);
     }
 
-    public static class CheckSetting extends BaseSetting{
-        boolean def;
-        Boolc changed;
-        private CheckBox box;
+    public static class CheckSetting extends BaseSetting<Boolean>{
+        public @Nullable Boolc changed;
 
-        public CheckSetting(String name, boolean def, Boolc changed){
-            super(name, def);
-            this.def = def;
+        public CheckSetting(String name, boolean defaultValue, Boolc changed){
+            super(name, defaultValue);
             this.changed = changed;
         }
 
         @Override
         public void setup(Table table){
-            box = new CheckBox(title);
+            BorderColorImage image = new BorderColorImage();
 
-            box.update(() -> box.setChecked(MinerVars.settings.getBool(name)));
+            image.setColor(getValue() ? Pal.accent : Color.red);
 
-            box.changed(() -> {
-                setValue(box.isChecked());
+            table.button(b -> {
+                b.left();
+                b.add(image).size(32f).pad(4f);
+                b.add(title);
+            }, MStyles.clearAccentt, () -> {
+                boolean value = !getValue();
+
+                setValue(value);
+
+                image.colorAction(getValue() ? Pal.accent : Color.red);
 
                 if(changed != null){
-                    changed.get(box.isChecked());
+                    changed.get(value);
                 }
-            });
-
-            box.left();
-            addDescribeTo(box);
-
-            table.add(box).left().padTop(3f);
-            table.row();
+            }).with(this::addDescribeTo).growX();
         }
 
         public void change(){
-            changed.get(MinerVars.settings.getBool(name));
+            changed.get(getValue());
         }
     }
 
-    public static class SliderSetting extends BaseSetting{
-        int def, min, max, step;
-        StringProcessor sp;
+    public static class SliderSetting extends BaseSetting<Integer>{
+        private StringProcessor processor;
+        private int min, max, step;
 
-        public SliderSetting(String name, int def, int min, int max, int step, StringProcessor s){
-            super(name, def);
-            this.def = def;
+        public SliderSetting(String name, int defaultValue, int min, int max, int step, StringProcessor processor){
+            super(name, defaultValue);
             this.min = min;
             this.max = max;
             this.step = step;
-            this.sp = s;
+            this.processor = processor;
         }
 
         @Override
         public void setup(Table table){
             Slider slider = new Slider(min, max, step, false);
 
-            slider.setValue(MinerVars.settings.getInt(name));
+            slider.setValue(getValue());
 
             Label value = new Label("", Styles.outlineLabel);
             Table content = new Table();
@@ -106,17 +112,17 @@ public abstract class BaseSetting{
 
             slider.changed(() -> {
                 setValue((int)slider.getValue());
-                value.setText(sp.get((int)slider.getValue()));
+                value.setText(processor.get((int)slider.getValue()));
             });
 
             slider.change();
 
-            addDescribeTo(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
-            table.row();
+            Stack stack = table.stack(slider, content).maxWidth(400f).padTop(4f).growX().left().get();
+            addDescribeTo(stack);
         }
 
         public void change(){
-            sp.get(MinerVars.settings.getInt(name));
+            processor.get(MinerVars.settings.getInt(name));
         }
     }
 }

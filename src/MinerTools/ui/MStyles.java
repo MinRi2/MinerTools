@@ -15,7 +15,7 @@ public class MStyles{
     public static TextureRegionDrawable whiteuiRegion, transAccent, transRed, clearFlatOver;
 
     public static ImageButtonStyle clearToggleAccentb, logicVarTogglet, chatb, rclearTransi;
-    public static TextButtonStyle clearPartial2t, clearAccentt, clearToggleTranst;
+    public static TextButtonStyle clearPartial2t, clearAccentt, toggleTranst, settingt;
     public static TextFieldStyle noneField;
 
     public static void load(){
@@ -28,7 +28,7 @@ public class MStyles{
             over = flatOver;
             down = transAccent;
             checked = transAccent;
-            disabled = transRed;
+            imageDisabledColor = Pal.darkerGray;
         }};
 
         logicVarTogglet = new ImageButtonStyle(){{
@@ -57,11 +57,16 @@ public class MStyles{
             down = transAccent;
         }};
 
-        clearToggleTranst = new TextButtonStyle(defaultt){{
-            up = whiteuiRegion.tint(Color.gray);
+        toggleTranst = new TextButtonStyle(defaultt){{
+            up = getColoredRegion(Color.gray);
             over = flatOver;
             down = transAccent;
             checked = transAccent;
+        }};
+
+        settingt = new TextButtonStyle(toggleTranst){{
+            up = getColoredRegion(Pal.lightishGray, 0.3f);
+            checked = getColoredRegion(Pal.lightishGray);
         }};
 
         noneField = new TextFieldStyle(defaultField){{

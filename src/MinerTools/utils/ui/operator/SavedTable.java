@@ -11,7 +11,8 @@ public class SavedTable extends OperableTable{
         MinerVars.settings.put(name + ".size.width", width);
         MinerVars.settings.put(name + ".size.height", height);
     });
-    private boolean savePosition, saveSize;
+
+    public boolean savePosition, saveSize;
 
     public SavedTable(String name, boolean savePosition, boolean saveSize){
         super(true);
@@ -20,14 +21,6 @@ public class SavedTable extends OperableTable{
 
         this.savePosition = savePosition;
         this.saveSize = saveSize;
-
-        if(savePosition){
-            readPosition();
-        }
-
-        if(saveSize){
-            readSize();
-        }
     }
 
     protected void readPosition(){
@@ -44,11 +37,15 @@ public class SavedTable extends OperableTable{
 
     @Override
     protected void onDragged(float deltaX, float deltaY){
-        savePositionTask.run();
+        if(savePosition){
+            savePositionTask.run();
+        }
     }
 
     @Override
     protected void onResized(float deltaWidth, float deltaHeight){
-        saveSizeTask.run();
+        if(saveSize){
+            saveSizeTask.run();
+        }
     }
 }

@@ -1,32 +1,26 @@
 package MinerTools.ui.settings;
 
 import MinerTools.graphics.*;
-import MinerTools.ui.tables.*;
-import arc.*;
+import MinerTools.ui.*;
+import MinerTools.utils.ui.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
-import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
+import mindustry.ui.*;
 
-import static mindustry.ui.Styles.clearNoneTogglei;
-
-public class MSettingsMenu extends Table implements Addable{
-    private final Table settingTableCont = new Table();
+public class MSettingsMenu extends Table{
+    private final Table settingTableCont;
     public Seq<MSettingTable> settingTables = new Seq<>();
     public MSettingTable modules, graphics, ui;
     private MSettingTable select;
 
     public MSettingsMenu(){
+        settingTableCont = new Table(Tex.pane2);
+
         addSettings();
 
         setup();
-    }
-
-    @Override
-    public void addUI(){
-        /* Use the setting category */
-        Vars.ui.settings.addCategory("MinerTools", t -> t.add(this));
     }
 
     public void addSettings(){
@@ -92,34 +86,40 @@ public class MSettingsMenu extends Table implements Addable{
 
     private void setup(){
         top();
+        settingTableCont.top();
 
-        table(t -> {
-            t.table(table -> {
-                table.add("MinerToolsSettings").center();
-            }).growX().row();
+        ElementUtils.addTitle(this, "@miner-tools.settings", Pal.accent);
 
-            t.image().color(Pal.accent).minWidth(550f).growX();
+        table(buttons -> {
+            buttons.defaults().grow();
 
-            t.row();
+            boolean isFirst = true;
+            for(MSettingTable settingTable : settingTables){
+                Cell<?> cell = buttons.button(settingTable.name(), settingTable.icon(), MStyles.settingt, () -> {
+                    select(settingTable);
+                }).checked(b -> select == settingTable);
 
-            t.table(buttons -> {
-                for(MSettingTable settingTable : settingTables){
-                    buttons.button(settingTable.icon(), clearNoneTogglei, () -> {
-                        settingTableCont.clear();
-
-                        if(select != settingTable){
-                            select = settingTable;
-                            settingTableCont.add(settingTable).left();
-                        }else{
-                            select = null;
-                        }
-                    }).padLeft(4f).size(70f, 68f).checked(b -> select == settingTable);
+                if(!isFirst){
+                    cell.padLeft(4f);
                 }
-            }).pad(5f);
-        }).top();
+
+                isFirst = false;
+            }
+        }).height(80f).growX();
 
         row();
 
-        add(settingTableCont).minSize(Core.graphics.getHeight() / 3f).top();
+        pane(Styles.noBarPane, settingTableCont).scrollX(false).grow();
+    }
+
+    private void select(MSettingTable settingTable){
+        settingTableCont.clear();
+
+        if(select != settingTable){
+            select = settingTable;
+            settingTableCont.add(settingTable).grow();
+        }else{
+            select = null;
+        }
     }
 }

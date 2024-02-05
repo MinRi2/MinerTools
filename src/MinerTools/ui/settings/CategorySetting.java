@@ -43,7 +43,7 @@ public class CategorySetting extends MSettingTable{
 
     public interface CategoryBuilder{
         CategoryBuilder defaultBuilder = (container, category) -> {
-            container.button(category.localizedName(), MStyles.clearToggleTranst, category::toggle)
+            container.button(category.localizedName(), MStyles.toggleTranst, category::toggle)
             .height(32f).checked(b -> category.isShown()).growX();
 
             container.row();

@@ -25,7 +25,7 @@ import static mindustry.ui.Styles.black6;
 public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
-
+    
     private final Seq<Addable> addableTables = new Seq<>();
     private final Seq<FloatTable> floats = new Seq<>();
     private final Seq<OverrideUI> overrides = new Seq<>();
@@ -36,6 +36,7 @@ public class MUI{
 
     // Settings
     public MSettingsMenu settings;
+    public MSettingsDialog settingsDialog;
 
     // DraggableTable
 
@@ -43,6 +44,7 @@ public class MUI{
     public ChatTable chat;
     public ToolsFloatTable toolsTable;
     public ScriptButtons scriptButtons;
+    public MainTable main;
 
     public MUI(){
     }
@@ -106,11 +108,11 @@ public class MUI{
     public void init(){
         MStyles.load();
 
-        addableTables.addAll(
-        settings = new MSettingsMenu()
-        );
+        settings = new MSettingsMenu();
+        settingsDialog = new MSettingsDialog();
 
         floats.addAll(
+        main = new MainTable(),
         chat = new ChatTable(),
         toolsTable = new ToolsFloatTable(),
         scriptButtons = new ScriptButtons()
@@ -120,6 +122,8 @@ public class MUI{
         coreItemsDisplay = new CoreItemsDisplay(),
         betterHover = new BetterInfoTable()
         );
+
+        addableTables.addAll(main);
 
         addUI();
     }
