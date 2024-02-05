@@ -1,6 +1,6 @@
 package MinerTools.modules.SpawnerInfo;
 
-import MinerTools.math.*;
+import MinerTools.utils.math.*;
 import arc.math.geom.*;
 import arc.struct.*;
 
@@ -21,7 +21,7 @@ public class SpawnerGroup{
 
         int size = spawnerPos.size;
         int lastSize = size - 1;
-        
+
         outer:
         for(int i = 0; i < lastSize; i++){
             Vec2 pos = spawnerPos.get(i);
@@ -36,11 +36,11 @@ public class SpawnerGroup{
                 }
 
                 Vec2 otherPos = spawnerPos.get(j);
-                                
+
                 if(pos.dst2(otherPos) <= maxDst2){
                     group.addGroup(otherGroup);
                     out.set(j, group);
-                    
+
                     if(group.spawnerPos.size == size){
                         break outer;
                     }
@@ -48,7 +48,7 @@ public class SpawnerGroup{
             }
         }
 
-        out.distinct().filter(SpawnerGroup::isValid);
+        out.distinct().retainAll(SpawnerGroup::isValid);
     }
 
     public SpawnerGroup addSpawner(Vec2 spawner){
@@ -72,7 +72,7 @@ public class SpawnerGroup{
     public Vec2 getCentroid(){
         if(centroid == null){
             centroid = new Vec2();
-            
+
             float[] points = new float[spawnerPos.size * 2];
 
             for(int i = 0, size = spawnerPos.size; i < size; i++){

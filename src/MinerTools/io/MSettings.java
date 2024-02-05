@@ -10,17 +10,12 @@ import java.io.*;
 import static mindustry.Vars.*;
 
 public class MSettings{
-    public static boolean debug;
-
     protected static final byte typeBool = 0, typeInt = 1, typeLong = 2, typeFloat = 3, typeString = 4;
-
     private static final String settingsName = "settings";
     private static final String backupName = settingsName + ".backup";
-
-    private Fi root, settings, backup;
-
+    public static boolean debug;
     protected Seq<MinerSetting> mSettings = new Seq<>();
-
+    private Fi root, settings, backup;
     private boolean loaded = false;
     private boolean modified = false;
 

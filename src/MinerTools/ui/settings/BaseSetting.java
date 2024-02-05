@@ -20,7 +20,7 @@ public abstract class BaseSetting{
     public BaseSetting(String name){
         this.name = name;
         title = bundle.get("miner-tools.setting." + name + ".name");
-        describe = bundle.get("miner-tools.setting." + name + ".describe");
+        describe = bundle.get("miner-tools.setting." + name + ".describe", "");
     }
 
     public BaseSetting(String name, Object def){
@@ -29,15 +29,15 @@ public abstract class BaseSetting{
         MinerVars.settings.put(name, def, true, true);
     }
 
-    public abstract void add(Table table);
+    public abstract void setup(Table table);
 
-    protected void addDesc(Element element){
-        if(!describe.startsWith("???") && !describe.endsWith("???")){
+    protected void addDescribeTo(Element element){
+        if(!describe.isEmpty()){
             ElementUtils.addTooltip(element, describe, Align.topLeft, true);
         }
     }
 
-    protected void putSetting(Object value){
+    protected void setValue(Object value){
         MinerVars.settings.put(name, value, false, true);
     }
 
@@ -53,13 +53,13 @@ public abstract class BaseSetting{
         }
 
         @Override
-        public void add(Table table){
+        public void setup(Table table){
             box = new CheckBox(title);
 
             box.update(() -> box.setChecked(MinerVars.settings.getBool(name)));
 
             box.changed(() -> {
-                putSetting(box.isChecked());
+                setValue(box.isChecked());
 
                 if(changed != null){
                     changed.get(box.isChecked());
@@ -67,7 +67,7 @@ public abstract class BaseSetting{
             });
 
             box.left();
-            addDesc(box);
+            addDescribeTo(box);
 
             table.add(box).left().padTop(3f);
             table.row();
@@ -92,7 +92,7 @@ public abstract class BaseSetting{
         }
 
         @Override
-        public void add(Table table){
+        public void setup(Table table){
             Slider slider = new Slider(min, max, step, false);
 
             slider.setValue(MinerVars.settings.getInt(name));
@@ -105,13 +105,13 @@ public abstract class BaseSetting{
             content.touchable = Touchable.disabled;
 
             slider.changed(() -> {
-                putSetting((int)slider.getValue());
+                setValue((int)slider.getValue());
                 value.setText(sp.get((int)slider.getValue()));
             });
 
             slider.change();
 
-            addDesc(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
+            addDescribeTo(table.stack(slider, content).width(Math.min(Core.graphics.getWidth() / 1.2f, 460f)).left().padTop(4f).get());
             table.row();
         }
 

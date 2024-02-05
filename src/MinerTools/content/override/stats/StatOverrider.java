@@ -1,17 +1,12 @@
 package MinerTools.content.override.stats;
 
 import MinerTools.*;
-import MinerTools.utils.*;
 import arc.*;
 import arc.scene.ui.layout.*;
 import mindustry.ctype.*;
 import mindustry.world.meta.*;
 
-import java.lang.reflect.*;
-
 public abstract class StatOverrider<T extends UnlockableContent>{
-    protected static Field statsMapField = MinerUtils.getField(Stats.class, "map");
-
     public final Stat stat;
 
     public StatOverrider(Stat stat){

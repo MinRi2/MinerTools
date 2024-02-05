@@ -1,17 +1,11 @@
-package MinerTools.utils;
+package MinerTools.game;
 
 import arc.math.geom.*;
 import arc.struct.*;
 import mindustry.*;
-import mindustry.ai.types.*;
-import mindustry.content.*;
 import mindustry.core.*;
-import mindustry.entities.*;
 import mindustry.entities.units.*;
-import mindustry.game.*;
 import mindustry.gen.*;
-import mindustry.input.*;
-import mindustry.type.*;
 import mindustry.world.*;
 import mindustry.world.blocks.distribution.*;
 import mindustry.world.blocks.distribution.Conveyor.*;
@@ -27,20 +21,15 @@ import mindustry.world.blocks.distribution.Sorter.*;
 import mindustry.world.blocks.distribution.StackConveyor.*;
 import mindustry.world.blocks.distribution.StackRouter.*;
 
-import static arc.Core.*;
+import static arc.Core.input;
 
-public class MinerFunc{
-    private static final ObjectMap<Category, Seq<Block>> catBlockMap = new ObjectMap<>();
+public class ConveyorUpdater{
     public static ObjectSet<Building> updatedBuildings = new ObjectSet<>();
-    public static boolean enableUpdateConveyor;
+    public static boolean enable;
     public static Vec2 lastPos = new Vec2();
 
-    public static int countMiner(Team team){
-        return team.data().units.count(unit -> unit.controller() instanceof MinerAI);
-    }
-
-    public static int countPlayer(Team team){
-        return Groups.player.count(player -> player.team() == team);
+    public static boolean toggle(){
+        return enable = !enable;
     }
 
     public static void tryUpdateConveyor(){
@@ -121,17 +110,7 @@ public class MinerFunc{
         tryUpdateConveyor(build, type, rotation);
     }
 
-    public static void addPlan(Building build, Block type, int rotation){
+    private static void addPlan(Building build, Block type, int rotation){
         Vars.player.unit().addBuild(new BuildPlan(build.tileX(), build.tileY(), rotation, type));
     }
-
-    public static void tryPanToController(){
-        Unit unit = Units.closestOverlap(Vars.player.team(), input.mouseWorldX(), input.mouseWorldY(), 5f, u -> !u.isLocal());
-        if(unit != null && unit.controller() instanceof LogicAI ai && ai.controller != null){
-            ((DesktopInput)Vars.control.input).panning = true;
-            camera.position.set(ai.controller);
-            Fx.spawn.at(ai.controller);
-        }
-    }
-
 }

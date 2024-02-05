@@ -1,4 +1,4 @@
-package MinerTools.utils.ui;
+package MinerTools.ui;
 
 import arc.graphics.g2d.*;
 import arc.math.*;

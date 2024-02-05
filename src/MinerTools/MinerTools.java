@@ -13,19 +13,19 @@ import mindustry.game.EventType.*;
 import mindustry.mod.*;
 
 import static MinerTools.MinerVars.desktop;
+import static MinerTools.game.ConveyorUpdater.*;
 import static MinerTools.input.ModBinding.updateConveyor;
-import static MinerTools.utils.MinerFunc.*;
+import static MinerTools.utils.GameUtils.tryPanToController;
 import static arc.Core.input;
 import static mindustry.Vars.mobile;
 
 public class MinerTools extends Mod{
-
     public MinerTools(){
         // mobile = true; // Only for debug
         Events.on(ContentInitEvent.class, e -> MContents.init());
 
         Events.on(ClientLoadEvent.class, e -> {
-            Timer.schedule(Updater::checkUpdate, 3);
+            Timer.schedule(ModUpdater::checkUpdate, 3);
 
             MStats.init();
             MinerVars.init();
@@ -43,7 +43,7 @@ public class MinerTools extends Mod{
     public void update(){
         PowerInfo.update();
 
-        if((desktop && input.keyDown(updateConveyor)) || (mobile && enableUpdateConveyor)){
+        if((desktop && input.keyDown(updateConveyor)) || (mobile && enable)){
             tryUpdateConveyor();
         }
 

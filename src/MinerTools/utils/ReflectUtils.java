@@ -4,7 +4,7 @@ import arc.util.*;
 
 import java.lang.reflect.*;
 
-public class MinerUtils{
+public class ReflectUtils{
     public static Field getField(Class<?> clazz, String name){
         try{
             Field field = clazz.getDeclaredField(name);

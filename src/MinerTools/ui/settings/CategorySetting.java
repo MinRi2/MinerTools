@@ -5,10 +5,14 @@ import arc.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
 
+/**
+ * 设置分类组
+ */
 public class CategorySetting extends MSettingTable{
     private CategoryBuilder builder;
 
     private boolean shown = true;
+
     public CategorySetting(String name){
         this(name, CategoryBuilder.defaultBuilder);
     }
@@ -41,7 +45,7 @@ public class CategorySetting extends MSettingTable{
         builder.build(container, this);
     }
 
-    public static interface CategoryBuilder{
+    public interface CategoryBuilder{
         CategoryBuilder defaultBuilder = (container, category) -> {
             container.button(category.localizedName(), MStyles.clearToggleTranst, category::toggle)
             .height(32f).checked(b -> category.isShown()).growX();

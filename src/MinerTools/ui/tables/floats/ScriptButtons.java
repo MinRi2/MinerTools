@@ -2,7 +2,6 @@ package MinerTools.ui.tables.floats;
 
 import MinerTools.game.*;
 import MinerTools.ui.*;
-import MinerTools.utils.*;
 import arc.func.*;
 import arc.scene.style.*;
 import arc.scene.ui.*;
@@ -43,9 +42,7 @@ public class ScriptButtons extends FloatTable{
                 Vars.control.input.isBuilding = !Vars.control.input.isBuilding;
             }, b -> !Vars.control.input.isBuilding);
 
-            addScriptButton("updateConveyor", Icon.distribution, Styles.clearNoneTogglei, () -> {
-                MinerFunc.enableUpdateConveyor = !MinerFunc.enableUpdateConveyor;
-            }, b -> MinerFunc.enableUpdateConveyor);
+            addScriptButton("updateConveyor", Icon.distribution, Styles.clearNoneTogglei, ConveyorUpdater::toggle, b -> ConveyorUpdater.enable);
 
             addScriptButton("observerMode", Icon.pause, Styles.clearNoneTogglei,
             MobileObserverMode::toggle, b -> MobileObserverMode.isObserving());

@@ -1,4 +1,4 @@
-package MinerTools.math;
+package MinerTools.utils.math;
 
 import arc.math.geom.*;
 import arc.util.*;

@@ -11,15 +11,13 @@ import mindustry.graphics.*;
 
 import static mindustry.ui.Styles.clearNoneTogglei;
 
-public class MSettingsTable extends Table implements Addable{
-    public Seq<MSettingTable> settingTables = new Seq<>();
-
-    private MSettingTable show;
+public class MSettingsMenu extends Table implements Addable{
     private final Table settingTableCont = new Table();
-
+    public Seq<MSettingTable> settingTables = new Seq<>();
     public MSettingTable modules, graphics, ui;
+    private MSettingTable select;
 
-    public MSettingsTable(){
+    public MSettingsMenu(){
         addSettings();
 
         setup();
@@ -109,13 +107,13 @@ public class MSettingsTable extends Table implements Addable{
                     buttons.button(settingTable.icon(), clearNoneTogglei, () -> {
                         settingTableCont.clear();
 
-                        if(show != settingTable){
-                            show = settingTable;
+                        if(select != settingTable){
+                            select = settingTable;
                             settingTableCont.add(settingTable).left();
                         }else{
-                            show = null;
+                            select = null;
                         }
-                    }).padLeft(4f).size(70f, 68f).checked(b -> show == settingTable);
+                    }).padLeft(4f).size(70f, 68f).checked(b -> select == settingTable);
                 }
             }).pad(5f);
         }).top();

@@ -19,7 +19,7 @@ public class SpawnerInfo extends SettingModule{
     // World Position
     private static final Seq<Vec2> tmp = new Seq<>();
 
-    private static final Method eachFlyerSpawnMethod = MinerUtils.getMethod(
+    private static final Method eachFlyerSpawnMethod = ReflectUtils.getMethod(
     WaveSpawner.class,
     "eachFlyerSpawn",
     int.class, Floatc2.class
@@ -38,7 +38,7 @@ public class SpawnerInfo extends SettingModule{
 
     public SpawnerInfo(){
         super("spawnerInfo");
-        
+
         tables = new SpawnerTables(this);
         destroy = new DestroyBuildings(this);
         render = new SpawnerRange(this);
@@ -54,7 +54,7 @@ public class SpawnerInfo extends SettingModule{
     }
 
     public static void eachFlyerSpawn(int filterPos, Floatc2 floatc2){
-        MinerUtils.invokeMethod(spawner, eachFlyerSpawnMethod, filterPos, floatc2);
+        ReflectUtils.invokeMethod(spawner, eachFlyerSpawnMethod, filterPos, floatc2);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class SpawnerInfo extends SettingModule{
 
         loadSpawnerPos();
         loadSpawnGroups();
-        
+
         destroy.setSpawnRange(groundRange);
         render.setRange(groundRange, flayerRange);
 
@@ -113,7 +113,7 @@ public class SpawnerInfo extends SettingModule{
         render.setFlyerSpawners(tmp);
 
         tmp.clear();
-        
+
         destroy.setSpawners(spawner.getSpawns());
     }
 

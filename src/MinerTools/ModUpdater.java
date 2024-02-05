@@ -8,7 +8,7 @@ import mindustry.ui.dialogs.*;
 
 import static mindustry.Vars.*;
 
-public class Updater{
+public class ModUpdater{
     private static LoadedMod mod;
     private static String repo;
 

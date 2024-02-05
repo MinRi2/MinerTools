@@ -391,7 +391,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
     }
 
     public static class BuildInfoTable extends InfoTable<Building>{
-        final Field nextFlowBuildField = MinerUtils.getField(PlacementFragment.class, "nextFlowBuild");
+        final Field nextFlowBuildField = ReflectUtils.getField(PlacementFragment.class, "nextFlowBuild");
 
         @Override
         public Building getHovered(){
@@ -399,7 +399,7 @@ public class BetterInfoTable extends Table implements OverrideUI{
 
             if(tile == null) return null;
 
-            MinerUtils.setValue(nextFlowBuildField, Vars.ui.hudfrag.blockfrag, tile.build);
+            ReflectUtils.setValue(nextFlowBuildField, Vars.ui.hudfrag.blockfrag, tile.build);
 
             return tile.build;
         }

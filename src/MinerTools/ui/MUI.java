@@ -35,7 +35,7 @@ public class MUI{
     public BetterInfoTable betterHover;
 
     // Settings
-    public MSettingsTable settings;
+    public MSettingsMenu settings;
 
     // DraggableTable
 
@@ -107,7 +107,7 @@ public class MUI{
         MStyles.load();
 
         addableTables.addAll(
-        settings = new MSettingsTable()
+        settings = new MSettingsMenu()
         );
 
         floats.addAll(
