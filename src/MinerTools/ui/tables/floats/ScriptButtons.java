@@ -24,8 +24,8 @@ public class ScriptButtons extends FloatTable{
     }
 
     @Override
-    protected void setupBody(Table body){
-        super.setupBody(body);
+    protected void rebuildBody(Table body){
+        super.rebuildBody(body);
 
         body.table(Styles.black3, buttons -> {
             this.buttons = buttons;

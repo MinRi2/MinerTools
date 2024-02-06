@@ -30,8 +30,9 @@ public class GeometryUtils{
                 oex = otherRight;
             }
 
-            return ((otherBottom >= bottom && otherBottom <= top)
-            || otherTop >= bottom && otherTop <= top)
+            return (rect.height > other.height
+            ? ((otherBottom >= bottom && otherBottom <= top) || (otherTop >= bottom && otherTop <= top))
+            : ((bottom >= otherBottom && bottom <= otherTop) || (top >= otherBottom && top <= otherTop)))
             && Mathf.equal(ex, oex);
         }
 
@@ -44,8 +45,9 @@ public class GeometryUtils{
                 oey = otherTop;
             }
 
-            return ((otherLeft >= left && otherLeft <= right)
-            || otherRight >= left && otherRight <= right)
+            return (rect.width > other.width
+            ? ((otherLeft >= left && otherLeft <= right) || (otherRight >= left && otherRight <= right))
+            : ((left >= otherLeft && left <= otherRight) || (right >= otherLeft && right <= otherRight)))
             && Mathf.equal(ey, oey);
         }
 

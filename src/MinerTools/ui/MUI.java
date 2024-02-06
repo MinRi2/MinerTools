@@ -25,7 +25,7 @@ import static mindustry.ui.Styles.black6;
 public class MUI{
     /* 集中处理鼠标未指向ScrollPane但又占用滑动的情况 */
     public static Seq<ScrollPane> panes = new Seq<>();
-    
+
     private final Seq<Addable> addableTables = new Seq<>();
     private final Seq<FloatTable> floats = new Seq<>();
     private final Seq<OverrideUI> overrides = new Seq<>();
@@ -123,7 +123,7 @@ public class MUI{
         betterHover = new BetterInfoTable()
         );
 
-        addableTables.addAll(main);
+        addableTables.addAll(floats);
 
         addUI();
     }

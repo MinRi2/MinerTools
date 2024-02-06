@@ -3,7 +3,6 @@ package MinerTools;
 import MinerTools.ai.*;
 import MinerTools.content.*;
 import MinerTools.content.override.*;
-import MinerTools.game.*;
 import MinerTools.graphics.*;
 import MinerTools.modules.*;
 import arc.*;
@@ -41,8 +40,6 @@ public class MinerTools extends Mod{
     }
 
     public void update(){
-        PowerInfo.update();
-
         if((desktop && input.keyDown(updateConveyor)) || (mobile && enable)){
             tryUpdateConveyor();
         }

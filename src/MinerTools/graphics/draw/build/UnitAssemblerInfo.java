@@ -4,7 +4,6 @@ import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.graphics.draw.*;
 import arc.graphics.g2d.*;
-import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
 import mindustry.graphics.*;
@@ -55,7 +54,7 @@ public class UnitAssemblerInfo extends BuildDrawer<UnitAssemblerBuild>{
         float scale = build.timeScale() * Vars.state.rules.unitBuildSpeed(build.team);
         float time = (1 - fraction) * build.plan().time / scale;
 
-        float scl = block.size / 8f / 2f / Scl.scl(1f);
+        float scl = block.size * MinerVars.worldFontScl / 2f;
         MDrawf.drawText(Strings.autoFixed(time / 60, 1) + "s", scl, startX + size / 2, startY);
 
         Draw.reset();

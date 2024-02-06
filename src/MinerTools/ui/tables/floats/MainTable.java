@@ -8,17 +8,15 @@ import mindustry.ui.*;
 
 public class MainTable extends FloatTable{
     public MainTable(){
-        super("main", false);
+        super("main", false, false);
 
         title.background(MStyles.transAccent);
     }
 
     @Override
-    protected void addSettings(){
-    }
+    protected void rebuildBody(Table body){
+        super.rebuildBody(body);
 
-    @Override
-    protected void setupBody(Table body){
         body.background(Styles.black3);
 
         body.defaults().height(40f).growX();

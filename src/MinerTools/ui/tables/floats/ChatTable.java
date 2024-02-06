@@ -52,6 +52,14 @@ public class ChatTable extends FloatTable{
     public ChatTable(){
         super("chat");
 
+        messageDialog = new BaseDialog("Messages");
+        messageTable = new Table(black3);
+        pane = new ScrollPane(messageTable, noBarPane);
+
+        fstyle = new TextFieldStyle(areaField){{
+            background = black6;
+        }};
+
         Events.on(EventType.WorldLoadEvent.class, e -> {
             history.clear();
             historyIndex = -1;
@@ -75,25 +83,14 @@ public class ChatTable extends FloatTable{
     }
 
     @Override
-    protected void init(){
-        super.init();
-
-        messageDialog = new BaseDialog("Messages");
-        messageTable = new Table(black3);
-        pane = new ScrollPane(messageTable, noBarPane);
-
-        fstyle = new TextFieldStyle(areaField){{
-            background = black6;
-        }};
-    }
-
-    @Override
     protected void addSettings(MSettingTable uiSettings){
         super.addSettings(uiSettings);
     }
 
     @Override
-    protected void setupBody(Table body){
+    protected void rebuildBody(Table body){
+        super.rebuildBody(body);
+        
         body.add(pane).grow().minHeight(160f).growY().scrollX(false);
 
         body.row();

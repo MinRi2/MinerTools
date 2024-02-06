@@ -38,7 +38,7 @@ public class ConstructBlockInfo extends BuildDrawer<ConstructBuild>{
 
         ConstructBlock block = (ConstructBlock)c.block;
         float buildCostMultiplier = Vars.state.rules.buildCostMultiplier;
-        float scl = block.size * MinerVars.worldDots / 2f;
+        float scl = block.size * MinerVars.worldFontScl / 2f;
 
         MDrawf.drawText(Strings.autoFixed(c.progress * 100, 2) + "%", scl, c.x, c.y + block.size * Vars.tilesize / 2f, Pal.accent, Align.center);
 

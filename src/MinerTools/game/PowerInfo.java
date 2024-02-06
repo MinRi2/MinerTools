@@ -1,24 +1,42 @@
 package MinerTools.game;
 
+import arc.*;
 import arc.math.*;
 import arc.struct.*;
+import arc.struct.ObjectMap.*;
+import mindustry.game.EventType.*;
 import mindustry.game.*;
 import mindustry.gen.*;
 import mindustry.world.*;
 import mindustry.world.blocks.power.*;
 import mindustry.world.consumers.*;
 
+/**
+ * 调用{@link #getPowerInfo(Team)}获取{@link PowerInfo}对象
+ * <p>
+ * {@link PowerInfo}对象一直会保留
+ * <p>
+ * 在电网更新或游戏重置会自动更新数据
+ * @author minri2
+ */
 public class PowerInfo{
-    public static final PowerInfo emptyInfo = new PowerInfo();
-
     public static final Seq<PowerGraph> activeGraphs = new Seq<>();
-    public static final Seq<PowerGraphUpdaterc> lastGraphs = new Seq<>();
-
-    private static final Seq<PowerGraphUpdaterc> tempUpdaters = new Seq<>();
+    public static final ObjectMap<Team, PowerInfo> powerInfoMap = new ObjectMap<>();
     private static final Seq<Building> tempBuildings = new Seq<>();
     private static final ObjectFloatMap<Block> tempMap = new ObjectFloatMap<>();
+    private static int lastSize = -1;
 
-    private static final ObjectMap<Team, PowerInfo> powerInfoMap = new ObjectMap<>();
+    static{
+        Events.run(Trigger.update, PowerInfo::update);
+        Events.on(ResetEvent.class, e -> {
+            lastSize = -1;
+            activeGraphs.clear();
+
+            for(Entry<Team, PowerInfo> entry : powerInfoMap){
+                entry.value.clearGraph();
+            }
+        });
+    }
 
     public ObjectSet<PowerGraph> graphs = new ObjectSet<>();
 
@@ -26,13 +44,17 @@ public class PowerInfo{
     }
 
     public static void update(){
-        Groups.powerGraph.copy(tempUpdaters);
+        int size = Groups.powerGraph.size();
 
-        if(lastGraphs.size != tempUpdaters.size){
+        if(size != lastSize){
+            lastSize = size;
+
             activeGraphs.clear();
 
-            for(PowerGraphUpdaterc powerGraphUpdaterc : Groups.powerGraph){
-                activeGraphs.add(powerGraphUpdaterc.graph());
+            if(size != 0){
+                for(PowerGraphUpdaterc powerGraphUpdaterc : Groups.powerGraph){
+                    activeGraphs.add(powerGraphUpdaterc.graph());
+                }
             }
 
             updateTeamPowerInfo();
@@ -40,10 +62,9 @@ public class PowerInfo{
     }
 
     private static void updateTeamPowerInfo(){
-        powerInfoMap.clear();
-
-        if(activeGraphs.isEmpty()){
-            return;
+        for(Entry<Team, PowerInfo> entry : powerInfoMap){
+            PowerInfo info = entry.value;
+            info.clearGraph();
         }
 
         for(PowerGraph graph : activeGraphs){
@@ -55,19 +76,28 @@ public class PowerInfo{
         }
     }
 
+    /**
+     * {@link PowerInfo} 在需要时才会更新数据!
+     * @param team 获取的队伍
+     * @return {@link PowerInfo}
+     */
     public static PowerInfo getPowerInfo(Team team){
-        return powerInfoMap.get(team, emptyInfo);
+        return powerInfoMap.get(team, PowerInfo::new);
     }
 
     public void addGraph(PowerGraph graph){
         graphs.add(graph);
     }
 
+    public void clearGraph(){
+        graphs.clear();
+    }
+
     public int getPowerBalance(){
         if(graphs.isEmpty()){
             return 0;
         }
-        
+
         float total = 0.0f;
         for(PowerGraph graph : graphs){
             total += graph.getPowerBalance();
@@ -93,7 +123,7 @@ public class PowerInfo{
         if(graphs.isEmpty()){
             return 0;
         }
-        
+
         float total = 0.0f;
         for(PowerGraph graph : graphs){
             total += graph.getPowerProduced();

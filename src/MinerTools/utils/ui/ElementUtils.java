@@ -26,16 +26,30 @@ public class ElementUtils{
         return null;
     }
 
-    public static Element addTooltip(Element element, String text, boolean allowMobile){
-        return addTooltip(element, text, Align.top, allowMobile);
+    public static void addTooltip(Element element, String text, boolean allowMobile){
+        addTooltip(element, text, Align.top, allowMobile);
     }
 
-    public static Element addTooltip(Element element, String text, int align, boolean allowMobile){
-        return addTooltip(element, t -> t.background(Styles.black8).margin(4f).add(text).style(Styles.outlineLabel), align, allowMobile);
+    public static void addTooltip(Element element, String text, int align, boolean allowMobile){
+        addTooltip(element, t -> {
+            t.background(Styles.black8).margin(4f);
+            t.add(text).style(Styles.outlineLabel);
+        }, align, allowMobile);
     }
 
-    public static Element addTooltip(Element element, Cons<Table> cons, boolean allowMobile){
-        return addTooltip(element, cons, Align.top, allowMobile);
+    public static void addTooltip(Element element, Prov<CharSequence> prov, boolean allowMobile){
+        addTooltip(element, Align.top, prov, allowMobile);
+    }
+
+    public static void addTooltip(Element element, int align, Prov<CharSequence> prov, boolean allowMobile){
+        addTooltip(element, t -> {
+            t.background(Styles.black8).margin(4f);
+            t.label(prov).style(Styles.outlineLabel);
+        }, align, allowMobile);
+    }
+
+    public static void addTooltip(Element element, Cons<Table> cons, boolean allowMobile){
+        addTooltip(element, cons, Align.top, allowMobile);
     }
 
     /**
@@ -44,9 +58,8 @@ public class ElementUtils{
      * @param cons 自定义的信息编辑
      * @param align 对齐位置
      * @param allowMobile 是否需要手机提示
-     * @return 需要添加提示的元素
      */
-    public static Element addTooltip(Element element, Cons<Table> cons, int align, boolean allowMobile){
+    public static void addTooltip(Element element, Cons<Table> cons, int align, boolean allowMobile){
         var tip = new Tooltip(cons){
             {
                 targetActor = element;
@@ -72,8 +85,8 @@ public class ElementUtils{
             }
         };
         tip.allowMobile = allowMobile;
+
         element.addListener(tip);
-        return element;
     }
 
     public static void addIntroductionFor(Group group, String bundleName, boolean allowMobile){
@@ -115,7 +128,7 @@ public class ElementUtils{
      * hit但是无视是否可点击
      */
     public static Element hit(Element e, float x, float y){
-        return x >= e.translation.x && x < e.getWidth() + e.translation.x && y >= e.translation.y && y < e.getHeight() + e.translation.y ? e : null;
+        return isOverlays(e, x, y) ? e : null;
     }
 
     /**
@@ -173,6 +186,21 @@ public class ElementUtils{
     public static void localToTargetCoordinate(Element local, Element target, Vec2 pos){
         local.localToStageCoordinates(pos);
         target.stageToLocalCoordinates(pos);
+    }
+
+    /**
+     * 将元素的某个方位与目标元素的某个方位对齐
+     * @param element 设置位置的元素
+     * @param target 目标元素
+     * @param align 元素对齐方位
+     */
+    public static void alignTo(Element element, Element target, int align, int alignTarget){
+        Vec2 v = Pools.obtain(Vec2.class, Vec2::new);
+        v.set(target.getX(alignTarget), target.getY(alignTarget)); // 目标元素在目标方位的坐标
+
+        localToTargetCoordinate(target.parent, element.parent, v); // 将目标方位转换成元素的父坐标系
+
+        element.setPosition(v.x, v.y, align); // 对齐
     }
 
 }

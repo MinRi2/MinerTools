@@ -11,11 +11,14 @@ public class SavedTable extends OperableTable{
         MinerVars.settings.put(name + ".size.width", width);
         MinerVars.settings.put(name + ".size.height", height);
     });
-
-    public boolean savePosition, saveSize;
+    protected boolean savePosition, saveSize;
 
     public SavedTable(String name, boolean savePosition, boolean saveSize){
         super(true);
+
+        if(name == null && (savePosition || saveSize)){
+            throw new RuntimeException("To save position and size, SavedTable must have a name." + this);
+        }
 
         this.name = name;
 
@@ -24,26 +27,30 @@ public class SavedTable extends OperableTable{
     }
 
     protected void readPosition(){
-        float x = MinerVars.settings.get(name + ".pos.x", this.x);
-        float y = MinerVars.settings.get(name + ".pos.y", this.y);
-        setPosition(x, y);
+        if(savePosition){
+            float x = MinerVars.settings.get(name + ".pos.x", this.x);
+            float y = MinerVars.settings.get(name + ".pos.y", this.y);
+            setPosition(x, y);
+        }
     }
 
     protected void readSize(){
-        float width = MinerVars.settings.get(name + ".size.width", this.width);
-        float height = MinerVars.settings.get(name + ".size.height", this.height);
-        setSize(width, height);
+        if(saveSize){
+            float width = MinerVars.settings.get(name + ".size.width", this.width);
+            float height = MinerVars.settings.get(name + ".size.height", this.height);
+            setSize(width, height);
+        }
     }
 
     @Override
-    protected void onDragged(float deltaX, float deltaY){
+    public void onDragged(float deltaX, float deltaY){
         if(savePosition){
             savePositionTask.run();
         }
     }
 
     @Override
-    protected void onResized(float deltaWidth, float deltaHeight){
+    public void onResized(float deltaWidth, float deltaHeight){
         if(saveSize){
             saveSizeTask.run();
         }

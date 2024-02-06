@@ -1,6 +1,9 @@
 package MinerTools.ui;
 
+import MinerTools.*;
+import arc.*;
 import arc.graphics.*;
+import arc.graphics.g2d.*;
 import arc.scene.style.*;
 import arc.scene.ui.ImageButton.*;
 import arc.scene.ui.TextButton.*;
@@ -12,6 +15,9 @@ import static mindustry.gen.Tex.*;
 import static mindustry.ui.Styles.*;
 
 public class MStyles{
+    // TODO: 注解处理器生成
+    public static TextureRegionDrawable accentGrayGran;
+
     public static TextureRegionDrawable whiteuiRegion, transAccent, transRed, clearFlatOver;
 
     public static ImageButtonStyle clearToggleAccentb, logicVarTogglet, chatb, rclearTransi;
@@ -19,6 +25,8 @@ public class MStyles{
     public static TextFieldStyle noneField;
 
     public static void load(){
+        loadModSprites();
+        
         whiteuiRegion = (TextureRegionDrawable)whiteui;
         transAccent = getColoredRegion(Pal.accent, 0.55f);
         transRed = getColoredRegion(Color.red, 0.55f);
@@ -72,6 +80,14 @@ public class MStyles{
         noneField = new TextFieldStyle(defaultField){{
             background = none;
         }};
+    }
+
+    public static void loadModSprites(){
+        accentGrayGran = new TextureRegionDrawable(getSprite("gradient"));
+    }
+
+    private static TextureRegion getSprite(String name){
+        return Core.atlas.find(MinerVars.modName + "-" + name);
     }
 
     public static TextureRegionDrawable getColoredRegion(Color color){

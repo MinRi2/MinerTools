@@ -5,25 +5,27 @@ import MinerTools.ui.tables.members.*;
 import arc.scene.ui.layout.*;
 
 public class ToolsFloatTable extends FloatTable{
-    private MembersTable toolsTable;
+    public MembersTable toolsTable;
 
     public ToolsFloatTable(){
         super("tools");
-    }
-
-    @Override
-    protected void init(){
-        super.init();
 
         toolsTable = new MembersTable();
 
         toolsTable.addMember(new TeamsInfo(), new TeamChanger(), new PlayerList(), new AITable());
+    }
+
+    @Override
+    public void rebuild(){
+        super.rebuild();
+
         toolsTable.rebuildMembers();
     }
 
     @Override
-    protected void setupBody(Table body){
-        super.setupBody(body);
+    protected void rebuildBody(Table body){
+        super.rebuildBody(body);
+        
         body.add(toolsTable).grow();
     }
 }

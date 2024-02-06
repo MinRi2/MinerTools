@@ -1,40 +1,18 @@
 package MinerTools.utils.ui.operator;
 
-import arc.scene.*;
 import arc.scene.ui.layout.*;
 
-public class OperableTable extends Table{
-    private final OperateCons cons;
+public class OperableTable extends Table implements OperateCons{
+    public boolean keepWithinStage;
 
-    public OperableTable(boolean keepInStage){
-        cons = new OperateCons(keepInStage){
-
-            @Override
-            public void onDragged(float deltaX, float deltaY){
-                OperableTable.this.onDragged(deltaX, deltaY);
-            }
-
-            @Override
-            public void onResized(float deltaWidth, float deltaHeight){
-                OperableTable.this.onResized(deltaWidth, deltaHeight);
-            }
-
-            @Override
-            public void onReleased(){
-                OperableTable.this.onReleased();
-            }
-
-            @Override
-            public void onAligned(Element aligned, int alignFrom, int alignTo){
-                OperableTable.this.onAligned(aligned, alignFrom, alignTo);
-            }
-        };
+    public OperableTable(boolean keepWithinStage){
+        this.keepWithinStage = keepWithinStage;
 
         ElementOperator.operableTables.add(this);
     }
 
     public void operate(){
-        ElementOperator.operate(this, cons);
+        ElementOperator.operate(this, this);
     }
 
     public boolean operating(){
@@ -53,15 +31,8 @@ public class OperableTable extends Table{
         return ElementOperator.operable(this);
     }
 
-    protected void onDragged(float deltaX, float deltaY){
-    }
-
-    protected void onResized(float deltaWidth, float deltaHeight){
-    }
-
-    protected void onReleased(){
-    }
-
-    protected void onAligned(Element aligned, int alignFrom, int alignTo){
+    @Override
+    public boolean keepWithinStage(){
+        return keepWithinStage;
     }
 }

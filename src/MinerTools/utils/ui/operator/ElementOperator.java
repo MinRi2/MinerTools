@@ -148,7 +148,7 @@ public class ElementOperator{
 
                 if(operableTable != null && operableTable != target){
                     operableTable.operate();
-                }else if(Core.scene.hit(scenePos.x, scenePos.y, false) == hitter){
+                }else if(Core.scene.hit(scenePos.x, scenePos.y, true) == hitter){
                     // Scene会将触摸焦点转移到背景上, 下一帧再隐藏
                     Core.app.post(ElementOperator::hide);
                 }
@@ -208,8 +208,10 @@ public class ElementOperator{
         return element != null && element.visible && element.hasParent();
     }
 
-    public static boolean alizable(Element element){
-        return element != null && element != target && element.visible;
+    private static boolean alizable(Element element){
+        return element != null && element.visible
+        && element.hasParent() && element != target
+        && (consumer == null || consumer.alizable(element));
     }
 
     private static void show(){
@@ -267,7 +269,7 @@ public class ElementOperator{
         puppet.moveBy(deltaX, deltaY);
 
         if(consumer != null){
-            if(consumer.keepInStage){
+            if(consumer.keepWithinStage()){
                 puppet.keepInStage();
             }
 
@@ -278,7 +280,7 @@ public class ElementOperator{
     }
 
     private static void updateResizeMode(float deltaX, float deltaY, float lastWidth, float lastHeight){
-        boolean keepInStage = consumer != null && consumer.keepInStage;
+        boolean keepInStage = consumer != null && consumer.keepWithinStage();
 
         float width = puppet.getWidth();
         float height = puppet.getHeight();

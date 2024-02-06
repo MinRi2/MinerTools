@@ -11,98 +11,115 @@ import arc.math.*;
 import arc.math.geom.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
+import mindustry.*;
 import mindustry.gen.*;
 
-import static mindustry.Vars.*;
 import static mindustry.ui.Styles.black6;
 
 public class FloatTable extends SavedTable implements Addable{
     private final Rect lastBounds = new Rect();
-    private final boolean removable;
+    private final boolean hasSetting, removable;
 
     public Table title, body;
-    public boolean showBody = true;
+    public boolean showBody = true, shown;
+    protected boolean isSetup;
+    protected Table bodyCont;
 
-    private Table bodyCont;
 
     public FloatTable(String name){
         this(name, true);
     }
 
     public FloatTable(String name, boolean removable){
+        this(name, true, removable);
+    }
+
+    public FloatTable(String name, boolean hasSetting, boolean removable){
         super(name, true, true);
 
-        this.name = name;
+        if(name == null){
+            throw new RuntimeException("FloatTable must have a name.");
+        }
+
+        this.hasSetting = hasSetting;
         this.removable = removable;
 
-        init();
+        title = new Table(black6);
+        bodyCont = new Table();
+        body = new Table();
 
-        setup();
+        shown = MinerVars.settings.getBool("floats." + name + ".shown");
+        addSettings();
+
+        visibility = () -> !Vars.state.isMenu() && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+    }
+
+    @Override
+    public final void addUI(){
+        if(hasSetting && !shown){
+            return;
+        }
+
+        if(!isSetup){
+            setup();
+        }
+
+        rebuild();
 
         readPosition();
         readSize();
 
-        visibility = () -> !state.isMenu() && ui.hudfrag.shown && !ui.minimapfrag.shown();
+        Vars.ui.hudGroup.addChild(this);
+        ResizeAdjuster.add(this);
+        FloatManager.add(this);
     }
 
     @Override
-    public void addUI(){
-        ui.hudGroup.addChild(this);
-        ResizeAdjuster.add(this);
-    }
-
-    /**
-     * 在rebuildCont方法执行前初始化变量
-     */
-    protected void init(){
-        title = new Table(black6);
-        body = new Table();
-
-        body.top();
-
-        addSettings();
+    public final boolean remove(){
+        FloatManager.remove(this);
+        return super.remove();
     }
 
     protected void addSettings(){
-        addSettings(MinerVars.ui.settings.ui.addCategory(name));
-    }
-
-    protected void addSettings(MSettingTable uiSettings){
-        if(removable){
-            uiSettings.checkPref("floats." + name + ".shown", true, b -> {
-                if(b){
-                    addUI();
-                }else{
-                    remove();
-                }
-            }).change();
+        if(hasSetting){
+            addSettings(MinerVars.ui.settings.ui.addCategory(name));
         }
     }
 
+    protected void addSettings(MSettingTable uiSettings){
+        uiSettings.checkPref("floats." + name + ".shown", true, b -> {
+            shown = b;
+            if(shown){
+                addUI();
+            }else{
+                remove();
+            }
+        });
+    }
+
     private void setup(){
+        body.top();
+
         setupTitle();
-        setupBody(body);
 
         add(title).growX();
-
         row();
+        add(bodyCont).grow();
 
-        table(t -> {
-            bodyCont = t;
+        pack();
 
-            rebuildBodyCont();
-        }).grow();
+        isSetup = true;
+    }
+
+    public void rebuild(){
+        rebuildBodyCont();
+        rebuildBody(body);
 
         pack();
     }
 
-    protected void setupBody(Table body){
-    }
-
-    private void setupTitle(){
-        title.clearChildren();
-
-        title.add(Core.bundle.get("miner-tools.floats." + name, "unnamed")).padLeft(4f).growX().left();
+    protected void setupTitle(){
+        title.table(this::setupNameTable).growX();
 
         title.table(buttons -> {
             buttons.defaults().size(48f).growY().right();
@@ -116,24 +133,35 @@ public class FloatTable extends SavedTable implements Addable{
             buttons.button(Icon.downSmall, MStyles.clearToggleAccentb, () -> {
                 toggleCont();
                 image.rotate(showBody ? 0 : 1, 0.5f, Interp.pow2Out);
-            }).with(b -> b.replaceImage(image));
+            }).with(b -> {
+                b.replaceImage(image);
+                ElementUtils.addTooltip(b, () -> showBody ? "@retract" : "@expand", true);
+            });
 
             if(removable){
-                buttons.button("x", MStyles.clearAccentt, () -> {
-                    MinerVars.settings.put("floats." + name + ".shown", false);
-                    removeManually();
-                });
+                buttons.button("x", MStyles.clearAccentt, this::removeManually);
             }
 
         }).growY().right();
     }
 
-    private void removeManually(){
-        MUI.showInfoToastAt(getX(Align.center), getTop() + 8, Core.bundle.get("miner-tools.floats.reshow-hint"), 2, Align.bottom);
-        remove();
+    protected void setupNameTable(Table table){
+        table.add(Core.bundle.get("miner-tools.floats." + name, "unnamed")).padLeft(4f).growX().left();
     }
 
     protected void setupButtons(Table buttons){
+    }
+
+    protected void rebuildBody(Table body){
+        body.clearChildren();
+    }
+
+    protected void removeManually(){
+        if(hasSetting){
+            MinerVars.settings.put("floats." + name + ".shown", false);
+            MUI.showInfoToastAt(getX(Align.center), getTop() + 8, "@miner-tools.floats.reshow-hint", 2, Align.bottom);
+        }
+        remove();
     }
 
     private void rebuildBodyCont(){
@@ -161,11 +189,11 @@ public class FloatTable extends SavedTable implements Addable{
             pack();
         }
 
-        keepInStage();
+        keepWithinStage();
     }
 
     @Override
-    protected void onResized(float deltaWidth, float deltaHeight){
+    public void onResized(float deltaWidth, float deltaHeight){
         super.onResized(deltaWidth, deltaHeight);
         ElementUtils.getBoundsOnScene(this, lastBounds);
     }

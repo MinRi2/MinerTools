@@ -13,7 +13,7 @@ import static mindustry.Vars.maxSchematicSize;
 public class MinerVars{
     public static final String modName = "miner-tools";
     public static final String modSymbol = "[yellow][M]";
-    public static final float worldDots = Vars.tilesize / 64f;
+    public static final float worldFontScl = Vars.tilesize / 36f;
 
     public static MSettings settings;
     public static MUI ui;

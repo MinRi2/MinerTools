@@ -95,13 +95,9 @@ public class MSettingsMenu extends Table{
 
             boolean isFirst = true;
             for(MSettingTable settingTable : settingTables){
-                Cell<?> cell = buttons.button(settingTable.name(), settingTable.icon(), MStyles.settingt, () -> {
+                buttons.button(settingTable.name(), settingTable.icon(), MStyles.settingt, () -> {
                     select(settingTable);
-                }).checked(b -> select == settingTable);
-
-                if(!isFirst){
-                    cell.padLeft(4f);
-                }
+                }).checked(b -> select == settingTable).padLeft(isFirst ? 0f : 4f).with(Table::center);
 
                 isFirst = false;
             }

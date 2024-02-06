@@ -60,7 +60,7 @@ public class UnitBuildInfo extends BuildDrawer<UnitBuild>{
 
         startY += backBarStroke;
 
-        float scl = block.size * MinerVars.worldDots / 2f;
+        float scl = block.size * MinerVars.worldFontScl / 2f;
 
         MDrawf.drawText(Strings.autoFixed(conTime / 60f, 1) + "s", scl, drawX, startY, Color.white, Align.center);
 
