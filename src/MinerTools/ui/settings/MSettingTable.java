@@ -22,32 +22,7 @@ public class MSettingTable extends Table{
         top();
     }
 
-    public CategorySetting addCategory(String name){
-        return addCategory(name, categorySetting -> {
-        });
-    }
-
-    public CategorySetting addCategory(String name, Cons<CategorySetting> cons){
-        CategorySetting category = new CategorySetting(this.name + "." + name);
-        categories.add(category);
-
-        cons.get(category);
-
-        rebuild();
-
-        return category;
-    }
-
-    public void addCategory(String name, Cons<CategorySetting> cons, CategoryBuilder builder){
-        CategorySetting category = new CategorySetting(this.name + "." + name, builder);
-        categories.add(category);
-
-        cons.get(category);
-
-        rebuild();
-    }
-
-    protected void rebuild(){
+    public void rebuild(){
         clearChildren();
 
         defaults().growX();
@@ -59,32 +34,11 @@ public class MSettingTable extends Table{
 
         if(categories.any()){
             for(CategorySetting category : categories){
+                category.rebuild();
                 table(category::build).padTop(8f);
                 row();
             }
         }
-    }
-
-    public CheckSetting checkPref(String name, boolean def){
-        return checkPref(name, def, null);
-    }
-
-    public CheckSetting checkPref(String name, boolean def, Boolc changed){
-        CheckSetting setting;
-        settings.add(setting = new CheckSetting(name, def, changed));
-        rebuild();
-        return setting;
-    }
-
-    public SliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
-        return sliderPref(name, def, min, max, 1, s);
-    }
-
-    public SliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
-        SliderSetting setting;
-        settings.add(setting = new SliderSetting(name, def, min, max, step, s));
-        rebuild();
-        return setting;
     }
 
     public Drawable icon(){
@@ -97,6 +51,47 @@ public class MSettingTable extends Table{
 
     public boolean hasSetting(){
         return settings.any() || categories.any();
+    }
+
+    public CategorySetting addCategory(String name){
+        return addCategory(name, categorySetting -> {
+        });
+    }
+
+    public CategorySetting addCategory(String name, Cons<CategorySetting> cons){
+        CategorySetting category = new CategorySetting(this.name + "." + name);
+        categories.add(category);
+
+        cons.get(category);
+
+        return category;
+    }
+
+    public void addCategory(String name, Cons<CategorySetting> cons, CategoryBuilder builder){
+        CategorySetting category = new CategorySetting(this.name + "." + name, builder);
+        categories.add(category);
+
+        cons.get(category);
+    }
+
+    public CheckSetting checkPref(String name, boolean def){
+        return checkPref(name, def, null);
+    }
+
+    public CheckSetting checkPref(String name, boolean def, Boolc changed){
+        CheckSetting setting;
+        settings.add(setting = new CheckSetting(name, def, changed));
+        return setting;
+    }
+
+    public SliderSetting sliderPref(String name, int def, int min, int max, StringProcessor s){
+        return sliderPref(name, def, min, max, 1, s);
+    }
+
+    public SliderSetting sliderPref(String name, int def, int min, int max, int step, StringProcessor s){
+        SliderSetting setting;
+        settings.add(setting = new SliderSetting(name, def, min, max, step, s));
+        return setting;
     }
 
 }

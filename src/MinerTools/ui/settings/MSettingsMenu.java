@@ -84,6 +84,12 @@ public class MSettingsMenu extends Table{
         settingTables.addAll(modules, graphics, ui);
     }
 
+    public void rebuild(){
+        if(select != null){
+            select.rebuild();
+        }
+    }
+
     private void setup(){
         top();
         settingTableCont.top();
@@ -116,6 +122,8 @@ public class MSettingsMenu extends Table{
 
         if(select != settingTable){
             select = settingTable;
+
+            rebuild();
             settingTableCont.add(settingTable).grow();
         }else{
             select = null;

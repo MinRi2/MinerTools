@@ -16,6 +16,8 @@ public class MSettingsDialog extends Dialog{
         menu = MinerVars.ui.settings;
         buttons = new Table();
 
+        buttons.bottom();
+
         setFillParent(true);
         addCloseButton();
 
@@ -23,7 +25,7 @@ public class MSettingsDialog extends Dialog{
 
         stack(menu, buttons).width(Core.scene.getWidth() * (3f / 4f)).growY();
 
-        buttons.bottom();
+        shown(() -> menu.rebuild());
     }
 
     @Override
