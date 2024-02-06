@@ -9,6 +9,8 @@ import MinerTools.utils.ui.operator.*;
 import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
+import arc.scene.*;
+import arc.scene.actions.*;
 import arc.scene.ui.layout.*;
 import arc.util.*;
 import mindustry.*;
@@ -20,10 +22,13 @@ public class FloatTable extends SavedTable implements Addable{
     private final Rect lastBounds = new Rect();
     private final boolean hasSetting, removable;
 
-    public Table title, body;
     public boolean showBody = true, shown;
+
+    protected Table title, bodyCont, body;
+    protected Action
+    removeAction = Actions.fadeOut(0.2f),
+    addAction = Actions.parallel(Actions.alpha(0f), Actions.fadeIn(0.2f));
     protected boolean isSetup;
-    protected Table bodyCont;
 
 
     public FloatTable(String name){
@@ -69,6 +74,8 @@ public class FloatTable extends SavedTable implements Addable{
         readPosition();
         readSize();
 
+        addAction(addAction);
+
         Vars.ui.hudGroup.addChild(this);
         ResizeAdjuster.add(this);
         FloatManager.add(this);
@@ -76,8 +83,10 @@ public class FloatTable extends SavedTable implements Addable{
 
     @Override
     public final boolean remove(){
-        FloatManager.remove(this);
-        return super.remove();
+        actions(removeAction, Actions.run(() -> {
+            FloatManager.remove(this);
+        }), Actions.run(super::remove));
+        return true;
     }
 
     protected void addSettings(){
