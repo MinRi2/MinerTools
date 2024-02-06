@@ -188,7 +188,7 @@ public class TeamsInfo extends MemberTable{
         }
 
         public static PowerInfoTable get(Team team, PowerInfo info){
-            String name = team.coloredName() + Core.bundle.get("miner-tools.power-info");
+            String name = Core.bundle.format("miner-tools.power-info", team.coloredName());
             return FloatManager.getOrCreate(name, () -> new PowerInfoTable(name, team, info));
         }
 
