@@ -95,9 +95,12 @@ public class MSettingsMenu extends Table{
 
             boolean isFirst = true;
             for(MSettingTable settingTable : settingTables){
-                buttons.button(settingTable.name(), settingTable.icon(), MStyles.settingt, () -> {
+                buttons.button(b -> {
+                    b.image(settingTable.icon()).size(48f);
+                    b.add(settingTable.name()).padLeft(8f);
+                }, MStyles.settingt, () -> {
                     select(settingTable);
-                }).checked(b -> select == settingTable).padLeft(isFirst ? 0f : 4f).with(Table::center);
+                }).checked(b -> select == settingTable).padLeft(isFirst ? 0f : 4f);
 
                 isFirst = false;
             }

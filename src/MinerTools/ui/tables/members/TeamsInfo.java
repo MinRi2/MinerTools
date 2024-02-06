@@ -9,7 +9,6 @@ import MinerTools.utils.ui.*;
 import arc.*;
 import arc.graphics.*;
 import arc.scene.ui.layout.*;
-import arc.struct.ObjectFloatMap.*;
 import arc.struct.*;
 import arc.util.*;
 import mindustry.*;
@@ -42,10 +41,10 @@ public class TeamsInfo extends MemberTable{
         background(Styles.black3);
 
         update(() -> {
-            int teamSize = Vars.state.teams.present.size;
+            int teamSize = Vars.state.teams.active.size;
 
             if(lastTeamSize != teamSize){
-                teamData.set(Vars.state.teams.present);
+                teamData.set(Vars.state.teams.active);
                 teamData.sort(data -> -data.unitCount);
                 lastTeamSize = teamSize;
 
@@ -58,9 +57,9 @@ public class TeamsInfo extends MemberTable{
         clearChildren();
 
         pane(Styles.noBarPane, t -> {
+            t.top();
             t.defaults().growX();
 
-            boolean isFirst = true;
             for(Teams.TeamData data : teamData){
                 Team team = data.team;
 
@@ -70,11 +69,9 @@ public class TeamsInfo extends MemberTable{
                     teamTable.table(Tex.pane2, container -> {
                         setupTeamInfoTable(container, data);
                     }).growX().row();
-                }).padTop(isFirst ? 0f : 8f);
+                }).padTop(8f);
 
                 t.row();
-
-                isFirst = false;
             }
         }).scrollX(false).grow().with(p -> MUI.panes.add(p));
     }
@@ -101,7 +98,7 @@ public class TeamsInfo extends MemberTable{
 
         table.table(Tex.whiteui, units -> {
             setupUnitsTable(units, data);
-        }).margin(4.0f).color(Pal.darkerGray).grow();
+        }).margin(4f).color(Pal.darkerGray).grow();
     }
 
     private void setupInfoTable(Table table, TeamData data){
@@ -109,13 +106,13 @@ public class TeamsInfo extends MemberTable{
 
         table.left();
 
-        table.label(() -> data.cores.size + "").padLeft(3.0f).style(Styles.outlineLabel).expandX().right();
-        table.image(Blocks.coreNucleus.uiIcon).size(24.0f);
+        table.label(() -> data.cores.size + "").padLeft(3f).style(Styles.outlineLabel).expandX().right();
+        table.image(Blocks.coreNucleus.uiIcon).size(24f);
 
         table.label(() -> {
             return GameUtils.colorMark(team) + data.players.size + "[white]/" + Groups.player.size();
-        }).padLeft(3.0f).style(Styles.outlineLabel).expandX().right();
-        table.image(Icon.playersSmall).size(24.0f).color(team == Vars.player.team() ? Color.green : Color.white);
+        }).padLeft(3f).style(Styles.outlineLabel).expandX().right();
+        table.image(Icon.playersSmall).size(24f).color(team == Vars.player.team() ? Color.green : Color.white);
     }
 
     private void setupPowerInfoTable(Table table, TeamData data){
@@ -135,6 +132,7 @@ public class TeamsInfo extends MemberTable{
             PowerInfoTable t = PowerInfoTable.get(team, powerInfo);
             t.addUI();
             t.alignTo(b, Align.top, Align.bottom);
+            t.keepInStage();
         }));
     }
 
@@ -146,7 +144,7 @@ public class TeamsInfo extends MemberTable{
         Runnable rebuildUnits = () -> {
             table.clearChildren();
 
-            int columns = Math.max(1, (int)(table.getWidth() / 44f));
+            int columns = Math.max(1, (int)(table.getWidth() / Scl.scl(44f)));
 
             int i = 0;
             for(UnitType unit : Vars.content.units()){
@@ -164,18 +162,20 @@ public class TeamsInfo extends MemberTable{
             int cap = data.unitCount;
             if(lastCap[0] != cap){
                 lastCap[0] = cap;
-                rebuildUnits.run();
+                Core.app.post(rebuildUnits);
             }
         });
     }
 
     private static class PowerInfoTable extends TemporaryFloatTable{
+        private final Team team;
         private final PowerInfo info;
         private final Table consumerTable, producerTable;
 
-        private PowerInfoTable(String name, PowerInfo info){
+        private PowerInfoTable(String name, Team team, PowerInfo info){
             super(name);
 
+            this.team = team;
             this.info = info;
 
             consumerTable = new Table(Styles.black3);
@@ -188,8 +188,15 @@ public class TeamsInfo extends MemberTable{
         }
 
         public static PowerInfoTable get(Team team, PowerInfo info){
-            String name = team.localized() + Core.bundle.get("miner-tools.power-info");
-            return FloatManager.getOrCreate(name, () -> new PowerInfoTable(name, info));
+            String name = team.coloredName() + Core.bundle.get("miner-tools.power-info");
+            return FloatManager.getOrCreate(name, () -> new PowerInfoTable(name, team, info));
+        }
+
+        @Override
+        protected void setupTitle(){
+            super.setupTitle();
+
+            title.background(MStyles.getColoredRegion(team.color, 0.6f));
         }
 
         @Override
@@ -219,16 +226,17 @@ public class TeamsInfo extends MemberTable{
         private void rebuildConsumer(){
             consumerTable.clear();
 
-            int columns = Math.max(1, (int)(consumerTable.getWidth() / 120f));
+            int columns = Math.max(1, (int)(consumerTable.getWidth() / Scl.scl(120f)));
 
+            ObjectFloatMap<Block> map = info.getConsumeMap();
             int index = 0;
-            for(Entry<Block> entry : info.getConsumeMap()){
-                Block block = entry.key;
-                float product = entry.value;
+            for(Block block : Vars.content.blocks()){
+                if(!map.containsKey(block)) continue;
 
+                float consume = map.get(block, 0f);
                 consumerTable.table(container -> {
                     container.image(block.uiIcon).size(32f);
-                    container.label(() -> Strings.autoFixed(product, 1)).color(Color.red).padLeft(4f).growX();
+                    container.label(() -> Strings.autoFixed(consume, 1)).color(Color.red).padLeft(4f).growX();
                 }).width(120f).left();
 
                 if(++index % columns == 0){
@@ -240,17 +248,18 @@ public class TeamsInfo extends MemberTable{
         private void rebuildProducer(){
             producerTable.clear();
 
-            int columns = Math.max(1, (int)(producerTable.getWidth() / 120f));
+            int columns = Math.max(1, (int)(producerTable.getWidth() / Scl.scl(120f)));
 
+            ObjectFloatMap<Block> map = info.getProductMap();
             int index = 0;
-            for(Entry<Block> entry : info.getProductMap()){
-                Block block = entry.key;
-                float product = entry.value;
+            for(Block block : Vars.content.blocks()){
+                if(!map.containsKey(block)) continue;
 
+                float product = map.get(block, 0f);
                 producerTable.table(container -> {
                     container.image(block.uiIcon).size(32f);
                     container.label(() -> Strings.autoFixed(product, 1)).color(Color.green).padLeft(4f).growX();
-                }).width(120f).left();
+                }).width(120f).pad(4f).left();
 
                 if(++index % columns == 0){
                     producerTable.row();
