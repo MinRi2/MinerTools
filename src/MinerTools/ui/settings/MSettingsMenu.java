@@ -1,15 +1,21 @@
 package MinerTools.ui.settings;
 
+import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.ui.*;
+import MinerTools.ui.tables.*;
 import MinerTools.utils.ui.*;
+import arc.flabel.*;
+import arc.scene.actions.*;
 import arc.scene.ui.layout.*;
 import arc.struct.*;
+import arc.util.*;
+import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
 import mindustry.ui.*;
 
-public class MSettingsMenu extends Table{
+public class MSettingsMenu extends Table implements Addable{
     private final Table settingTableCont;
     public Seq<MSettingTable> settingTables = new Seq<>();
     public MSettingTable modules, graphics, ui;
@@ -128,5 +134,27 @@ public class MSettingsMenu extends Table{
         }else{
             select = null;
         }
+    }
+
+    @Override
+    public void addUI(){
+        Table menu = Reflect.get(Vars.ui.settings, "menu");
+
+        Runnable addCustomButton = () -> {
+            menu.button(b -> {
+                b.add(new FLabel("{rainbow}[M]")).padLeft(6f);
+                b.add("[accent]MinerTools").labelAlign(Align.center).growX();
+            }, MStyles.clearAccentt, () -> {
+                MinerVars.ui.settingsDialog.show();
+            }).name(MinerVars.modName);
+        };
+
+        Runnable updater = () -> {
+            if(menu.find(MinerVars.modName) == null){
+                addCustomButton.run();
+            }
+        };
+
+        menu.addAction(Actions.forever(Actions.run(updater)));
     }
 }

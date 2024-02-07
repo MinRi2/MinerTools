@@ -23,6 +23,7 @@ public class MSettingsDialog extends Dialog{
 
         top();
 
+        menu.addUI();
         stack(menu, buttons).width(Core.scene.getWidth() * (3f / 4f)).growY();
 
         shown(() -> menu.rebuild());

@@ -48,8 +48,8 @@ public class FloatTable extends SavedTable implements Addable{
         bodyCont = new Table();
         body = new Table();
 
-        shown = MinerVars.settings.getBool("floats." + name + ".shown");
         addSettings();
+        shown = MinerVars.settings.getBool("floats." + name + ".shown");
 
         visibility = () -> !Vars.state.isMenu() && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
     }
@@ -116,6 +116,7 @@ public class FloatTable extends SavedTable implements Addable{
         rebuildBody(body);
 
         pack();
+        keepInStage();
     }
 
     protected void setupTitle(){
