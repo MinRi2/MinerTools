@@ -24,13 +24,12 @@ jobs:
           name: ${{ github.event.repository.name }}
           path: build/libs/${{ github.event.repository.name }}.jar
 
-      - name: Set env
-        run: |
-          echo "BAIDU_APP_ID=${{ secrets.BAIDU_APP_ID }}" >> $GITHUB_ENV
-          echo "BAIDU_KEY=${{ secrets.BAIDU_KEY }}" >> $GITHUB_ENV
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
       - name: Sync bundles
+        env:
+          BAIDU_APP_ID=${{ secrets.BAIDU_APP_ID }}
+          BAIDU_KEY=${{ secrets.BAIDU_KEY }}
         run: |
           ./gradlew syncBundle
           if [ -n "$(git status --porcelain)" ]; then
