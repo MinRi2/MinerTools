@@ -32,9 +32,11 @@ jobs:
           BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
         run: |
           ./gradlew syncBundle
+          echo "Git status:"
+          echo $(git status --porcelain)
           if [ -n "$(git status --porcelain)" ]; then
-           git config --global user.name "Github Actions"
-           git add ./assets/bundles/*
-           git commit -m "Automatic bundle update"
-           git push
+          git config --global user.name "Github Actions"
+          git add ./assets/bundles/*
+          git commit -m "Automatic bundle update"
+          git push
           fi
