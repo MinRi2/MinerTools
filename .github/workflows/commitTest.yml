@@ -28,10 +28,9 @@ jobs:
         run: |
           echo "BAIDU_APP_ID=${{ secrets.BAIDU_APP_ID }}" >> $GITHUB_ENV
           echo "BAIDU_KEY=${{ secrets.BAIDU_KEY }}" >> $GITHUB_ENV
-
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
-                - name: Sync bundles
+      - name: Sync bundles
         run: |
           ./gradlew syncBundle
            git config --global user.name "Github Actions"
