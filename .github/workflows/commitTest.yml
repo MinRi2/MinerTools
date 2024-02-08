@@ -33,7 +33,9 @@ jobs:
       - name: Sync bundles
         run: |
           ./gradlew syncBundle
+          if [ -n "$(git status --porcelain)" ]; then
            git config --global user.name "Github Actions"
            git add ./assets/bundles/*
            git commit -m "Automatic bundle update"
            git push
+          fi
