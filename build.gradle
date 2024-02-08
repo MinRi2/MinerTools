@@ -4,12 +4,6 @@ version '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
-repositories{
-    mavenCentral()
-    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-    maven{ url 'https://www.jitpack.io' }
-}
-
 java{
     targetCompatibility = 8
     sourceCompatibility = JavaVersion.VERSION_17
@@ -32,6 +26,12 @@ allprojects{
         options.compilerArgs.addAll(['--release', '17'])
         options.encoding('UTF-8')
     }
+
+    repositories{
+        mavenCentral()
+        maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
+        maven{ url 'https://www.jitpack.io' }
+    }
 }
 
 dependencies{
@@ -42,6 +42,24 @@ dependencies{
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
     // annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+}
+
+project(":annotation"){
+    apply plugin: "java-library"
+
+    dependencies{
+        compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+        compileOnly 'com.google.auto.service:auto-service:1.0-rc2'
+        annotationProcessor 'com.google.auto.service:auto-service:1.0-rc2'
+    }
+}
+
+project(":tools"){
+    apply plugin: "java"
+
+    dependencies{
+        implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+    }
 }
 
 //force arc version
@@ -110,5 +128,11 @@ task deploy(type: Jar){
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
         }
+    }
+}
+
+task syncBundle(){
+    doLast{
+
     }
 }

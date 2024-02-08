@@ -1,0 +1,6 @@
+task syncBundle(dependsOn: classes, type: JavaExec){
+    mainClass = "bundle.SyncBundle"
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = "../assets/bundles"
+}

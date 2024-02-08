@@ -1,24 +1,40 @@
 name: Build Mod
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   buildJar:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up PATH
-      run: |
-        echo "${ANDROID_HOME}/build-tools/34.0.0" >> $GITHUB_PATH
-    - name: Set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-    - name: Build mod jar
-      run: ./gradlew deploy
-    - name: Upload built jar file
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.event.repository.name }}
-        path: build/libs/${{ github.event.repository.name }}.jar
+      - uses: actions/checkout@v2
+      - name: Set up PATH
+        run: |
+          echo "${ANDROID_HOME}/build-tools/34.0.0" >> $GITHUB_PATH
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+
+      - name: Build mod jar
+        run: ./gradlew deploy
+      - name: Upload built jar file
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ github.event.repository.name }}
+          path: build/libs/${{ github.event.repository.name }}.jar
+
+      - name: Set env
+        run: |
+          echo "BAIDU_APP_ID=${{ secrets.BAIDU_APP_ID }}" >> $GITHUB_ENV
+          echo "BAIDU_KEY=${{ secrets.BAIDU_KEY }}" >> $GITHUB_ENV
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+                - name: Sync bundles
+        run: |
+          ./gradlew syncBundle
+           git config --global user.name "Github Actions"
+           git add assets/bundles/*
+           git commit -m "Automatic bundle update"
+           git push
