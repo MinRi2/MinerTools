@@ -34,6 +34,6 @@ jobs:
         run: |
           ./gradlew syncBundle
            git config --global user.name "Github Actions"
-           git add assets/bundles/*
+           git add ./assets/bundles/*
            git commit -m "Automatic bundle update"
            git push
