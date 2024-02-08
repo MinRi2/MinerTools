@@ -28,8 +28,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Sync bundles
         env:
-          BAIDU_APP_ID=${{ secrets.BAIDU_APP_ID }}
-          BAIDU_KEY=${{ secrets.BAIDU_KEY }}
+          BAIDU_APP_ID: ${{ secrets.BAIDU_APP_ID }}
+          BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
         run: |
           ./gradlew syncBundle
           if [ -n "$(git status --porcelain)" ]; then
