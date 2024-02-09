@@ -38,6 +38,11 @@ public class SavedTable extends OperableTable{
         if(saveSize){
             float width = MinerVars.settings.get(name + ".size.width", this.width);
             float height = MinerVars.settings.get(name + ".size.height", this.height);
+
+            // 自定义大小缩放无法保证ui有至少的空间
+            width = Math.max(getMinWidth(), width);
+            height = Math.max(getMinHeight(), height);
+
             setSize(width, height);
         }
     }
