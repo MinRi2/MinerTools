@@ -11,8 +11,6 @@ public class MSettingsDialog extends Dialog{
     public MSettingsMenu menu;
 
     public MSettingsDialog(){
-        clear();
-
         menu = MinerVars.ui.settings;
         buttons = new Table();
 
@@ -24,9 +22,16 @@ public class MSettingsDialog extends Dialog{
         top();
 
         menu.addUI();
-        stack(menu, buttons).width(Core.scene.getWidth() * (3f / 4f)).growY();
 
-        shown(() -> menu.rebuild());
+        resized(this::rebuild);
+        shown(this::rebuild);
+    }
+
+    private void rebuild(){
+        clearChildren();
+
+        menu.rebuild();
+        stack(menu, buttons).width(Core.scene.getWidth() * (3f / 4f)).growY();
     }
 
     @Override
