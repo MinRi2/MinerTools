@@ -122,6 +122,10 @@ Mod功能区
 * 出怪点显示
   ![SpawnerInfo](.github/images/SpawnerInfo.png)
 
+## 更多功能 ...
+
+![Settings](.github/images/ui/MinerToolsSetting-UI.png)
+
 ---
 
 Mod 90%的功能支持游戏内开关
