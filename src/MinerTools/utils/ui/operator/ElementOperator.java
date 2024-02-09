@@ -53,7 +53,7 @@ public class ElementOperator{
     private static int touchEdge;
 
     static{
-        Events.on(ResetEvent.class, e -> getVanillaElements());
+        Events.on(ResetEvent.class, e -> Core.app.post(ElementOperator::getVanillaElements));
     }
 
     private ElementOperator(){
@@ -71,11 +71,9 @@ public class ElementOperator{
         wavesTable = hudGroup.find("waves"),
         minimap = hudGroup.find("minimap"),
         position = hudGroup.find("position"),
-        coreInfo = Reflect.get(Vars.ui.hudfrag, "coreItems");
+        coreInfo = hudGroup.find("coreinfo");
 
-        Element coreInfoWrapper = coreInfo.parent;
-
-        vanillaElements.addAll(mainStack, wavesTable, minimap, position, coreInfoWrapper);
+        vanillaElements.addAll(mainStack, wavesTable, minimap, position, coreInfo);
     }
 
     private static void clearAlignLines(){
