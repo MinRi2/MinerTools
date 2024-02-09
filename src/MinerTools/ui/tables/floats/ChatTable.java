@@ -90,8 +90,8 @@ public class ChatTable extends FloatTable{
     @Override
     protected void rebuildBody(Table body){
         super.rebuildBody(body);
-        
-        body.add(pane).grow().minHeight(160f).growY().scrollX(false);
+
+        body.add(pane).grow().minHeight(80f).growY().scrollX(false);
 
         body.row();
 
