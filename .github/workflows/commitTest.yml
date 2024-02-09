@@ -23,20 +23,3 @@ jobs:
         with:
           name: ${{ github.event.repository.name }}
           path: build/libs/${{ github.event.repository.name }}.jar
-
-      - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
-      - name: Sync bundles
-        env:
-          BAIDU_APP_ID: ${{ secrets.BAIDU_APP_ID }}
-          BAIDU_KEY: ${{ secrets.BAIDU_KEY }}
-        run: |
-          ./gradlew syncBundle
-          echo "Git status:"
-          echo $(git status --porcelain)
-          if [ -n "$(git status --porcelain)" ]; then
-          git config --global user.name "Github Actions"
-          git add ./assets/bundles/*
-          git commit -m "Automatic bundle update"
-          git push
-          fi
