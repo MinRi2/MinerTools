@@ -69,6 +69,8 @@ public class FloatTable extends SavedTable implements Addable{
         readPosition();
         readSize();
 
+        keepInStage();
+
         Vars.ui.hudGroup.addChild(this);
         ResizeAdjuster.add(this);
         FloatManager.add(this);
@@ -116,7 +118,6 @@ public class FloatTable extends SavedTable implements Addable{
         rebuildBody(body);
 
         pack();
-        keepInStage();
     }
 
     protected void setupTitle(){

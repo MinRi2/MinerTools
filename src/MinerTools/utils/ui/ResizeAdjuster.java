@@ -37,6 +37,7 @@ public class ResizeAdjuster{
             float y = element.y;
 
             element.setPosition(x * resizeScaleX, y * resizeScaleY);
+            element.keepInStage();
         }
 
         lastSceneWidth = sceneWidth;
