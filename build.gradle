@@ -1,18 +1,20 @@
 apply plugin: "java"
 
-version '1.0'
+group = 'com.github.MinRi2'
+version = '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
 java{
-    targetCompatibility = 8
-    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = 17
+    sourceCompatibility = 17
 }
 
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    jabelVersion = "93fde537c7"
+    minModCoreVersion = "544f5fde08"
+
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
     sdkRoot = System.getenv("ANDROID_HOME") ?: System.getenv("ANDROID_SDK_ROOT") ?: "D:/Sdk"
@@ -20,7 +22,6 @@ ext{
     modDir = "${System.getenv("APPDATA")}\\Mindustry\\mods"
 }
 
-//java 8 backwards compatibility flag
 allprojects{
     tasks.withType(JavaCompile){
         options.compilerArgs.addAll(['--release', '17'])
@@ -40,38 +41,7 @@ dependencies{
     compileOnly project(":annotation")
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-
-//    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
-}
-
-project(":annotation"){
-    apply plugin: "java-library"
-
-    repositories{
-        mavenCentral()
-        maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-        maven{ url 'https://www.jitpack.io' }
-    }
-
-    dependencies{
-        compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-        compileOnly 'com.google.auto.service:auto-service:1.0-rc2'
-        annotationProcessor 'com.google.auto.service:auto-service:1.0-rc2'
-    }
-}
-
-project(":tools"){
-    apply plugin: "java"
-
-    repositories{
-        mavenCentral()
-        maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
-        maven{ url 'https://www.jitpack.io' }
-    }
-
-    dependencies{
-        implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    }
+    compileOnly "com.github.MinRi2:MinMocCore:$minModCoreVersion"
 }
 
 //force arc version

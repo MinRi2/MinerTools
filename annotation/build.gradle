@@ -1,0 +1,21 @@
+project(":annotation"){
+    apply plugin: "java-library"
+
+    java{
+        targetCompatibility = 21
+        sourceCompatibility = 21
+    }
+
+    repositories{
+        mavenCentral()
+        maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
+        maven{ url 'https://www.jitpack.io' }
+    }
+
+    dependencies{
+        compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+        compileOnly 'com.google.auto.service:auto-service:1.0-rc2'
+
+        annotationProcessor 'com.google.auto.service:auto-service:1.0-rc2'
+    }
+}
