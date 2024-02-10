@@ -128,8 +128,10 @@ public class FloatTable extends SavedTable implements Addable{
 
             setupButtons(buttons);
 
-            buttons.button(Icon.editSmall, MStyles.clearToggleAccentb, this::operate)
-            .checked(b -> operating()).disabled(b -> !operable());
+            buttons.button(Icon.editSmall, MStyles.clearToggleAccentb, () -> {
+                operate();
+                MUI.showInfoToastAt(getX(Align.center), getTop(), "@miner-tools.operator.show-hint", 1f, Align.bottom);
+            }).checked(b -> operating()).disabled(b -> !operable());
 
             RotatedImage image = new RotatedImage(Icon.downSmall, 180);
             buttons.button(Icon.downSmall, MStyles.clearToggleAccentb, () -> {

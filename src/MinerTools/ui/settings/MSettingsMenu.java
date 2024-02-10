@@ -73,11 +73,11 @@ public class MSettingsMenu extends Table implements Addable{
                 });
             }
 
-            public static void drawerCheck(MSettingTable table, String name, boolean def){
+            public void drawerCheck(MSettingTable table, String name, boolean def){
                 table.checkPref(name, def, b -> MRenderer.updateEnable());
             }
 
-            public static void drawerRadiusSlider(MSettingTable table, String name, int def, int min, int max){
+            public void drawerRadiusSlider(MSettingTable table, String name, int def, int min, int max){
                 table.sliderPref(name, def, min, max, s -> {
                     MRenderer.updateSettings();
                     return s + "(Tile)";

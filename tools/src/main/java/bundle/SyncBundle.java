@@ -156,7 +156,11 @@ public class SyncBundle{
             if(ch >= 0xE000 && ch <= 0xF8FF){
                 String hex = Integer.toHexString(ch);
                 outBuffer.append("\\u");
-                outBuffer.append("0".repeat(4 - hex.length()));
+
+                for(int j = 0; j < 4 - hex.length(); j++){
+                    outBuffer.append("0");
+                }
+
                 outBuffer.append(hex);
             }else{
                 outBuffer.append(ch);

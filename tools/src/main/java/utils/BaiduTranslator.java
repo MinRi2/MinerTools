@@ -48,6 +48,7 @@ public class BaiduTranslator{
             if(!object.containsKey("trans_result") || !object.get("trans_result").isArray()){
                 Log.warn("Fail to translate '@' from @ to @", seq, languageFrom, languageTo);
                 Log.info("Result: @", translateResult);
+                return;
             }
 
             Seq<Jval> resultSeq = object.get("trans_result").asArray();

@@ -219,8 +219,6 @@ public class ElementOperator{
 
         operating = true;
         background.show();
-
-        MUI.showInfoToastAt(target.getX(Align.center), target.getTop(), "@miner-tools.operator.show-hint", 1f, Align.bottom);
     }
 
     private static void hide(){
