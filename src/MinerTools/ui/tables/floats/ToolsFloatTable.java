@@ -17,15 +17,15 @@ public class ToolsFloatTable extends FloatTable{
 
     @Override
     public void rebuild(){
-        super.rebuild();
-
         toolsTable.rebuildMembers();
+        
+        super.rebuild();
     }
 
     @Override
     protected void rebuildBody(Table body){
         super.rebuildBody(body);
-        
+
         body.add(toolsTable).grow();
     }
 }

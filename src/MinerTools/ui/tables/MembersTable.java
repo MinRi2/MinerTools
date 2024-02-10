@@ -29,6 +29,7 @@ public class MembersTable extends Table{
     }
 
     public void rebuildMembers(){
+        clearChildren();
         builder.build(this);
     }
 
