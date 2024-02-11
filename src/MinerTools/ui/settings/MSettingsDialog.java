@@ -5,14 +5,18 @@ import arc.*;
 import arc.scene.ui.*;
 import arc.scene.ui.layout.*;
 import mindustry.gen.*;
+import mindustry.ui.*;
 
 public class MSettingsDialog extends Dialog{
     private final Table buttons;
+    private final ScrollPane pane;
     public MSettingsMenu menu;
 
     public MSettingsDialog(){
         menu = MinerVars.ui.settings;
+
         buttons = new Table();
+        pane = new ScrollPane(menu, Styles.noBarPane);
 
         buttons.bottom();
 
@@ -31,7 +35,12 @@ public class MSettingsDialog extends Dialog{
         clearChildren();
 
         menu.rebuild();
-        stack(menu, buttons).width(Core.scene.getWidth() * (3f / 4f)).growY();
+
+        Cell<?> cell = stack(pane, buttons).grow();
+
+        if(Core.scene.getWidth() >= 1920f / 2f){
+            cell.maxWidth(Core.scene.getWidth() * 3f / 4f);
+        }
     }
 
     @Override
