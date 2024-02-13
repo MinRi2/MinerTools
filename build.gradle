@@ -13,7 +13,7 @@ java{
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    minModCoreVersion = "local"// "0a263f85e7"
+    minModCoreVersion = "99333d162a"
     jabelVersion = "93fde537c7"
 
     //windows sucks
@@ -44,7 +44,7 @@ dependencies{
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
 
-    compileOnly "com.github.MinRi2.MinModCore:core:$minModCoreVersion"
+    compileOnly "com.github.MinRi2:MinModCore:$minModCoreVersion"
 }
 
 //force arc version
