@@ -1,7 +1,6 @@
 apply plugin: "java"
 
 group = 'com.github.MinRi2'
-version = '1.0'
 
 sourceSets.main.java.srcDirs = ["src"]
 
@@ -13,7 +12,7 @@ java{
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    minModCoreVersion = "99333d162a"
+    minModCoreVersion = "e5020ddbf4"
     jabelVersion = "93fde537c7"
 
     //windows sucks

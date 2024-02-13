@@ -25,8 +25,9 @@ public class MinerTools extends Mod{
         Events.on(ClientLoadEvent.class, e -> {
             new ModUpdater(MinerVars.modName).checkUpdate();
 
-            MStats.init();
             MinerVars.init();
+            
+            MStats.init();
 
             Modules.init();
 

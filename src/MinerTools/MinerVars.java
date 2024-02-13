@@ -23,6 +23,8 @@ public class MinerVars{
 
     public static void init(){
         settings = MinModSettings.registerSettings(modName);
+        migrateOldSettings();
+
         ui = new MUI();
 
         desktop = app.isDesktop();
@@ -32,11 +34,9 @@ public class MinerVars{
             initBindings();
         }
 
-        settings.init();
         ui.init();
 
         betterSchemeSize();
-        migrateOldSettings();
     }
 
     public static void betterSchemeSize(){
