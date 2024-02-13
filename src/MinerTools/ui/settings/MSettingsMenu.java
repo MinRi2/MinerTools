@@ -13,7 +13,6 @@ import arc.util.*;
 import mindustry.*;
 import mindustry.gen.*;
 import mindustry.graphics.*;
-import mindustry.ui.*;
 
 public class MSettingsMenu extends Table implements Addable{
     private final Table settingTableCont;
@@ -120,7 +119,7 @@ public class MSettingsMenu extends Table implements Addable{
 
         row();
 
-        pane(Styles.noBarPane, settingTableCont).scrollX(false).grow();
+        add(settingTableCont).grow();
     }
 
     private void select(MSettingTable settingTable){

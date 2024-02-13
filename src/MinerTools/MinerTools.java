@@ -7,7 +7,6 @@ import MinerTools.graphics.*;
 import MinerTools.modules.*;
 import arc.*;
 import arc.input.*;
-import arc.util.*;
 import mindustry.game.EventType.*;
 import mindustry.mod.*;
 
@@ -24,7 +23,7 @@ public class MinerTools extends Mod{
         Events.on(ContentInitEvent.class, e -> MContents.init());
 
         Events.on(ClientLoadEvent.class, e -> {
-            Timer.schedule(ModUpdater::checkUpdate, 3);
+            new ModUpdater(MinerVars.modName).checkUpdate();
 
             MStats.init();
             MinerVars.init();

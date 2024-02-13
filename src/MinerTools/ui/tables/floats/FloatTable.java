@@ -52,6 +52,7 @@ public class FloatTable extends SavedTable implements Addable{
         shown = MinerVars.settings.getBool("floats." + name + ".shown");
 
         visibility = () -> !Vars.state.isMenu() && Vars.ui.hudfrag.shown && !Vars.ui.minimapfrag.shown();
+        clicked(this::toFront);
     }
 
     @Override
