@@ -1,11 +1,11 @@
 package MinerTools.ui.tables.members;
 
+import MinRi2.ModCore.ui.*;
 import MinerTools.game.*;
 import MinerTools.ui.*;
 import MinerTools.ui.tables.MembersTable.*;
 import MinerTools.ui.tables.floats.*;
 import MinerTools.utils.*;
-import MinerTools.utils.ui.*;
 import arc.*;
 import arc.graphics.*;
 import arc.scene.ui.layout.*;
@@ -196,7 +196,7 @@ public class TeamsInfo extends MemberTable{
         protected void setupTitle(){
             super.setupTitle();
 
-            title.background(MStyles.getColoredRegion(team.color, 0.6f));
+            title.background(MinTex.getColoredRegion(team.color, 0.6f));
         }
 
         @Override

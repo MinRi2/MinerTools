@@ -1,5 +1,6 @@
 package MinerTools.ui.tables.floats;
 
+import MinRi2.ModCore.ui.*;
 import MinerTools.ui.*;
 import MinerTools.ui.settings.*;
 import arc.*;
@@ -21,8 +22,8 @@ import mindustry.ui.dialogs.*;
 import java.text.*;
 import java.util.*;
 
+import static MinRi2.ModCore.ui.UIUtils.setClipboardText;
 import static MinerTools.MinerVars.desktop;
-import static MinerTools.ui.MUI.setClipboardText;
 import static arc.Core.*;
 import static mindustry.Vars.*;
 import static mindustry.ui.Styles.*;
@@ -150,7 +151,7 @@ public class ChatTable extends FloatTable{
 
                 table.row();
 
-                table.table(MStyles.clearFlatOver, messages -> {
+                table.table(MinTex.clearFlatOver, messages -> {
                     for(String msg : messageStack.messages){
                         messages.button(msg, MStyles.toggleTranst, () -> addSelectMessage(msg))
                         .checked(b -> selectMessages.contains(msg, true)).growX().left().padTop(2f)
@@ -174,7 +175,7 @@ public class ChatTable extends FloatTable{
 
             t.row();
 
-            t.table(MStyles.clearFlatOver, s -> {
+            t.table(MinTex.clearFlatOver, s -> {
             }).update(selectsTable -> {
                 selectsTable.clearChildren();
 
@@ -216,7 +217,7 @@ public class ChatTable extends FloatTable{
     }
 
     private void sendMessage(){
-        if(!textField.getText().equals("")){
+        if(!textField.getText().isEmpty()){
             history.insert(0, textField.getText());
             historyIndex = -1;
 

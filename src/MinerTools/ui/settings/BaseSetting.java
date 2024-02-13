@@ -1,8 +1,8 @@
 package MinerTools.ui.settings;
 
+import MinRi2.ModCore.ui.*;
 import MinerTools.*;
 import MinerTools.ui.*;
-import MinerTools.utils.ui.*;
 import arc.func.*;
 import arc.graphics.*;
 import arc.scene.*;

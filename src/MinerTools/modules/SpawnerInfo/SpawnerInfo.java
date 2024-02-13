@@ -1,7 +1,7 @@
 package MinerTools.modules.SpawnerInfo;
 
+import MinRi2.ModCore.utils.*;
 import MinerTools.modules.*;
-import MinerTools.utils.*;
 import arc.*;
 import arc.func.*;
 import arc.math.geom.*;

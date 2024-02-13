@@ -1,6 +1,6 @@
 package MinerTools.ui.tables.floats;
 
-import MinerTools.utils.ui.*;
+import MinRi2.ModCore.ui.*;
 import arc.scene.*;
 import arc.scene.ui.layout.*;
 

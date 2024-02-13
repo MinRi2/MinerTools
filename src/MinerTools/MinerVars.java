@@ -1,27 +1,28 @@
 package MinerTools;
 
+import MinRi2.ModCore.io.*;
 import MinerTools.input.*;
-import MinerTools.io.*;
 import MinerTools.ui.*;
 import arc.KeyBinds.*;
+import arc.files.*;
 import arc.util.*;
 import mindustry.*;
 
 import static arc.Core.*;
-import static mindustry.Vars.maxSchematicSize;
+import static mindustry.Vars.*;
 
 public class MinerVars{
     public static final String modName = "miner-tools";
     public static final String modSymbol = "[yellow][M]";
     public static final float worldFontScl = Vars.tilesize / 36f;
 
-    public static MSettings settings;
+    public static MinModSettings settings;
     public static MUI ui;
 
     public static boolean desktop;
 
     public static void init(){
-        settings = new MSettings();
+        settings = MinModSettings.registerSettings(modName);
         ui = new MUI();
 
         desktop = app.isDesktop();
@@ -35,6 +36,7 @@ public class MinerVars{
         ui.init();
 
         betterSchemeSize();
+        migrateOldSettings();
     }
 
     public static void betterSchemeSize(){
@@ -52,5 +54,16 @@ public class MinerVars{
         keybinds.setDefaults(newBindings);
         Reflect.invoke(keybinds, "load");
         Reflect.invoke(Vars.ui.controls, "setup");
+    }
+
+    private static void migrateOldSettings(){
+        Fi old = modDirectory.child("MinerTools").child("settings");
+
+        if(old.exists()){
+            old.copyTo(settings.settingsFi);
+            settings.load();
+            settings.save();
+            modDirectory.child("MinerTools").deleteDirectory();
+        }
     }
 }

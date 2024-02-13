@@ -1,11 +1,10 @@
 package MinerTools.ui.tables.floats;
 
+import MinRi2.ModCore.ui.*;
+import MinRi2.ModCore.ui.operator.*;
 import MinerTools.*;
 import MinerTools.ui.*;
 import MinerTools.ui.settings.*;
-import MinerTools.ui.tables.*;
-import MinerTools.utils.ui.*;
-import MinerTools.utils.ui.operator.*;
 import arc.*;
 import arc.math.*;
 import arc.math.geom.*;
@@ -25,7 +24,6 @@ public class FloatTable extends SavedTable implements Addable{
     protected Table title, bodyCont, body;
     protected boolean isSetup;
 
-
     public FloatTable(String name){
         this(name, true);
     }
@@ -35,7 +33,7 @@ public class FloatTable extends SavedTable implements Addable{
     }
 
     public FloatTable(String name, boolean hasSetting, boolean removable){
-        super(name, true, true);
+        super(MinerVars.settings, name, true, true);
 
         if(name == null){
             throw new RuntimeException("FloatTable must have a name.");
@@ -73,6 +71,8 @@ public class FloatTable extends SavedTable implements Addable{
         keepInStage();
 
         Vars.ui.hudGroup.addChild(this);
+        toFront();
+        
         ResizeAdjuster.add(this);
         FloatManager.add(this);
     }
@@ -131,7 +131,7 @@ public class FloatTable extends SavedTable implements Addable{
 
             buttons.button(Icon.editSmall, MStyles.clearToggleAccentb, () -> {
                 operate();
-                MUI.showInfoToastAt(getX(Align.center), getTop(), "@miner-tools.operator.show-hint", 1f, Align.bottom);
+                UIUtils.showInfoToastAt(getX(Align.center), getTop(), "@miner-tools.operator.show-hint", 1f, Align.bottom);
             }).checked(b -> operating()).disabled(b -> !operable());
 
             RotatedImage image = new RotatedImage(Icon.downSmall, 180);
@@ -164,7 +164,7 @@ public class FloatTable extends SavedTable implements Addable{
     protected void removeManually(){
         if(hasSetting){
             MinerVars.settings.put("floats." + name + ".shown", false);
-            MUI.showInfoToastAt(getX(Align.center), getTop() + 8, "@miner-tools.floats.reshow-hint", 2, Align.bottom);
+            UIUtils.showInfoToastAt(getX(Align.center), getTop() + 8, "@miner-tools.floats.reshow-hint", 2, Align.bottom);
         }
         remove();
     }

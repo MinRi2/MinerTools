@@ -1,5 +1,6 @@
 package MinerTools.ui.tables.members;
 
+import MinRi2.ModCore.ui.*;
 import MinerTools.ui.*;
 import MinerTools.ui.tables.MembersTable.*;
 import MinerTools.utils.*;
@@ -70,7 +71,7 @@ public class PlayerList extends MemberTable{
                     .get().clicked(() -> panToPlayer(player));
 
                     info.labelWrap(player.coloredName()).width(200).pad(7)
-                    .get().clicked(() -> MUI.setClipboardText(player.coloredName()));
+                    .get().clicked(() -> UIUtils.setClipboardText(player.coloredName()));
 
                     info.add().width(-1f).grow();
 
@@ -80,7 +81,7 @@ public class PlayerList extends MemberTable{
                         return target == player;
                     });
 
-                    info.button(Icon.list, clearNonei, () -> MUI.showTableAtMouse(table -> {
+                    info.button(Icon.list, clearNonei, () -> UIUtils.showTableAtMouse(table -> {
                         table.background(Tex.buttonOver);
 
                         table.button(Icon.eyeSmall, clearNonei, () -> {

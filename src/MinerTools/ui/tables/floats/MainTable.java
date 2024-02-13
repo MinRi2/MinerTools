@@ -1,5 +1,6 @@
 package MinerTools.ui.tables.floats;
 
+import MinRi2.ModCore.ui.*;
 import MinerTools.*;
 import MinerTools.ui.*;
 import arc.scene.ui.layout.*;
@@ -10,7 +11,7 @@ public class MainTable extends FloatTable{
     public MainTable(){
         super("main", false, false);
 
-        title.background(MStyles.transAccent);
+        title.background(MinTex.transAccent);
     }
 
     @Override

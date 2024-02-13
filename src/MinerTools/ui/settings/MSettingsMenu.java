@@ -1,10 +1,10 @@
 package MinerTools.ui.settings;
 
+import MinRi2.ModCore.ui.*;
 import MinerTools.*;
 import MinerTools.graphics.*;
 import MinerTools.ui.*;
 import MinerTools.ui.tables.*;
-import MinerTools.utils.ui.*;
 import arc.flabel.*;
 import arc.scene.actions.*;
 import arc.scene.ui.layout.*;
