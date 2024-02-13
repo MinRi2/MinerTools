@@ -6,14 +6,15 @@ version = '1.0'
 sourceSets.main.java.srcDirs = ["src"]
 
 java{
-    targetCompatibility = 17
-    sourceCompatibility = 17
+    targetCompatibility = 16
+    sourceCompatibility = 16
 }
 
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    minModCoreVersion = "544f5fde08"
+    minModCoreVersion = "local"// "0a263f85e7"
+    jabelVersion = "93fde537c7"
 
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
@@ -24,24 +25,26 @@ ext{
 
 allprojects{
     tasks.withType(JavaCompile){
-        options.compilerArgs.addAll(['--release', '17'])
         options.encoding('UTF-8')
     }
 }
 
 repositories{
     mavenCentral()
+    mavenLocal()
     maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url 'https://www.jitpack.io' }
 }
 
 dependencies{
     annotationProcessor project(':annotation')
+//    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 
     compileOnly project(":annotation")
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-    compileOnly "com.github.MinRi2:MinMocCore:$minModCoreVersion"
+
+    compileOnly "com.github.MinRi2.MinModCore:core:$minModCoreVersion"
 }
 
 //force arc version
@@ -88,14 +91,6 @@ jar{
     from("assets/"){
         include "**"
     }
-
-    doLast{
-        copy{
-            from "$buildDir/libs/"
-            into "$modDir/"
-            include "${project.archivesBaseName}Desktop.jar"
-        }
-    }
 }
 
 task deploy(type: Jar){
@@ -109,6 +104,18 @@ task deploy(type: Jar){
         delete{
             delete "$buildDir/libs/${project.archivesBaseName}Desktop.jar"
             delete "$buildDir/libs/${project.archivesBaseName}Android.jar"
+        }
+    }
+}
+
+task compileAndCopy{
+    dependsOn jar
+
+    doLast{
+        copy{
+            from "$buildDir/libs/"
+            into "$modDir/"
+            include "${project.archivesBaseName}Desktop.jar"
         }
     }
 }

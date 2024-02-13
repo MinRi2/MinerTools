@@ -5,7 +5,7 @@ displayName: "MinerTools"
 name: "miner-tools"
 
 #your name
-author: "miner"
+author: "MinRi2"
 
 #the fully qualified main class of the mod
 main: "MinerTools.MinerTools"
@@ -112,3 +112,5 @@ minGameVersion: 136.1
 java: true
 
 repo: "MinRi2/MinerTools"
+
+dependencies: ["min-mod-core"]

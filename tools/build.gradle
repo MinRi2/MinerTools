@@ -1,6 +1,10 @@
 project(":tools"){
     apply plugin: "java"
 
+    tasks.withType(JavaCompile){
+        options.compilerArgs.addAll(['--release', '16'])
+    }
+
     repositories{
         mavenCentral()
         maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
@@ -8,7 +12,7 @@ project(":tools"){
     }
 
     dependencies{
-        implementation "com.github.Anuken.Arc:arc-core:$mindustryVersion"
+        compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
     }
 
     task syncBundle(dependsOn: classes, type: JavaExec){

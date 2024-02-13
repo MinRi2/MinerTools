@@ -1,9 +1,9 @@
 project(":annotation"){
     apply plugin: "java-library"
 
-    java{
-        targetCompatibility = 21
-        sourceCompatibility = 21
+
+    tasks.withType(JavaCompile){
+        options.compilerArgs.addAll(['--release', '16'])
     }
 
     repositories{
