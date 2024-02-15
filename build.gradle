@@ -5,14 +5,14 @@ group = 'com.github.MinRi2'
 sourceSets.main.java.srcDirs = ["src"]
 
 java{
-    targetCompatibility = 16
+    targetCompatibility = 8
     sourceCompatibility = 16
 }
 
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    minModCoreVersion = "e5020ddbf4"
+    minModCoreVersion = "6c8bac46e8"
     jabelVersion = "93fde537c7"
 
     //windows sucks
@@ -24,6 +24,7 @@ ext{
 
 allprojects{
     tasks.withType(JavaCompile){
+        options.compilerArgs.addAll(['--release', '8'])
         options.encoding('UTF-8')
     }
 }
@@ -37,7 +38,7 @@ repositories{
 
 dependencies{
     annotationProcessor project(':annotation')
-//    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
 
     compileOnly project(":annotation")
     compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
