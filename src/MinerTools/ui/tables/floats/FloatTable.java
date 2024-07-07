@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.floats;
 
 import MinRi2.ModCore.ui.*;
+import MinRi2.ModCore.ui.element.*;
 import MinRi2.ModCore.ui.operator.*;
 import MinerTools.*;
 import MinerTools.ui.*;
@@ -72,7 +73,7 @@ public class FloatTable extends SavedTable implements Addable{
 
         Vars.ui.hudGroup.addChild(this);
         toFront();
-        
+
         ResizeAdjuster.add(this);
         FloatManager.add(this);
     }

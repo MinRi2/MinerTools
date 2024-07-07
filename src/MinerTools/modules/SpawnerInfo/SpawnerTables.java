@@ -1,8 +1,8 @@
 package MinerTools.modules.SpawnerInfo;
 
+import MinRi2.ModCore.ui.element.*;
 import MinerTools.modules.*;
 import MinerTools.modules.SpawnerInfo.SpawnerInfo.*;
-import MinerTools.ui.*;
 import arc.*;
 import arc.graphics.g2d.*;
 import arc.math.geom.*;
