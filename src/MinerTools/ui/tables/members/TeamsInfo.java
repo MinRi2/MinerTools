@@ -1,6 +1,7 @@
 package MinerTools.ui.tables.members;
 
 import MinRi2.ModCore.ui.*;
+import MinRi2.ModCore.ui.element.*;
 import MinerTools.game.*;
 import MinerTools.ui.*;
 import MinerTools.ui.tables.MembersTable.*;
@@ -31,7 +32,7 @@ public class TeamsInfo extends MemberTable{
     }
 
     @Override
-    public void memberRebuild(){
+    public void onSelected(){
         setup();
     }
 

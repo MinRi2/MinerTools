@@ -106,7 +106,7 @@ public class CoreItemsDisplay extends Table implements OverrideUI{
     }
 
     private void setup(){
-        override = ui.hudGroup.find(c -> c instanceof mindustry.ui.CoreItemsDisplay);
+        override = Reflect.get(ui.hudfrag, "coreItems");
         override.parent.touchable = Touchable.disabled;
 
         // Setup ui

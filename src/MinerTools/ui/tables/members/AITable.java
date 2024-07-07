@@ -26,7 +26,7 @@ public class AITable extends MemberTable{
     }
 
     @Override
-    public void memberRebuild(){
+    public void onSelected(){
         clear();
 
         table(Styles.black6, buttons -> {

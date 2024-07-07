@@ -42,7 +42,7 @@ public class MembersTable extends Table{
         showMember = member;
         if(member != null){
             container.add(member).grow().padRight(2.0f);
-            member.memberRebuild();
+            member.onSelected();
         }
     }
 
@@ -108,7 +108,7 @@ public class MembersTable extends Table{
             return !(this.mobileOnly && !Vars.mobile || this.desktopOnly && !MinerVars.desktop);
         }
 
-        public void memberRebuild(){
+        public void onSelected(){
         }
     }
 

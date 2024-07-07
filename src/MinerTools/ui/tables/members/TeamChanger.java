@@ -22,7 +22,7 @@ public class TeamChanger extends MemberTable{
     }
 
     @Override
-    public void memberRebuild(){
+    public void onSelected(){
         clear();
 
         table(black3, skipTable -> {
