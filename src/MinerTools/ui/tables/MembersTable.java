@@ -14,7 +14,7 @@ public class MembersTable extends Table{
     public MembersBuilder builder;
 
     private Table container;
-    private MemberTable showMember;
+    private MemberTable currentMember;
 
     public MembersTable(){
         this(MembersBuilder.defaultBuilder);
@@ -28,7 +28,7 @@ public class MembersTable extends Table{
         this.container = container;
     }
 
-    public void rebuildMembers(){
+    public void rebuildCont(){
         clearChildren();
         builder.build(this);
     }
@@ -39,7 +39,7 @@ public class MembersTable extends Table{
 
     public void setMember(MemberTable member){
         container.clear();
-        showMember = member;
+        currentMember = member;
         if(member != null){
             container.add(member).grow().padRight(2.0f);
             member.onSelected();
@@ -47,19 +47,19 @@ public class MembersTable extends Table{
     }
 
     public void toggleMember(MemberTable member){
-        if(memberShowing(member)){
+        if(isShowing(member)){
             setMember(null);
         }else{
             setMember(member);
         }
     }
 
-    public boolean memberShowing(){
-        return showMember != null;
+    public boolean isShowing(){
+        return currentMember != null;
     }
 
-    public boolean memberShowing(MemberTable memberTable){
-        return showMember == memberTable;
+    public boolean isShowing(MemberTable memberTable){
+        return currentMember == memberTable;
     }
 
     public Seq<MemberTable> getMembers(){
@@ -85,7 +85,7 @@ public class MembersTable extends Table{
 
                     buttons.button(member.icon, MStyles.clearToggleAccentb, () -> {
                         table.toggleMember(member);
-                    }).height(32f).padTop(4.0f).growX().checked(b -> table.memberShowing(member));
+                    }).height(32f).padTop(4.0f).growX().checked(b -> table.isShowing(member));
                 }
             }).growX().top();
 

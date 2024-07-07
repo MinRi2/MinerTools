@@ -12,13 +12,13 @@ public class ToolsFloatTable extends FloatTable{
 
         toolsTable = new MembersTable();
 
-        toolsTable.addMember(new TeamsInfo(), new TeamChanger(), new PlayerList(), new AITable());
+        toolsTable.addMember(new TeamsInfo(), new TeamChanger(), new PlayerList(), new SchematicList(), new AITable());
     }
 
     @Override
     public void rebuild(){
-        toolsTable.rebuildMembers();
-        
+        toolsTable.rebuildCont();
+
         super.rebuild();
     }
 
