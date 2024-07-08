@@ -12,7 +12,7 @@ java{
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    minModCoreVersion = "6c8bac46e8"
+    minModCoreVersion = "774565478f"
     jabelVersion = "93fde537c7"
 
     //windows sucks
