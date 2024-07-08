@@ -26,7 +26,7 @@ jobs:
           mv build/libs/${{ github.event.repository.name }}.jar build/libs/${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.jar
 
       - name: Upload
-        uses: svenstaro/upload-release-action@v2
+        uses: svenstaro/upload-release-action@v2.9.0
         with:
           repo_token: ${{ secrets.TOKEN }}
           file: build/libs/${{ github.event.repository.name }}-${{ env.RELEASE_VERSION }}.jar
