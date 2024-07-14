@@ -12,8 +12,9 @@ java{
 ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
-    minModCoreVersion = "774565478f"
-    jabelVersion = "93fde537c7"
+    mindustryXVersion = 'ca40f700fb'
+    minModCoreVersion = '9236ba700e'
+    uncVersion = '3397fc68eb'
 
     //windows sucks
     isWindows = System.getProperty("os.name").toLowerCase().contains("windows")
@@ -32,18 +33,16 @@ allprojects{
 repositories{
     mavenCentral()
     mavenLocal()
-    maven{ url "https://raw.githubusercontent.com/Zelaux/MindustryRepo/master/repository" }
     maven{ url 'https://www.jitpack.io' }
 }
 
 dependencies{
     annotationProcessor project(':annotation')
-    annotationProcessor "com.github.Anuken:jabel:$jabelVersion"
+    annotationProcessor "com.github.EB-wilson.UniverseCore:annotations:$uncVersion" // 使用Unc注解处理器替代jabel
 
     compileOnly project(":annotation")
-    compileOnly "com.github.Anuken.Arc:arc-core:$mindustryVersion"
-    compileOnly "com.github.Anuken.Mindustry:core:$mindustryVersion"
-
+    compileOnly "com.github.anuken.arc:arc-core:$mindustryVersion"
+    compileOnly "com.github.TinyLake.MindustryX:core:$mindustryXVersion"
     implementation "com.github.MinRi2:MinModCore:$minModCoreVersion"
 }
 

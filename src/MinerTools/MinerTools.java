@@ -26,7 +26,7 @@ public class MinerTools extends Mod{
             new ModUpdater(MinerVars.modName).checkUpdate();
 
             MinerVars.init();
-            
+
             MStats.init();
 
             Modules.init();
