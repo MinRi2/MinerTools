@@ -22,7 +22,7 @@ public class MinerTools extends Mod{
         // mobile = true; // Only for debug
         Events.on(ContentInitEvent.class, e -> MContents.init());
 
-        Events.on(ClientLoadEvent.class, e -> {
+        Events.on(ClientLoadEvent.class, e -> Core.app.post(() -> {
             new ModUpdater(MinerVars.modName).checkUpdate();
 
             MinerVars.init();
@@ -34,7 +34,7 @@ public class MinerTools extends Mod{
             MRenderer.init();
 
             Modules.load();
-        });
+        }));
 
         Events.run(Trigger.update, this::update);
     }
