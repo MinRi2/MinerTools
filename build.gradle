@@ -13,7 +13,7 @@ ext{
     //the build number that this mod is made for
     mindustryVersion = 'v146'
     mindustryXVersion = 'ca40f700fb'
-    minModCoreVersion = 'be3f9ab50e'
+    minModCoreVersion = 'ccf5144901'
     uncVersion = '3397fc68eb'
 
     //windows sucks
