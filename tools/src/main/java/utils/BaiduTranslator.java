@@ -15,7 +15,8 @@ import java.nio.charset.*;
  * Create by 2024/2/8
  */
 public class BaiduTranslator{
-    static String baiduTranslationApi = "https://fanyi-api.baidu.com/api/trans/vip/translate";
+    private static final int maxByteSize = (int)(6000 * 0.9);
+    private static final String baiduTranslationApi = "https://fanyi-api.baidu.com/api/trans/vip/translate";
 
     String appId;
     String appKey;
@@ -25,16 +26,18 @@ public class BaiduTranslator{
         this.appKey = appKey;
     }
 
-    public String translate(String text, String languageTo){
-        return translate(text, "auto", languageTo);
+    public StringMap translate(Seq<String> seq, String fromTag, String toTag){
+        StringMap result = new StringMap();
+
+        for(String string : divide(seq, "\n")){
+            result.putAll(translate(string, fromTag, toTag));
+        }
+
+        return result;
     }
 
-    public String translate(String text, String languageFrom, String languageTo){
-        return translate(Seq.with(text), languageFrom, languageTo).get(text);
-    }
-
-    public StringMap translate(Seq<String> seq, String languageFrom, String languageTo){
-        String url = getTranslateUrl(seq.toString("\n"), languageFrom, languageTo);
+    public StringMap translate(String source, String fromTag, String toTag){
+        String url = getTranslateUrl(source, fromTag, toTag);
 
         HttpRequest request = Http.get(url);
 
@@ -46,7 +49,7 @@ public class BaiduTranslator{
 
             JsonMap object = Jval.read(translateResult).asObject();
             if(!object.containsKey("trans_result") || !object.get("trans_result").isArray()){
-                Log.warn("Fail to translate '@' from @ to @", seq, languageFrom, languageTo);
+                Log.warn("Fail to translate '@' from @ to @", source, fromTag, toTag);
                 Log.info("Result: @", translateResult);
                 return;
             }
@@ -62,7 +65,36 @@ public class BaiduTranslator{
         return map;
     }
 
-    String getTranslateUrl(String text, String languageFrom, String languageTo){
+    private Seq<String> divide(Seq<String> seq, String separator){
+        Seq<String> result = new Seq<>();
+        StringBuilder builder = new StringBuilder();
+
+        int byteSize = 0;
+        for(int i = 0; i < seq.size; i++){
+            String string = seq.get(i);
+
+            if(byteSize + string.getBytes().length < maxByteSize){
+                byteSize += string.getBytes().length;
+                builder.append(string);
+
+                if(i < seq.size - 1){
+                    builder.append(separator);
+                }
+            }else{
+                byteSize = 0;
+                result.add(builder.toString());
+                builder.setLength(0);
+            }
+        }
+
+        if(!builder.isEmpty()){
+            result.add(builder.toString());
+        }
+
+        return result;
+    }
+
+    private String getTranslateUrl(String text, String languageFrom, String languageTo){
         long salt = System.currentTimeMillis();
         String sign = MD5.md5(appId + text + salt + appKey);
         return baiduTranslationApi + "?" + getParams(ObjectMap.of(
@@ -75,7 +107,7 @@ public class BaiduTranslator{
         ));
     }
 
-    String getParams(ObjectMap<String, ?> map){
+    private String getParams(ObjectMap<String, ?> map){
         StringBuilder builder = new StringBuilder();
 
         Entries<String, ?> iterator = map.iterator();

@@ -1,7 +1,6 @@
 package bundle;
 
 import arc.files.*;
-import arc.func.*;
 import arc.struct.*;
 import arc.struct.ObjectMap.*;
 import arc.util.*;
@@ -15,13 +14,13 @@ import java.util.regex.*;
  * Create by 2024/2/6
  */
 public class SyncBundle{
-    static final Pattern pattern = Pattern.compile("bundle_([a-z]{2})");
+    private static final Pattern pattern = Pattern.compile("bundle_([a-z]{2})");
+    private static final String placeHolder = "\\[NewLine]";
 
-    static final OrderedMap<String, String> main = new OrderedMap<>();
-    static String mainBundle = "bundle_zh_CN.properties";
-
-    static BaiduTranslator translator;
-    static String mainLanguageTag = getLanguageTag(mainBundle);
+    private static final OrderedMap<String, String> main = new OrderedMap<>();
+    private static final String mainBundle = "bundle_zh_CN.properties";
+    private static final String mainLanguageTag = getLanguageTag(mainBundle);
+    private static BaiduTranslator translator;
 
     public static void main(String[] args){
         createTranslator();
@@ -90,17 +89,9 @@ public class SyncBundle{
         if(translator != null){
             String bundleLanguageTag = getLanguageTag(bundleFi.name());
 
-            translatedMap = translator.translate(main.values().toSeq(), mainLanguageTag, bundleLanguageTag);
+            Seq<String> values = main.values().toSeq().map(s -> s.replaceAll("\n", placeHolder));
+            translatedMap = translator.translate(values, mainLanguageTag, bundleLanguageTag);
         }
-
-        Func2<String, String, String> processor = (key, value) -> {
-            value = uniEscape(value);
-
-            String comment = comments.get(key, "");
-            String property = (key + " = " + value).replace("\n", "\\n") + "\n";
-            return comment + property;
-        };
-
         StringBuilder builder = new StringBuilder();
         for(String key : mainKeys){
             if(!other.containsKey(key)) continue;
@@ -108,10 +99,15 @@ public class SyncBundle{
             String value = other.get(key);
 
             if(translatedMap != null){
-                value = translatedMap.get(value, value);
+                value = translatedMap.get(value.replaceAll("\n", placeHolder), value);
             }
 
-            builder.append(processor.get(key, value));
+            value = uniEscape(value).replaceAll(placeHolder, "\n");
+
+            String comment = comments.get(key, "");
+            String property = (key + " = " + value).replace("\n", "\\n") + "\n";
+
+            builder.append(comment).append(property);
 
             other.remove(key);
         }
